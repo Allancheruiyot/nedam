@@ -1,0 +1,131 @@
+<?php
+
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+
+
+
+<?php echo HTML::script('media/js/jquery.js'); ?>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#select_all').on('click',function(){
+        if(this.checked){
+            $('.checkbox').each(function(){
+                this.checked = true;
+            });
+        }else{
+             $('.checkbox').each(function(){
+                this.checked = false;
+            });
+        }
+    });
+    
+    $('.checkbox').on('click',function(){
+        if($('.checkbox:checked').length == $('.checkbox').length){
+            $('#select_all').prop('checked',true);
+        }else{
+            $('#select_all').prop('checked',false);
+        }
+    });
+});
+</script>
+
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	<div class="col-lg-12">
+  <h4><font color='green'>Sales Order : <?php echo $order->order_number; ?> &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Client: <?php echo $order->client->name; ?>  &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; Date: <?php echo $order->date; ?> &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; Status: <?php echo $order->status; ?> </font> </h4>
+
+<hr>
+</div>	
+</div>
+ 
+<div class="row">
+    <div class="col-lg-12">
+    <!-- <a href="<?php echo URL::to('erpReports/invoice/'.$order->id); ?>" class="btn btn-primary"> Generate Invoice</a> -->
+    <!-- <a href="<?php echo URL::to('payments/create'); ?>" class="btn btn-primary"> Receive Payment</a> -->
+    <?php if($order->payment_type === "credit"): ?>
+        <a href="<?php echo URL::to('erpReports/receipt/'.$order->id); ?>" class="btn btn-primary btn-sm" target="_blank"><i class="glyphicon glyphicon-file fa-fw"></i> Delivery Note/Invoice</a>
+    <?php else: ?>
+        <a href="<?php echo URL::to('erpReports/receipt/'.$order->id); ?>" class="btn btn-primary btn-sm" target="_blank"><i class="glyphicon glyphicon-file fa-fw"></i> Invoice</a>
+    <?php endif; ?>
+    </div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+
+    <hr>
+		
+		 <?php if($errors->has()): ?>
+        <div class="alert alert-danger">
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+    <table class="table table-condensed table-bordered table-hover" >
+
+    <thead>
+        <!--<th><input type="checkbox" id="select_all" value=""></th>-->
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <!-- <th>Amount</th>
+        <th>Duration</th> -->
+        <th>Total Amount</th>
+       
+    </thead>
+
+    <tbody>
+
+   
+        <?php $total = 0; ?>
+        <?php foreach($order->erporderitems as $orderitem): ?>
+
+            <?php
+
+            $amount = $orderitem['price'] * $orderitem['quantity'];
+            /*$total_amount = $amount * $orderitem['duration'];*/
+            $total = $total + $amount;
+            ?>
+        <tr>
+            <!--<td><input type="checkbox" class="checkbox" name="<?php echo $orderitem->item->id; ?>" value=""></td>-->
+            <td><?php echo $orderitem->item->name; ?></td>
+            <td><?php echo $orderitem['quantity']; ?></td>
+            <td><?php echo asMoney($orderitem['price']); ?></td>
+            <!-- <td><?php echo $amount; ?></td>
+            <td><?php echo $orderitem['duration']; ?></td> -->
+            <td><?php echo asMoney($amount); ?></td>
+            
+        </tr>
+
+        <?php endforeach; ?>
+
+        <!-- <tr>
+           <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>Grand Total</strong></td>
+            <td><strong><?php echo asMoney($total); ?></strong></td>
+          
+        </tr> -->
+    </tbody>
+        
+    </table>
+		
+
+  </div>
+
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.erp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

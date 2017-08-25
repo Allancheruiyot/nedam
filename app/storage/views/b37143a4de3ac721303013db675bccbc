@@ -1,0 +1,161 @@
+<?php session_start(); 
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+
+<?php echo HTML::script('media/jquery-1.8.0.min.js'); ?>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+  
+    $('#order').change(function(){
+     
+        $.get("<?php echo url('api/total'); ?>", 
+        { option: $(this).val() }, 
+        function(data) {
+          console.log('hi');
+                $('#amountdue').val(data);
+            });
+        });
+   });
+</script>
+
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+  <div class="col-lg-12">
+  <h4><font color='green'>Payment Details</font></h4>
+<hr>
+</div>  
+</div>
+
+
+<div class="row">
+  <div class="col-lg-5">
+
+    
+    
+     <?php if($errors->has()): ?>
+        <div class="alert alert-danger">
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+     <form method="POST" action="<?php echo e(URL::to('payments')); ?>" accept-charset="UTF-8">
+   
+    <font color="red"><i>All fields marked with * are mandatory</i></font>
+    <fieldset>
+      
+        
+        <div class="form-group">
+            <label for="username">Client Name</label><span style="color:red">*</span> :
+           <select name="order" id="order" class="form-control" required>
+                           <option></option>
+                           <option>..................................Select Client....................................</option>
+                           <?php foreach($clients as $client): ?>
+                            <option value="<?php echo $client->id; ?>"><?php echo $client->name; ?></option>
+                           <?php endforeach; ?>
+                        </select>
+        </div>
+
+        <!-- <div class="form-group">
+            <label for="username">Amount To Be Paid<span style="color:red">*</span> :</label>
+            <input class="form-control" placeholder="" type="text" name="amounttopay" id="amounttopay" value="<?php echo e(Input::old('amount')); ?>">
+        </div> -->
+
+       <!--  <div class="form-group">
+            <label for="username">Amount Due :</label>
+            <input class="form-control" placeholder="" type="text" name="withstandingamount" id="withstandingamount" value="<?php echo e(Input::old('withstandingamount')); ?>">
+        </div> -->
+
+        <div class="form-group">
+        <label for="username">Amount Due</label> 
+        
+          <div class="input-group">
+            <span class="input-group-addon">KES</span>
+            <input type="text" class="form-control"  name="amountdue" id="amountdue" value= '<?php echo asMoney(0.00); ?>' readonly>                                              
+        
+
+        </div>
+      </div>
+
+        <div class="form-group">
+            <label for="username">Payment Amount<span style="color:red">*</span> :</label>
+            <input class="form-control" placeholder="" type="text" name="amount" id="amount" value="<?php echo e(Input::old('amount')); ?>" required>
+        </div>
+
+
+        <div class="form-group">
+            
+            <input class="form-control" placeholder="" type="hidden" name="credit_account" id="credit_account" value="2">
+        </div>
+
+         <div class="form-group">
+            
+            <input class="form-control" placeholder="" type="hidden" name="description" id="description" value="<?php echo e(Input::old('description')); ?>">
+        </div>
+
+        
+
+      <hr>
+
+
+
+        <div class="form-group">
+            <label for="username">Payment Method</label><span style="color:red">*</span> :
+           <select name="paymentmethod" class="form-control" required>
+                          <option></option>
+                           <option>......................Select Payment Method......................</option>
+                           <?php foreach($paymentmethods as $paymentmethod): ?>
+                            <option value="<?php echo $paymentmethod->id; ?>"><?php echo $paymentmethod->name; ?></option>
+                           <?php endforeach; ?>
+                        </select>
+        </div> 
+
+        <div class="form-group">
+            <label for="username">Account</label><span style="color:red">*</span> :
+           <select name="account" class="form-control" required>
+                          <option></option>>
+                           <option>...............................Select Account...........................</option>
+                           <?php foreach($accounts as $account): ?>
+                            <option value="<?php echo $account->id; ?>"><?php echo $account->name; ?></option>
+                           <?php endforeach; ?>
+                        </select>
+        </div>       
+
+        
+            <input class="form-control" placeholder="" type="hidden" readonly="readonly" name="received_by" id="received_by" value="<?php echo e(Confide::user()->username); ?>">
+        
+         <div class="form-group">
+                        <label for="username">Date</label>
+                        <div class="right-inner-addon ">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                        <input class="form-control datepicker"  readonly="readonly" placeholder="" type="text" name="pay_date" id="pay_date" value="<?php echo date('d-M-Y'); ?>" required>
+                        </div>
+          </div>
+
+
+
+          
+        <div class="form-actions form-group">
+        
+          <button type="submit" class="btn btn-primary btn-sm">Accept Payment</button>
+        </div>
+
+    </fieldset>
+</form>
+    
+
+  </div>
+
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.erp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

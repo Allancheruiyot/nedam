@@ -1,0 +1,191 @@
+<?php
+
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+
+
+
+<?php echo HTML::script('media/js/jquery.js'); ?>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+   console.log($("#payable").val()*$("#rate").val()/100);
+   $('input[name="rate"]:checkbox').change(function() {
+        var total = 0;
+        if($("#").is(':checked')){
+        $('input[name="rate"]:checked').each(function() {
+            total = $("#payable").val()*$("#rate").val()/100;
+            $('#tax_amount').val(total);
+        });
+        
+    });
+}
+   });
+</script>
+
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	<div class="col-lg-12">
+  <h4><font color='green'>Purchase Order : <?php echo Session::get('erporder')['order_number']; ?> &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Client: <?php echo Session::get('erporder')['client']['name']; ?>  &nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; Date: <?php echo Session::get('erporder')['date']; ?> </font></h4>
+
+<hr>
+</div>	
+</div>
+
+
+<br><div class="row">
+    
+  <form class="form-inline" method="post" action="<?php echo URL::to('purchaseitems/create'); ?>">
+    <font color="red"><i>All fields marked with * are mandatory</i></font>
+      <div class="col-lg-12">
+
+        <div class="form-group ">
+            <label>Item</label><span style="color:red">*</span> :
+            <select name="item" class="form-control" required>
+            <option></option>
+            <option> ..... select sale item....</option>
+                <?php foreach($items as $item): ?>
+                
+                    <option value="<?php echo $item->id; ?>"><?php echo $item->name; ?></option>
+                    
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+
+        <div class="form-group ">
+            <label>Quantity</label><span style="color:red">*</span> :
+            <input type="text" name="quantity" class="form-control" required>
+        </div>
+
+
+        <div class="form-group ">
+            
+            <input type="image" name="submit" src="<?php echo asset('images/Add-icon.png'); ?>" alt="Submit" width="15%">
+        </div>
+
+
+      </div> 
+
+
+  </form>
+
+
+
+</div>
+
+<form role="form" action="<?php echo URL::to('erppurchase/commit'); ?>" method="POST">
+<div class="row">
+	<div class="col-lg-12">
+
+    <hr>
+		
+		 <?php if($errors->has()): ?>
+        <div class="alert alert-danger">
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <br>
+
+    <table class="table table-condensed table-bordered">
+
+    <thead>
+        <th>Index</th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <!-- <th>Amount</th> -->
+        <!-- <th>Duration</th> -->
+        <th>Total Amount</th>
+        <th>Actions</th>
+    </thead>
+
+    <tbody>
+
+   
+        <?php $total = 0; $count = 0; ?>
+        <?php foreach($orderitems as $orderitem): ?>
+
+            <?php
+
+            $amount = $orderitem['price'] * $orderitem['quantity'];
+            /*$total_amount = $amount * $orderitem['duration'];*/
+            $total = $total + $amount;
+            
+            ?>
+     
+        
+
+        <tr>
+            <td><?php echo $count+1; ?></td>
+            <td><?php echo $orderitem['item']; ?></td>
+            <td><?php echo $orderitem['quantity']; ?></td>
+            <td><?php echo asMoney($orderitem['price']); ?></td>
+            <!-- <td><?php echo $amount; ?></td> -->
+            <!-- <td><?php echo $orderitem['duration']; ?></td> -->
+            <td><?php echo asMoney($amount); ?></td>
+            <td>
+                <div class="btn-group">
+                  <a href="<?php echo URL::to('purchaseitems/edit/'.$count); ?>" class="btn btn-success btn-sm"> Edit </a>
+                </div>&emsp;
+                <div class="btn-group">
+                  <a href="<?php echo URL::to('purchaseitems/remove/'.$count); ?>" class="btn btn-danger btn-sm"> Delete </a>
+                </div>
+            </td>
+        </tr>
+        
+        <?php $count++;?>
+        <?php endforeach; ?>
+
+
+        <tr>
+           
+            <!--<td></td>-->
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>Grand Total</strong></td>
+            <td><strong><?php echo asMoney($total); ?></strong></td>
+            <td></td>
+        </tr>
+    </tbody>
+        
+    </table>
+
+   
+<!-- <table border="0" align="right" style="width:400px">
+<tr style="height:50px"><td>Discount:</td><td colspan="2"> <input type="text" name="discount" value="0" class="form-control"></td></tr>
+<tr style="height:50px"><td><strong>Payable Amount</strong></td><td colspan="2"> <input type="text" readonly="readonly" name="payable" id="payable" value="<?php echo $total-Input::get('discount'); ?>" class="form-control"></td></tr>
+<?php foreach($taxes as $tax): ?>
+<tr style="height:50px"><td><?php echo $tax->name; ?></td><td> <input type="checkbox" class="checkbox" name="rate" id="rate" value="<?php echo $tax->rate; ?>"></td><td><input type="text" readonly="readonly" name="tax_amount" id="tax_amount" class="form-control"></td></tr>
+<?php endforeach; ?>
+<tr style="height:50px"><td><strong>Grand Total</strong></td><td colspan="2"> <input type="text" name="grand" readonly="readonly" class="form-control"></td></tr>
+</table>
+ -->
+
+  </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <hr>
+        <a class="btn btn-danger btn-sm" href="<?php echo URL::to('purchaseorders/create'); ?>">Cancel</a>
+        <button type="submit" class="btn btn-primary pull-right">Place Order</button>
+    </div>
+</div>
+<input type="hidden" name="grand" value="<?php echo $total; ?>">
+
+</form>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.erp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

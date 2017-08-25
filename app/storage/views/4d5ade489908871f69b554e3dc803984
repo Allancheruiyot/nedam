@@ -1,0 +1,91 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	<div class="col-lg-12">
+  <h4><font color='green'>Receive Stock</font></h4>
+
+<hr>
+</div>	
+</div>
+
+
+<div class="row">
+	<div class="col-lg-5">
+
+    
+		
+		 <?php if($errors->has()): ?>
+        <div class="alert alert-danger">
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+		 <form method="POST" action="<?php echo e(URL::to('stocks')); ?>" accept-charset="UTF-8">
+        <font color="red"><i>All fields marked with * are mandatory</i></font>
+
+         <div class="form-group">
+                        <label for="username">Date<span style="color:red">*</span> :</label>
+                        <div class="right-inner-addon ">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                        <input class="form-control datepicker"  readonly="readonly" placeholder="" type="text" name="date" id="date" value="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+          </div>
+
+   
+    <fieldset>
+        <div class="form-group">
+            <label for="username">Item <span style="color:red">*</span> :</label>
+            <select name="item" class="form-control" required>
+            <option> select item ... </option>
+                <?php foreach($items as $item): ?>
+                <option value="<?php echo $item->id; ?>"><?php echo $item->name; ?></option>
+                <?php endforeach; ?>
+                
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Store <span style="color:red">*</span> :</label>
+            <select name="location" class="form-control" required>
+            <option> select store ... </option>
+                <?php foreach($locations as $location): ?>
+                <option value="<?php echo $location->id; ?>"><?php echo $location->name; ?></option>
+                <?php endforeach; ?>
+                
+            </select>
+        </div>
+
+         <div class="form-group">
+            <label for="username">Stations <span style="color:red">*</span> :</label>
+            <select name="station" class="form-control" required>
+            <option> select station ... </option>
+                <?php foreach($stations as $station): ?>
+                <option value="<?php echo $station->id; ?>"><?php echo $station->station_name; ?></option>
+                <?php endforeach; ?>               
+            </select>
+          </div>
+
+        <div class="form-group">
+            <label for="username">Quantity <span style="color:red">*</span> :</label>
+            <input type="text" name="quantity" class="form-control" required>
+        </div>
+
+        
+
+        <div class="form-actions form-group">
+        
+          <button type="submit" class="btn btn-primary btn-sm">Receive</button>
+        </div>
+
+    </fieldset>
+</form>
+		
+
+  </div>
+
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.erp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

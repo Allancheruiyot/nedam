@@ -1,0 +1,113 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+  <div class="col-lg-12">
+  <h4><font color='green'>Purchase Orders</font></h4>
+
+<hr>
+</div>  
+</div>
+
+
+<div class="row">
+  <div class="col-lg-12">
+
+    <?php if(Session::has('flash_message')): ?>
+
+      <div class="alert alert-success">
+      <?php echo Session::get('flash_message'); ?>
+
+     </div>
+    <?php endif; ?>
+
+    <?php if(Session::has('delete_message')): ?>
+
+      <div class="alert alert-danger">
+      <?php echo Session::get('delete_message'); ?>
+
+     </div>
+    <?php endif; ?>
+    
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          <a class="btn btn-info btn-sm" href="<?php echo URL::to('purchaseorders/create'); ?>">New Purchase Order </a>
+        </div>
+        <div class="panel-body">
+
+
+    <table id="users" class="table table-condensed table-bordered table-responsive table-hover">
+
+
+      <thead>
+
+        <th>#</th>
+        <th>Client</th>
+        <th>Order #</th>
+        <th>Date</th>
+        <th>status</th>
+        <th></th>
+        <!-- <th></th> -->
+        
+
+      </thead>
+      <tbody>
+
+        <?php $i = 1; ?>
+
+        <?php foreach($purchases as $order): ?>
+        <?php if($order->type == 'purchases'): ?>
+        <tr>
+
+          <td> <?php echo $i; ?></td>
+          <td><?php echo $order->client->name; ?></td>
+          <td><?php echo $order->order_number; ?></td>
+          <td><?php echo $order->date; ?></td>
+          <td><?php echo $order->status; ?></td>
+
+           
+        
+          <td>
+
+                  <div class="btn-group">
+                  <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    Action <span class="caret"></span>
+                  </button>
+          
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="<?php echo URL::to('erppurchases/show/'.$order->id); ?>">View</a></li>                   
+                    <li><a href="<?php echo URL::to('erppurchases/cancel/'.$order->id); ?>"  onclick="return (confirm('Are you sure you want to cancel this order?'))">Cancel</a></li>
+                    <li><a href="<?php echo URL::to('erppurchases/delivered/'.$order->id); ?>">Delivered</a></li>
+                    
+                  </ul>
+
+                  
+              </div>
+
+                    </td>                
+
+              <!-- <td>
+              <a href="<?php echo URL::to('erppurchases/payment/'.$order->id); ?>" class="btn btn-info btn-sm">Make Payment</a>
+            </td> -->
+
+
+
+        </tr>
+
+        <?php $i++; ?>
+        <?php endif; ?>
+        <?php endforeach; ?>
+
+
+      </tbody>
+
+
+    </table>
+  </div>
+
+
+  </div>
+
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.erp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

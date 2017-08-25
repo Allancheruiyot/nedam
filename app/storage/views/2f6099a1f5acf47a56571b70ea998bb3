@@ -1,0 +1,162 @@
+<?php
+
+
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+
+<html >
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<style type="text/css">
+
+table {
+  max-width: 100%;
+  background-color: transparent;
+}
+th {
+  text-align: left;
+}
+.table {
+  width: 100%;
+  margin-bottom: 2px;
+}
+hr {
+  margin-top: 1px;
+  margin-bottom: 2px;
+  border: 0;
+  border-top: 2px dotted #eee;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.428571429;
+  color: #333;
+  background-color: #fff;
+
+
+ @page  { margin: 50px 30px; }
+ .header { position: top; left: 0px; top: -150px; right: 0px; height: 100px;  text-align: center; }
+ .content {margin-top: -100px; margin-bottom: -150px}
+ .footer { position: fixed; left: 0px; bottom: -60px; right: 0px; height: 50px;  }
+ .footer .page:after { content: counter(page, upper-roman); }
+
+
+
+
+
+</style>
+
+</head>
+
+<body>
+
+  <div class="header">
+       <table >
+
+      <tr>       
+        <td style="width:150px">
+            <img src="<?php echo asset('public/uploads/logo/'.$organization->logo); ?>" alt="logo" width="120%">    
+        </td>
+
+        <table align="center">
+        <tr>
+        <td>
+       <div align="center"> <strong>
+          <?php echo strtoupper($organization->name); ?>
+
+          </strong><br> </div>
+         <div align="center"> <?php echo $organization->phone; ?><br> </div>
+         <div align="center"> <?php echo $organization->email; ?><br> </div>
+         <div align="center"> <?php echo $organization->website; ?><br> </div>
+         <div align="center"> <?php echo $organization->address; ?>  </div>     
+        </td>
+        </tr>     
+       </table> 
+
+
+      </tr>
+      <tr>
+        <hr>
+      </tr>
+
+    </table>
+   </div>
+
+<div class="footer">
+     <p class="page">Page <?php $PAGE_NUM ?></p>
+   </div>
+
+ <br><br><br>  <br><br><br> 
+  <div class="content" style='margin-top:0px;'>   
+
+   <div align="center"><strong>Stock Movement Schedule as at <?php echo date('d-M-Y'); ?></strong></div><br>
+   
+
+    <table class="table table-bordered" border='1' cellspacing='0' cellpadding='0'>
+
+      <tr>
+        <th width='20'><strong># </strong></th>        
+        <th><strong>Name </strong></th>
+        <th><strong>Description </strong></th>
+        <th><strong>Item Type </strong></th>
+        <th><strong>Cost price </strong></th>
+        <th><strong>Selling Price</strong></th>        
+        <td><strong>Quantity In </strong></td>        
+        <td><strong>Quantity Sold</strong></td>
+        <td><strong>Amount Sold</strong></td>           
+        <th align="right"><strong>Stock Level</strong></th>
+        <th align="right"><strong>Stock Value </strong></th>
+      </tr>
+      <?php $i =1; 
+       $profit_margin = 0;
+       $totalSales = 0;
+       $totalCostprice = 0;
+      ?>
+      <?php foreach($items as $item): ?>
+
+      <?php
+
+      $totalSales = $totalSales + (Stock::totalSales($item)) * $item->selling_price;
+      $totalCostprice = $totalCostprice + (Stock::totalSales($item)) * $item->purchase_price;
+      $profit_margin = $profit_margin + $totalSales -$totalCostprice;
+      ?>
+      <tr>
+       <td td width='20' valign="top"><?php echo $i; ?></td>        
+        <td valign="top"> <?php echo $item->name; ?></td>
+        <td valign="top"> <?php echo $item->description; ?></td>
+        <td valign="top"> <?php echo $item->type; ?></td>
+        <td valign="top" align="right"><?php echo asMoney($item->purchase_price); ?></td>
+        <td valign="top" align="right"><?php echo asMoney($item->selling_price); ?></td>        
+        <td valign="top" align="center"><?php echo (Stock::totalPurchases($item)); ?></td>       
+        <td valign="top" align="center"><?php echo (Stock::totalSales($item)); ?> </td>
+        <td valign="top" align="right"><?php echo asMoney((Stock::totalSales($item)) * $item->selling_price); ?> </td>           
+        <td valign="top" align="center"> <?php echo (Stock::getStockAmount($item)); ?></td>
+        <td valign="top" align="right"> <?php echo asMoney(Stock::getStockAmount($item) * $item->purchase_price); ?></td>
+        </tr>
+      <?php $i++; ?>
+
+    <?php endforeach; ?>     
+
+    </table>
+
+<br><br>
+<table  border='0' align="center">
+<tr><th colspan="2">SUMMARY</th></tr>
+<tr><td><b>Total Sales:</b></td><td><b><?php echo asMoney($totalSales); ?></b></td></tr>
+<!-- <tr><td><b>Total Cost Price:</b><td><b><?php echo asMoney($totalCostprice); ?></b></td></td></tr>
+<hr>
+<tr><td><b>Profit Margin:</b></td> <td><b><?php echo asMoney($profit_margin); ?></b></td></tr> -->
+</table>   
+</div>
+</body>
+</html>
+
+
+
