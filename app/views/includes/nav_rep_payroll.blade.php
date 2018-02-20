@@ -40,6 +40,10 @@
                     </li>  
 
                     <li>
+                                <a href="{{ URL::to('payrollReports/selectPension') }}" ><i class="glyphicon glyphicon-file fa-fw"></i> Pension Report</a>
+                            </li>  
+
+                    <li>
                         <a href="{{ URL::to('payrollReports/selectRelief') }}"><i class="glyphicon glyphicon-file fa-fw"></i> Relief Report</a>
                     </li>  
                     

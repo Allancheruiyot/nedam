@@ -100,9 +100,9 @@ body {
     <div class="content" style='margin-top:-70px;'>
 
        @if($employee->middle_name != null || $employee->middle_name != '')
-         <div align="center"><strong>Occurence Report for {{$employee->first_name.' '.$employee->middle_name.' '.$employee->last_name}}</strong></div><br>
+         <div align="center"><strong>Occurence Report for {{$employee->first_name.' '.$employee->middle_name.' '.$employee->last_name}} For Period {{$from}} And {{$to}}</strong></div><br>
         @else
-         <div align="center"><strong>Occurence Report for {{$employee->first_name.' '.$employee->last_name}}</strong></div><br>
+         <div align="center"><strong>Occurence Report for {{$employee->first_name.' '.$employee->last_name}} For Period {{$from}} And {{$to}}</strong></div><br>
         @endif
 
     <table class="table table-bordered" border='1' cellspacing='0' cellpadding='0'>

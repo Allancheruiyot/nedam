@@ -44,7 +44,12 @@ class LeaveapplicationsController extends \BaseController {
 
 		Leaveapplication::createLeaveApplication($data);
 
-		return Redirect::to('leavemgmt');
+		if(Confide::user()->user_type == 'admin'){
+        return Redirect::to('leavemgmt');
+		}else{
+
+		return Redirect::to('css/leave')->with('notice','Successfully applied vacation');
+	}
 	}
 
 	/**

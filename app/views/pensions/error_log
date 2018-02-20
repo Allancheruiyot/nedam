@@ -1,0 +1,16 @@
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 88
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 88
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 89
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 89
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 90
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 90
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 91
+[06-Oct-2017 04:00:59 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 91
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 88
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 88
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 89
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 89
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 90
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 90
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Undefined variable: deduction in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 91
+[07-Oct-2017 04:26:44 UTC] PHP Notice:  Trying to get property of non-object in /home/mkungac1/public_html/pension/resources/views/deductions/index.blade.php on line 91

@@ -1,4 +1,4 @@
-@extends('layouts.membercss')
+@extends('layouts.employeecss')
 
 {{HTML::script('media/jquery-1.8.0.min.js') }}
 <style>

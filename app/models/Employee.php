@@ -164,6 +164,11 @@ class Employee extends Eloquent {
 		return $this->hasMany('Education');
 	}
 
+    public function pension(){
+
+		return $this->hasMany('Pension');
+	}
+
 
 	public static function getEmployeeName($id){
 

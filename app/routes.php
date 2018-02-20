@@ -33,7 +33,12 @@ Route::get('/', function()
         }
 });
 
-
+Route::resource('pensions', 'PensionsController');
+  Route::post('pensions/update/{id}', 'PensionsController@update');
+  Route::get('pensions/delete/{id}', 'PensionsController@destroy');
+  Route::get('pensions/edit/{id}', 'PensionsController@edit');
+  Route::get('pensions/view/{id}', 'PensionsController@show');
+  Route::get('statement', 'StatementController@index');
 
 Route::get('/dashboard', function()
 {
@@ -46,7 +51,11 @@ Route::get('/dashboard', function()
           //$employees = Employee::all();
            return View::make('dashboard');
 
-//return Redirect::to('erpmgmt');
+          //return Redirect::to('erpmgmt');
+
+        }else{
+         $employee = Employee::where('personal_file_number',Confide::user()->username)->first();
+         return View::make('empdash',compact('employee'));
 
         }
        
@@ -1450,6 +1459,8 @@ Route::get('payrollReports/selectRelief', 'ReportsController@employee_reliefs');
 Route::post('payrollReports/reliefs', 'ReportsController@reliefs');
 Route::get('payrollReports/selectDeduction', 'ReportsController@employee_deductions');
 Route::post('payrollReports/deductions', 'ReportsController@deductions');
+Route::get('payrollReports/selectPension', 'ReportsController@employee_pensions');
+Route::post('payrollReports/pensions', 'ReportsController@pensions');
 Route::get('payrollReports/selectnontaxableincome', 'ReportsController@employeenontaxableselect');
 Route::post('payrollReports/nontaxables', 'ReportsController@employeenontaxables');
 Route::get('payrollReports/selectPayePeriod', 'ReportsController@period_paye');
@@ -3779,6 +3790,64 @@ Route::get('payrollReports/selectYear', function(){
 Route::get('email/payslip', 'payslipEmailController@index');
 Route::post('email/payslip/employees', 'payslipEmailController@sendEmail');
 
+Route::get('css/leave', function(){
+
+  $employeeid = DB::table('employee')->where('organization_id',Confide::user()->organization_id)->where('personal_file_number', '=', Confide::user()->username)->pluck('id');
+
+
+  $employee = Employee::findorfail($employeeid);
+
+   $leaveapplications = DB::table('leaveapplications')->where('organization_id',Auth::user()->organization_id)->where('employee_id', '=', $employee->id)->get();
+
+  return View::make('css.leave', compact('employee', 'leaveapplications'));
+});
+
+Route::get('css/subordinateleave', function(){
+
+  $employeeid = DB::table('employee')->where('personal_file_number', '=', Confide::user()->username)->pluck('id');
+   $c = Supervisor::where('supervisor_id', $employeeid)->count();
+    
+  $employee = Employee::findorfail($employeeid);
+
+   //$leaveapplications = DB::table('leaveapplications')->where('employee_id', '=', $employee->id)->get();
+
+  return View::make('css.approveleave', compact('c','leaveapplications'));
+});
+
+Route::get('css/payslips', function(){
+
+  $employeeid = DB::table('employee')->where('organization_id',Confide::user()->organization_id)->where('personal_file_number', '=', Confide::user()->username)->pluck('id');
+
+  $employee = Employee::findorfail($employeeid);
+
+  return View::make('css.payslip', compact('employee'));
+});
+
+Route::get('employeeleave/view/{id}', 'LeaveapplicationsController@cssleaveapprove');
+Route::get('supervisorapproval/{id}', 'LeaveapplicationsController@supervisorapprove');
+Route::get('supervisorreject/{id}', 'LeaveapplicationsController@supervisorreject');
+
+
+Route::get('css/leaveapply', function(){
+
+  $employeeid = DB::table('employee')->where('organization_id',Confide::user()->organization_id)->where('personal_file_number', '=', Confide::user()->username)->pluck('id');
+
+  $employee = Employee::findorfail($employeeid);
+  $leavetypes = Leavetype::where('organization_id',Auth::user()->organization_id)->get();
+
+  return View::make('css.leaveapply', compact('employee', 'leavetypes'));
+});
+
+
+Route::get('css/balances', function(){
+
+  $employeeid = DB::table('employee')->where('organization_id',Confide::user()->organization_id)->where('personal_file_number', '=', Confide::user()->username)->pluck('id');
+
+  $employee = Employee::findorfail($employeeid);
+  $leavetypes = Leavetype::where('organization_id',Auth::user()->organization_id)->get();
+
+  return View::make('css.balances', compact('employee', 'leavetypes'));
+});
 
 
 Route::get('reports/employees', array('before' => 'loggedin', function(){
@@ -3787,6 +3856,9 @@ Route::get('reports/employees', array('before' => 'loggedin', function(){
 }));
 
 Route::get('itax/download', 'ReportsController@getDownload');
+
+Route::get('statement', 'StatementController@index');
+Route::get('statement/report', 'ReportsController@statement');
 
 
 Route::get('reports/negativeleaves', 'ReportsController@negativeleaves');

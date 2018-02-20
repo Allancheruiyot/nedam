@@ -74,7 +74,7 @@ $(document).ready(function(){
                               'formdata'  : $('#netform').serialize()
                       }      
        }).done(function(data) {
-            //alert(data.gross1);
+            console.log(data);
             $('#gross1').val(data.gross1);
             $('#paye1').val(data.paye1);
             $('#nssf1').val(data.nssf1);

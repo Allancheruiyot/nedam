@@ -26,6 +26,23 @@
 		 <form target="_blank" method="POST" action="{{URL::to('reports/employeelist')}}" accept-charset="UTF-8">
    
     <fieldset>
+
+           <div class="form-group">
+                        <label for="username">From<span style="color:red">*</span></label>
+                        <div class="right-inner-addon ">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                        <input required class="form-control datepicker21" readonly="readonly" placeholder="" type="text" name="from" id="from" value="{{{ Input::old('from') }}}">
+                    </div>
+       </div>
+
+       <div class="form-group">
+                        <label for="username">To <span style="color:red">*</span></label>
+                        <div class="right-inner-addon ">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                        <input required class="form-control datepicker21" readonly="readonly" placeholder="" type="text" name="to" id="to" value="{{{ Input::old('to') }}}">
+                    </div>
+       </div>
+
             <div class="form-group">
                         <label for="username">Select: <span style="color:red">*</span></label>
                         <select required name="status" class="form-control">

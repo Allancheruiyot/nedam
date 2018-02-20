@@ -76,6 +76,39 @@ public static $rules = [
 
     }
 
+    public static function basicpay($id,$period){
+    
+    $pay = 0.00;
+    
+    $employee = Employee::find($id);
+    $part = explode("-", date('Y-n-d',strtotime($employee->date_joined)));
+    $start = $part[0]."-".$part[1]."-01";
+    $end  = date('Y-m-t', strtotime($start));
+
+    //return $period."\n".$part[1]."-".$part[0];
+    
+    if($period == $part[1]."-".$part[0]){
+    $datetime1 = strtotime($employee->date_joined);
+    $datetime2 = strtotime($end);
+
+    $secs = $datetime2 - $datetime1;// == <seconds between the two times>
+    $days = $secs / 86400;
+    $pay = ($employee->basic_pay/30) * $days;
+    }else{
+     $pay = $employee->basic_pay;   
+    }                  
+    
+    return round($pay,2);
+
+    }
+
+    public static function totalpay(){
+
+    $salary = DB::table('employee')->where('employee.organization_id',Confide::user()->organization_id)->sum('basic_pay');
+    
+    return round($salary,2);
+   }
+
     public static function totalallowances($allowance_id,$period,$type){
     
     $part = explode("-", $period);
@@ -280,6 +313,199 @@ public static $rules = [
     return round($nontax,2);
 
     }
+
+
+    public static function totalpension($period){
+    
+    $part = explode("-", $period);
+    $start = $part[1]."-".$part[0]."-01";
+    $end  = date('Y-m-t', strtotime($start));
+
+    $other_ded = 0.00;
+
+    $month = '';
+    if($part[0] == 01){
+         $month = 'Jan';
+        }else if($part[0] == 02){
+         $month = 'Feb';
+        }else if($part[0] == 03){
+         $month = 'Mar';
+        }else if($part[0] == 04){
+         $month = 'Apr';
+        }else if($part[0] == 05){
+         $month = 'May';
+        }else if($part[0] == 06){
+         $month = 'Jun';
+        }else if($part[0] == 07){
+         $month = 'Jul';
+        }else if($part[0] == 8){
+         $month = 'Aug';
+        }else if($part[0] == 9){
+         $month = 'Sep';
+        }else if($part[0] == 10){
+         $month = 'Oct';
+        }else if($part[0] == 11){
+         $month = 'Nov';
+        }else if($part[0] == 12){
+         $month = 'Dec';
+        }
+
+   $deds = DB::table('pensions')
+                     ->join('employee', 'pensions.employee_id', '=', 'employee.id')
+                     ->select(DB::raw('COALESCE(sum(employee_contribution),0.00) as total_contribution')) 
+                     ->where('employee.organization_id',Auth::user()->organization_id)
+                     ->where('in_employment','Y')
+                     ->get();
+    foreach($deds as $ded){
+    $other_ded = $ded->total_contribution;
+    
+    }
+    
+    
+    return round($other_ded,2);
+   }
+
+   public static function pension($employeeid,$period){
+    
+    $part = explode("-", $period);
+    $start = $part[1]."-".$part[0]."-01";
+    $end  = date('Y-m-t', strtotime($start));
+
+    $other_ded = 0.00;
+
+    $month = '';
+    if($part[0] == 01){
+         $month = 'Jan';
+        }else if($part[0] == 02){
+         $month = 'Feb';
+        }else if($part[0] == 03){
+         $month = 'Mar';
+        }else if($part[0] == 04){
+         $month = 'Apr';
+        }else if($part[0] == 05){
+         $month = 'May';
+        }else if($part[0] == 06){
+         $month = 'Jun';
+        }else if($part[0] == 07){
+         $month = 'Jul';
+        }else if($part[0] == 8){
+         $month = 'Aug';
+        }else if($part[0] == 9){
+         $month = 'Sep';
+        }else if($part[0] == 10){
+         $month = 'Oct';
+        }else if($part[0] == 11){
+         $month = 'Nov';
+        }else if($part[0] == 12){
+         $month = 'Dec';
+        }
+
+   $deds = DB::table('pensions')
+                     ->join('employee', 'pensions.employee_id', '=', 'employee.id')
+                     ->select(DB::raw('COALESCE(sum(employee_contribution),0.00) as total_contribution')) 
+                     ->where('employee.organization_id',Auth::user()->organization_id)
+                     ->where('in_employment','Y')
+                     ->where('employee_id',$employeeid)
+                     ->get();
+    foreach($deds as $ded){
+    $other_ded = $ded->total_contribution;
+    
+    }
+    
+    
+    return round($other_ded,2);
+   }
+
+   public static function totaltransactpension($period){
+    
+    $part = explode("-", $period);
+    $start = $part[1]."-".$part[0]."-01";
+    $end  = date('Y-m-t', strtotime($start));
+
+    $other_ded = 0.00;
+
+    $month = '';
+    if($part[0] == 01){
+         $month = 'Jan';
+        }else if($part[0] == 02){
+         $month = 'Feb';
+        }else if($part[0] == 03){
+         $month = 'Mar';
+        }else if($part[0] == 04){
+         $month = 'Apr';
+        }else if($part[0] == 05){
+         $month = 'May';
+        }else if($part[0] == 06){
+         $month = 'Jun';
+        }else if($part[0] == 07){
+         $month = 'Jul';
+        }else if($part[0] == 8){
+         $month = 'Aug';
+        }else if($part[0] == 9){
+         $month = 'Sep';
+        }else if($part[0] == 10){
+         $month = 'Oct';
+        }else if($part[0] == 11){
+         $month = 'Nov';
+        }else if($part[0] == 12){
+         $month = 'Dec';
+        }
+
+   $pension = DB::table('transact_pensions')
+                     ->join('employee', 'transact_pensions.employee_id', '=', 'employee.id')
+                     ->select(DB::raw('COALESCE(sum(employee_amount),0.00) as employee,COALESCE(sum(employer_amount),0.00) as employer')) 
+                     ->where('employee.organization_id',Auth::user()->organization_id)
+                     ->first();
+  
+    
+    return $pension;
+   }
+
+   public static function transactpension($employeeid,$period){
+    
+    $part = explode("-", $period);
+    $start = $part[1]."-".$part[0]."-01";
+    $end  = date('Y-m-t', strtotime($start));
+
+    $other_ded = 0.00;
+
+    $month = '';
+    if($part[0] == 01){
+         $month = 'Jan';
+        }else if($part[0] == 02){
+         $month = 'Feb';
+        }else if($part[0] == 03){
+         $month = 'Mar';
+        }else if($part[0] == 04){
+         $month = 'Apr';
+        }else if($part[0] == 05){
+         $month = 'May';
+        }else if($part[0] == 06){
+         $month = 'Jun';
+        }else if($part[0] == 07){
+         $month = 'Jul';
+        }else if($part[0] == 8){
+         $month = 'Aug';
+        }else if($part[0] == 9){
+         $month = 'Sep';
+        }else if($part[0] == 10){
+         $month = 'Oct';
+        }else if($part[0] == 11){
+         $month = 'Nov';
+        }else if($part[0] == 12){
+         $month = 'Dec';
+        }
+
+   $pension = DB::table('transact_pensions')
+                     ->join('employee', 'transact_pensions.employee_id', '=', 'employee.id')
+                     ->select(DB::raw('COALESCE(sum(employee_amount),0.00) as employee,COALESCE(sum(employer_amount),0.00) as employer')) 
+                     ->where('employee.organization_id',Auth::user()->organization_id)
+                     ->where('personal_file_number',$employeeid)
+                     ->first();
+    
+    return $pension;
+   }
+
 
     public static function reliefs($id,$relief_id,$period){
     $rel = 0.00;
@@ -648,7 +874,7 @@ public static $rules = [
     public static function gross($id,$period){
     $total_gross = 0.00;                  
     
-    $total_gross = static::salary_pay($id,$period)+static::total_benefits($id,$period);
+    $total_gross = static::basicpay($id,$period) +static::total_benefits($id,$period);
 
     return round($total_gross,2);
 
@@ -700,7 +926,7 @@ public static $rules = [
                               ->where('last_day_month','>=',$start);
                         })->sum('amount*period');
     
-    $total_gross = static::total_pay()+$total_allw+$earn+$otime;
+    $total_gross = static::totalpay()+$total_allw+$earn+$otime;
 
     return round($total_gross,2);
 
@@ -717,33 +943,33 @@ public static $rules = [
     if($emp->income_tax_applicable=='0'){
     $paye=0.00;
     }else if($emp->income_tax_applicable=='1' && $emp->income_tax_relief_applicable=='1'){
-    if($taxable>=11180 && $taxable<21715){
-    $paye = 1118+($taxable-11180)*15/100;
-    $paye = $paye-1280.00-static::reliefall($id,$period);
-    }else if($taxable>=21715 && $taxable<32249){
-    $paye = 2698.03+($taxable-21715)*20/100;
-    $paye = $paye-1280.00-static::reliefall($id,$period);
-    }else if($taxable>=32249 && $taxable<42783){
-    $paye = 4804.73+($taxable-32249)*25/100;
-    $paye = $paye-1280.00-static::reliefall($id,$period);
-    }else if($taxable>=42783){
-    $paye = 7438.11+($taxable-42783)*30/100;
-    $paye = $paye-1280.00-static::reliefall($id,$period);
+    if($taxable>=13686 && $taxable<23884){
+    $paye = 1229.8+($taxable-12298)*15/100;
+    $paye = $paye-1408.00-static::reliefall($id,$period);
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = (1229.8+((11586)*0.15))+($taxable-23884)*20/100;
+    $paye = $paye-1408.00-static::reliefall($id,$period);
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = (1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100;
+    $paye = $paye-1408.00-static::reliefall($id,$period);
+    }else if($taxable>=47059){
+    $paye = (1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100;
+    $paye = $paye-1408.00-static::reliefall($id,$period);
     }else{
     $paye = 0.00;
     }
     }else if($emp->income_tax_applicable=='1' && $emp->income_tax_relief_applicable=='0'){
-    if($taxable>=11180 && $taxable<21715){
-    $paye = 1118+($taxable-11180)*15/100;
+    if($taxable>=13686 && $taxable<23884){
+    $paye = 1229.8+($taxable-12298)*15/100;
     $paye = $paye-static::reliefall($id,$period);
-    }else if($taxable>=21715 && $taxable<32249){
-    $paye = 2698.03+($taxable-21715)*20/100;
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = (1229.8+((11586)*0.15))+($taxable-23884)*20/100;
     $paye = $paye-static::reliefall($id,$period);
-    }else if($taxable>=32249 && $taxable<42783){
-    $paye = 4804.73+($taxable-32249)*25/100;
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = (1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100;
     $paye = $paye-static::reliefall($id,$period);
-    }else if($taxable>=42783){
-    $paye = 7438.11+($taxable-42783)*30/100;
+    }else if($taxable>=47059){
+    $paye = (1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100;
     $paye = $paye-static::reliefall($id,$period);
     }else{
     $paye = 0.00;
@@ -759,7 +985,7 @@ public static $rules = [
    }
 
 
-       public static function totaltax($id,$period){
+  public static function totaltax($id,$period){
     $paye = 0.00;
     $total_pay = static::gross($id,$period);
     $total_nssf = static::nssf($id,$period);
@@ -769,33 +995,33 @@ public static $rules = [
     if($emp->income_tax_applicable=='0'){
     $paye=0.00;
     }else if($emp->income_tax_applicable=='1' && $emp->income_tax_relief_applicable=='1'){
-    if($taxable>=11180 && $taxable<21715){
-    $paye = 1118+($taxable-11180)*15/100;
+    if($taxable>=13686 && $taxable<23884){
+    $paye = 1229.8+($taxable-12298)*15/100;
     $paye = $paye;
-    }else if($taxable>=21715 && $taxable<32249){
-    $paye = 2698.03+($taxable-21715)*20/100;
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = (1229.8+((11586)*0.15))+($taxable-23884)*20/100;
     $paye = $paye;
-    }else if($taxable>=32249 && $taxable<42783){
-    $paye = 4804.73+($taxable-32249)*25/100;
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = (1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100;
     $paye = $paye;
-    }else if($taxable>=42783){
-    $paye = 7438.11+($taxable-42783)*30/100;
+    }else if($taxable>=47059){
+    $paye = (1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100;
     $paye = $paye;
     }else{
     $paye = 0.00;
     }
     }else if($emp->income_tax_applicable=='1' && $emp->income_tax_relief_applicable=='0'){
-    if($taxable>=11180 && $taxable<21715){
-    $paye = 1118+($taxable-11180)*15/100;
+    if($taxable>=13686 && $taxable<23884){
+    $paye = 1229.8+($taxable-12298)*15/100;
     $paye = $paye;
-    }else if($taxable>=21715 && $taxable<32249){
-    $paye = 2698.03+($taxable-21715)*20/100;
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = (1229.8+((11586)*0.15))+($taxable-23884)*20/100;
     $paye = $paye;
-    }else if($taxable>=32249 && $taxable<42783){
-    $paye = 4804.73+($taxable-32249)*25/100;
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = (1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100;
     $paye = $paye;
-    }else if($taxable>=42783){
-    $paye = 7438.11+($taxable-42783)*30/100;
+    }else if($taxable>=47059){
+    $paye = (1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100;
     $paye = $paye;
     }else{
     $paye = 0.00;
@@ -993,7 +1219,7 @@ public static $rules = [
    public static function total_deductions($id,$period){
     $total_deds = 0.00;
     
-    $total_deds = static::tax($id,$period)+static::nssf($id,$period)+static::nhif($id,$period)+static::deductionall($id,$period);
+    $total_deds = static::tax($id,$period)+static::nssf($id,$period)+static::nhif($id,$period)+static::deductionall($id,$period)+static::pension($id,$period);
 
     return round($total_deds,2);
 
@@ -1031,6 +1257,19 @@ public static $rules = [
     }
     
     return  number_format($salary,2);
+
+    }
+
+    public static function processedpensions($id,$period){
+    
+    $pension = DB::table('transact_pensions')
+                     ->join('employee','transact_pensions.employee_id','=','employee.id')
+                     ->select(DB::raw('COALESCE(sum(employee_amount),0.00) as employee_amount'))
+                     ->where('financial_month_year' ,'=', $period)
+                     ->where('employee.personal_file_number', '=', $id)
+                     ->first();
+    
+    return  number_format($pension->employee_amount,2);
 
     }
 
@@ -1459,18 +1698,30 @@ public static $rules = [
     $total_pay = $a;
     $total_nssf = static::nssfcalc($gross);
     $taxable = $total_pay-$total_nssf;
-    
-    if($taxable>=11180 && $taxable<21715){
-    $paye = (1118+($taxable-11180)*15/100)-1280;
-    }else if($taxable>=21715 && $taxable<32249){
-    $paye = (2698.03+($taxable-21715)*20/100)-1280;
-    }else if($taxable>=32249 && $taxable<42783){
-    $paye = (4804.73+($taxable-32249)*25/100)-1280;
-    }else if($taxable>=42783){
-    $paye = (7438.11+($taxable-42783)*30/100)-1280;
+
+    if($taxable>=13686 && $taxable<23884){
+    $paye = (1229.8+($taxable-12298)*15/100)-1408.00;
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = ((1229.8+((11586)*0.15))+($taxable-23884)*20/100)-1408.00;
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = ((1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100)-1408.00;
+    }else if($taxable>=47059){
+    $paye = ((1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100)-1408.00;
     }else{
     $paye = 0.00;
     }
+    
+    /*if($taxable>=13686 && $taxable<23884){
+    $paye = (1118+($taxable-11180)*15/100)-1408;
+    }else if($taxable>=21715 && $taxable<32249){
+    $paye = (2698.03+($taxable-21715)*20/100)-1408;
+    }else if($taxable>=32249 && $taxable<42783){
+    $paye = (4804.73+($taxable-32249)*25/100)-1408;
+    }else if($taxable>=42783){
+    $paye = (7438.11+($taxable-42783)*30/100)-1408;
+    }else{
+    $paye = 0.00;
+    }*/
     return round($paye,2);
    }
 
@@ -1527,18 +1778,30 @@ public static $rules = [
     $total_pay = $a;
     $total_nssf = static::nssfncalc($net);
     $taxable = $total_pay-$total_nssf;
-    
-    if($taxable>=11180 && $taxable<21715){
-    $paye = (1118+($taxable-11180)*15/100)-1280;
-    }else if($taxable>=21715 && $taxable<32249){
-    $paye = (2698.03+($taxable-21715)*20/100)-1280;
-    }else if($taxable>=32249 && $taxable<42783){
-    $paye = (4804.73+($taxable-32249)*25/100)-1280;
-    }else if($taxable>=42783){
-    $paye = (7438.11+($taxable-42783)*30/100)-1280;
+
+    if($taxable>=13686 && $taxable<23884){
+    $paye = (1229.8+($taxable-12298)*15/100)-1408.00;
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = ((1229.8+((11586)*0.15))+($taxable-23884)*20/100)-1408.00;
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = ((1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100)-1408.00;
+    }else if($taxable>=47059){
+    $paye = ((1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100)-1408.00;
     }else{
     $paye = 0.00;
     }
+    
+    /*if($taxable>=11180 && $taxable<21715){
+    $paye = (1118+($taxable-11180)*15/100)-1408;
+    }else if($taxable>=21715 && $taxable<32249){
+    $paye = (2698.03+($taxable-21715)*20/100)-1408;
+    }else if($taxable>=32249 && $taxable<42783){
+    $paye = (4804.73+($taxable-32249)*25/100)-1408;
+    }else if($taxable>=42783){
+    $paye = (7438.11+($taxable-42783)*30/100)-1408;
+    }else{
+    $paye = 0.00;
+    }*/
     return round($paye,2);
    }
 
@@ -1994,7 +2257,20 @@ public static $rules = [
     if($emp->income_tax_applicable=='0'){
     $paye=0.00;
     }else if($emp->income_tax_applicable=='1' && $emp->income_tax_relief_applicable=='1'){
-    if($taxable>=11180 && $taxable<21715){
+
+    if($taxable>=13686 && $taxable<23884){
+    $paye = (1229.8+($taxable-12298)*15/100);
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = ((1229.8+((11586)*0.15))+($taxable-23884)*20/100);
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = ((1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100);
+    }else if($taxable>=47059){
+    $paye = ((1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100);
+    }else{
+    $paye = 0.00;
+    }
+
+    /*if($taxable>=11180 && $taxable<21715){
     $paye = 1118+($taxable-11180)*15/100;
     $paye = $paye;
     }else if($taxable>=21715 && $taxable<32249){
@@ -2008,9 +2284,22 @@ public static $rules = [
     $paye = $paye;
     }else{
     $paye = 0.00;
-    }
+    }*/
     }else if($emp->income_tax_applicable=='1' && $emp->income_tax_relief_applicable=='0'){
-    if($taxable>=11180 && $taxable<21715){
+
+    if($taxable>=13686 && $taxable<23884){
+    $paye = (1229.8+($taxable-12298)*15/100);
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye = ((1229.8+((11586)*0.15))+($taxable-23884)*20/100);
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye = ((1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100);
+    }else if($taxable>=47059){
+    $paye = ((1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100);
+    }else{
+    $paye = 0.00;
+    }
+
+    /*if($taxable>=11180 && $taxable<21715){
     $paye = 1118+($taxable-11180)*15/100;
     $paye = $paye;
     }else if($taxable>=21715 && $taxable<32249){
@@ -2024,7 +2313,7 @@ public static $rules = [
     $paye = $paye;
     }else{
     $paye = 0.00;
-    }
+    }*/
     }else if($emp->income_tax_applicable=='0' && $emp->income_tax_relief_applicable=='1'){
      $paye = 0.00;
     }
@@ -2103,9 +2392,9 @@ public static $rules = [
 
       $relief   = 0.00;
       if(DB::table('transact_reliefs')->where('employee_id',$id)->where('financial_month_year',$period)->count()>0){
-        $relief = DB::table('transact_reliefs')->where('employee_id',$id)->where('financial_month_year',$period)->pluck('relief_amount')+1280.00;
+        $relief = DB::table('transact_reliefs')->where('employee_id',$id)->where('financial_month_year',$period)->pluck('relief_amount')+1408.00;
       }else{
-        $relief = 1280.00;
+        $relief = 1408.00;
       }
 
       return $relief;
@@ -2118,9 +2407,9 @@ public static $rules = [
 
       $relief   = 0.00;
       if(DB::table('transact_reliefs')->where('employee_id',$id)->where('financial_month_year',$period)->count()>0){
-        $relief = DB::table('transact_reliefs')->where('employee_id',$id)->where('financial_month_year',$period)->pluck('relief_amount')+1280.00;
+        $relief = DB::table('transact_reliefs')->where('employee_id',$id)->where('financial_month_year',$period)->pluck('relief_amount')+1408.00;
       }else{
-        $relief = 1280.00;
+        $relief = 1408.00;
       }
 
       return $relief;

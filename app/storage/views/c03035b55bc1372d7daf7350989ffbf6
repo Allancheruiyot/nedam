@@ -1,0 +1,378 @@
+<?php echo HTML::script('media/jquery-1.12.0.min.js'); ?>
+
+
+<?php
+$part = explode("-", $period);
+$start_date = $part[1]."-".$part[0]."-01";
+$end_date  = date('Y-m-t', strtotime($start_date));
+$start  = date('Y-m-01', strtotime($end_date));
+
+
+     $per = DB::table('transact')
+          ->where('financial_month_year','=',$period)
+          ->where('process_type','=',$type)
+          ->where('organization_id','=',Confide::user()->organization_id)
+          ->count();
+     if($per>0){?>
+
+      <script type="text/javascript">
+       
+      if (window.confirm("Do you wish to process payroll for this period again?"))
+      {
+
+         $(function(){
+                  var p1 = <?php echo $part[0]?>;
+                  var p2 = "-";
+                  var p3 = <?php echo $part[1]?>;
+                  var type = "<?php echo $type?>";
+
+                  console.log(p1+p2+p3);
+
+                  $.ajax({
+                      url     : "<?php echo URL::to('deleterow'); ?>",
+                      type    : "POST",
+                      async   : false,
+                      data    : {
+                          'period1'  : p1,
+                          'period2'  : p2,
+                          'period3'  : p3,
+                          'type'     : type
+                      },
+                      success : function(d){
+                       
+                      if(d == 0){
+                          
+                         }else{
+                          
+                         }
+                      }        
+             });
+         });
+        
+       }else{
+      window.location.href = "<?php echo URL::to('payroll'); ?>";
+     }
+
+     $(document).ready(function(){
+       
+       var p1 = <?php echo $part[0]?>;
+       var p2 = "-";
+       var p3 = <?php echo $part[1]?>;  
+
+       displaydata(); 
+
+      function displaydata(){
+       $.ajax({
+                      url     : "<?php echo URL::to('showrecord'); ?>",
+                      type    : "POST",
+                      async   : false,
+                      data    : {
+                              'period1'  : p1,
+                              'period2'  : p2,
+                              'period3'  : p3
+                      },
+                      success : function(s){
+                      $('.displayrecord').html(s)
+                      }        
+       });
+       }
+      });
+
+    </script>
+    <?php } ?>
+
+    <?php
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+
+
+<script type="text/javascript">
+    $(function () {
+
+        $(".wmd-view-topscroll").scroll(function () {
+            $(".wmd-view")
+            .scrollLeft($(".wmd-view-topscroll").scrollLeft());
+        });
+
+        $(".wmd-view").scroll(function () {
+            $(".wmd-view-topscroll")
+            .scrollLeft($(".wmd-view").scrollLeft());
+        });
+
+    });
+
+    $(window).load(function () {
+        $('.scroll-div').css('width', $('.dynamic-div').outerWidth() );
+    });
+</script>
+
+        <style type="text/css">
+    .wmd-view-topscroll, .wmd-view
+{
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 1040px;
+}
+
+.wmd-view-topscroll
+{
+    height: 16px;
+}
+
+.dynamic-div
+{
+    display: inline-block;
+}
+
+        </style>
+
+<?php $__env->startSection('content'); ?>
+
+<form method="POST" action="<?php echo e(URL::to('payroll')); ?>" accept-charset="UTF-8">
+
+      <div align="right" style="margin-top:50px;" class="form-actions form-group">
+
+        <input type="hidden" value="<?php echo $period; ?>" name="period"/>
+
+        
+     
+  <h3 align="left">Payroll Preview for <?php echo $period; ?><button class="btn btn-primary btn-sm process" style="margin-left:670px;">Process</button></h3>
+</div>
+<hr>
+
+
+
+<div class="row" >
+  <div class="col-lg-12">
+
+    <div class="wmd-view-topscroll">
+       <div class="scroll-div">
+        &nbsp;
+       </div>
+      </div>
+
+    <div class="panel panel-default wmd-view">
+      
+        <div class="panel panel-body dynamic-div" style="margin-left:-10px;">
+    
+
+      <input type="hidden" name="period" value="<?php echo $period; ?>"> 
+       <input type="hidden" name="account" value="<?php echo $account; ?>"> 
+       <input type="hidden" value="<?php echo $type; ?>" name="type"/>
+
+    <table id="example" data-show-refresh="true" style="font-size:10px;width:1000px" class="table table-condensed table-bordered table-responsive table-hover nowrap">
+
+
+      <thead style="color: white !important">
+
+        <th>#</th>
+         <th>PF Number</th>
+         <th>Employee</th>
+         <th>Basic Pay</th>
+         <?php foreach($earnings as $earning): ?>
+         <th><?php echo $earning->earning_name; ?></th>
+         <?php endforeach; ?>
+         <th>Overtime-Hourly</th>
+         <th>Overtime-Daily</th>
+         <?php foreach($allowances as $allowance): ?>
+         <th><?php echo $allowance->allowance_name; ?></th>
+         <?php endforeach; ?>
+         <th>Gross Pay</th>
+         <?php foreach($nontaxables as $nontaxable): ?>
+         <th><?php echo $nontaxable->name; ?></th>
+         <?php endforeach; ?>
+         <th>Total Tax</th>
+         <th>Tax Relief</th>
+         <?php foreach($reliefs as $relief): ?>
+         <th><?php echo $relief->relief_name; ?></th>
+         <?php endforeach; ?>
+         <th>Paye</th>
+         <th>Nssf</th>
+         <th>Nhif</th>
+         <?php foreach($deductions as $deduction): ?>
+         <th><?php echo $deduction->deduction_name; ?></th>
+         <?php endforeach; ?>
+         <th>Pension Contribution</th>
+         <th>Total Deductions</th>
+         <th>Net Pay</th>
+
+      </thead>
+      <tbody class="displayrecord">
+
+        <?php $i = 1; 
+         $totalsalary = 0.00;
+         $totalearning = 0.00;
+         $totalhourly = 0.00;
+         $totaldaily = 0.00;
+         $totalallowance = 0.00;
+         $totalnontaxable = 0.00;
+         $totalrelief = 0.00;
+         $totalgross = 0.00;
+         $totaltax = 0.00;
+         $totaltaxrelief = 0.00;
+         $totalpaye = 0.00;
+         $totalnssf = 0.00;
+         $totalnhif = 0.00;
+         $totalpension = 0.00;
+         $otherdeduction = 0.00;
+         $totaldeduction = 0.00;
+         $totalnet = 0.00;
+        ?>
+        <?php foreach($employees as $employee): ?>
+
+        <tr>
+
+          <td> <?php echo $i; ?></td>
+          <td ><?php echo $employee->personal_file_number; ?></td>
+          <td><?php echo $employee->first_name.' '.$employee->last_name; ?></td>
+          <?php
+
+          
+           $totalsalary = $totalsalary + Payroll::basicpay($employee->id,Input::get('period'));
+        
+          ?>
+          
+          <td align="right"><?php echo Payroll::basicpay($employee->id,Input::get('period')); ?></td>
+       
+          <?php foreach($earnings as $earning): ?>
+          <td align="right"><?php echo asMoney((double)Payroll::earnings($employee->id,$earning->id,$period)); ?></td>
+          <?php endforeach; ?>
+          <?php
+           $totalhourly = $totalhourly + (double)Payroll::overtimes($employee->id,'Hourly',$period);
+          ?>
+          <?php
+           $totaldaily = $totaldaily + (double)Payroll::overtimes($employee->id,'Daily',$period);
+          ?>
+          <td align="right"><?php echo asMoney((double)Payroll::overtimes($employee->id,'Hourly',$period)); ?></td>
+          <td align="right"><?php echo asMoney((double)Payroll::overtimes($employee->id,'Daily',$period)); ?></td>
+          <?php foreach($allowances as $allowance): ?>
+          <td align="right"><?php echo asMoney((double)Payroll::allowances($employee->id,$allowance->id,$period)); ?></td>
+          <?php endforeach; ?>
+          
+          <?php
+           $totalgross = $totalgross + (double)Payroll::gross($employee->id,$period);
+          ?>
+          <?php
+           $totaltax = $totaltax + (double)Payroll::totaltax($employee->id,$period);
+          ?>
+          <?php
+          if($employee->income_tax_applicable == 1 && (double)Payroll::gross($employee->id,$period)>=11180 && $employee->income_tax_relief_applicable == 1){
+           $totaltaxrelief = $totaltaxrelief + 1408;
+          }
+          ?>
+          <?php
+           $totalpaye = $totalpaye + (double)Payroll::tax($employee->id,$period);
+          ?>
+          <?php
+           $totalnssf = $totalnssf + (double)Payroll::nssf($employee->id,$period);
+          ?>
+
+          <?php
+           $totalnhif = $totalnhif + (double)Payroll::nhif($employee->id,$period);
+          ?>
+          
+          <td align="right"><strong><?php echo asMoney((double)Payroll::gross($employee->id,$period)); ?></strong></td>
+          <?php foreach($nontaxables as $nontaxable): ?>
+          <td align="right"><?php echo asMoney((double)Payroll::nontaxables($employee->id,$nontaxable->id,$period)); ?></td>
+          <?php endforeach; ?>
+          <td align="right"><?php echo asMoney((double)Payroll::totaltax($employee->id,$period)); ?></td>
+          <?php if($employee->income_tax_applicable == 1 && (double)Payroll::gross($employee->id,$period)>=11180 && $employee->income_tax_relief_applicable == 1): ?>
+          <td align="right"><?php echo asMoney('1408'); ?></td>
+          <?php else: ?>
+          <td align="right"><?php echo asMoney('0.00'); ?></td>
+          <?php endif; ?>
+          <?php foreach($reliefs as $relief): ?>
+          <td align="right"><?php echo asMoney((double)Payroll::reliefs($employee->id,$relief->id,$period)); ?></td>
+          <?php endforeach; ?>
+          <td align="right"><?php echo asMoney((double)Payroll::tax($employee->id,$period)); ?></td>
+          <td align="right"><?php echo asMoney((double)Payroll::nssf($employee->id,$period)); ?></td>
+          <td align="right"><?php echo asMoney((double)Payroll::nhif($employee->id,$period)); ?></td>
+          <?php foreach($deductions as $deduction): ?>
+          <td align="right"><?php echo asMoney((double)Payroll::deductions($employee->id,$deduction->id,$period)); ?></td>
+          <?php endforeach; ?>
+          <td align="right"><?php echo asMoney((double)Payroll::pension($employee->id,$period)); ?></td>
+          <?php
+           $totalpension = $totalpension + (double)Payroll::pension($employee->id,$period);
+           $totaldeduction = $totaldeduction + (double)Payroll::total_deductions($employee->id,$period);
+          ?>
+          <?php
+           $totalnet = $totalnet + (double)Payroll::net($employee->id,$period);
+          ?>
+          <td align="right"><strong><?php echo asMoney((double)Payroll::total_deductions($employee->id,$period)); ?></strong></td>
+          <td align="right"><strong><?php echo asMoney((double)Payroll::net($employee->id,$period)); ?></strong></td>
+          
+        </tr>
+         
+        <?php $i++; ?>
+        <?php endforeach; ?>
+
+
+        <tr style="background:#EEE;">
+          <td style="border-right:0 #FFF;"><span style="display:none"><?php echo $i; ?></span></td>
+          <td></td>
+          <td align='right'><strong>Totals</strong></td>
+          <td align='right'><strong><?php echo asMoney($totalsalary); ?></strong></td>
+           <?php foreach($earnings as $earning): ?>
+          <?php
+           $totalearning.$earning->id = $totalearning + (double)Payroll::totalearnings($earning->id,$period,$type);
+          ?>
+          <td align='right'><strong><?php echo asMoney($totalearning.$earning->id); ?></strong></td>
+          <?php endforeach; ?>
+          <td align='right'><strong><?php echo asMoney($totalhourly); ?></strong></td>
+          <td align='right'><strong><?php echo asMoney($totaldaily); ?></strong></td>
+          <?php foreach($allowances as $allowance): ?>
+          <?php
+           $totalallowance.$allowance->id = $totalallowance + (double)Payroll::totalallowances($allowance->id,$period,$type);
+          ?>
+          <td align='right'><strong><?php echo asMoney($totalallowance.$allowance->id); ?></strong></td>
+          <?php endforeach; ?>
+          
+          <td align='right'><strong><?php echo asMoney($totalgross); ?></strong></td>
+           <?php foreach($nontaxables as $nontaxable): ?>
+          <?php
+           $totalnontaxable.$nontaxable->id = $totalnontaxable + (double)Payroll::totalnontaxable($nontaxable->id,$period,$type);
+          ?>
+          <td align='right'><strong><?php echo asMoney($totalnontaxable.$nontaxable->id); ?></strong></td>
+          <?php endforeach; ?>
+          <td align='right'><strong><?php echo asMoney($totaltax); ?></strong></td>
+          <td align='right'><strong><?php echo asMoney($totaltaxrelief); ?></strong></td>
+          <?php foreach($reliefs as $relief): ?>
+          <?php
+           $totalrelief.$relief->id = $totalrelief + (double)Payroll::totalreliefs($relief->id,$period,$type);
+          ?>
+          <td align='right'><strong><?php echo asMoney($totalrelief.$relief->id); ?></strong></td>
+          <?php endforeach; ?>
+          <td align='right'><strong><?php echo asMoney($totalpaye); ?></strong></td>
+          <td align='right'><strong><?php echo asMoney($totalnssf); ?></strong></td>
+          <td align='right'><strong><?php echo asMoney($totalnhif); ?></strong></td>
+          <?php foreach($deductions as $deduction): ?>
+          <?php
+           $otherdeduction.$deduction->id = $otherdeduction + (double)Payroll::totaldeductions($deduction->id,$period,$type);
+          ?>
+          <td align='right'><strong><?php echo asMoney($otherdeduction.$deduction->id); ?></strong></td>
+          <?php endforeach; ?>
+          <td align='right'><strong><?php echo asMoney($totalpension); ?></strong></td>
+          <td align='right'><strong><?php echo asMoney($totaldeduction); ?></strong></td>
+          <td align='right'><strong><?php echo asMoney($totalnet); ?></strong></td>
+        </tr>
+
+      </tbody>
+
+    </table>
+     
+     </div>
+
+  </div>
+
+
+  </div>
+
+</div>
+
+</form>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.payrollp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

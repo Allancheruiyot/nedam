@@ -258,7 +258,11 @@ body {
         </tr>
         <tr><td><strong>Citizenship:</strong></td>
         @if($employee->citizenship_id != null || $employee->citizenship_id != '')
-        <td>{{$employee->citizenship->name}}</td>
+        <td><?php 
+            $citizenship = DB::table('citizenships')->where('id', '=', $employee->citizenship_id)->pluck('name');            
+            ?>
+
+            {{ $citizenship}}</td>
         @else
         <td></td>
         @endif
@@ -365,7 +369,12 @@ body {
         @else
         <td>No</td>
         @endif
-         
+        
+        @if($employee->termination_date != null)
+        <tr><td><strong>Date of Termination:</strong></td>
+        <td>{{$employee->termination_date}}</td> 
+        </tr>
+        @endif
     </table>
 
 <br><br>

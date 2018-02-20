@@ -138,7 +138,7 @@ class PayrollController extends \BaseController {
     $part1    = $postedit['period1'];
     $part2    = $postedit['period2'];
     $part3    = $postedit['period3'];
-    $type    = $postedit['type'];
+    $type     = $postedit['type'];
 
     $period   = $part1.$part2.$part3;  
 
@@ -208,6 +208,7 @@ class PayrollController extends \BaseController {
     $data5    = DB::table('transact_overtimes')->where('process_type',$type)->where('organization_id',Confide::user()->organization_id)->where('financial_month_year', '=', $period)->delete();
     $data6    = DB::table('transact_reliefs')->where('process_type',$type)->where('organization_id',Confide::user()->organization_id)->where('financial_month_year', '=', $period)->delete();
     $data7    = DB::table('transact_nontaxables')->where('process_type',$type)->where('organization_id',Confide::user()->organization_id)->where('financial_month_year', '=', $period)->delete();
+    $data8    = DB::table('transact_pensions')->where('organization_id',Confide::user()->organization_id)->where('financial_month_year', '=', $period)->delete();
    
     if($data > 0){
       return 0;
@@ -575,20 +576,23 @@ public function asMoney($value){
         
     for($i=$net;;$i--){
 
-    $nssf1 = DB::table('social_security')->whereNull('organization_id')->whereRaw($gross.' between income_from and income_to')->pluck('ss_amount_employee');
+    /*$nssf1 = DB::table('social_security')->whereNull('organization_id')->whereRaw($gross.' between income_from and income_to')->pluck('ss_amount_employee');
     
-    $nhif1 = DB::table('hospital_insurance')->whereNull('organization_id')->whereRaw($gross.' between income_from and income_to')->pluck('hi_amount');    
+    $nhif1 = DB::table('hospital_insurance')->whereNull('organization_id')->whereRaw($gross.' between income_from and income_to')->pluck('hi_amount');    */
+
+    $nssf1 = Payroll::nssfcalc($gross);
+    $nhif1 = Payroll::nhifcalc($gross); 
 
     $taxable = $gross-$nssf1;
     
-    if($taxable>=11180 && $taxable<21715){
-    $paye1 = (1118+($taxable-11180)*15/100)-1280;
-    }else if($taxable>=21715 && $taxable<32249){
-    $paye1 = (2698.03+($taxable-21715)*20/100)-1280;
-    }else if($taxable>=32249 && $taxable<42783){
-    $paye1 = (4804.73+($taxable-32249)*25/100)-1280;
-    }else if($taxable>=42783){
-    $paye1 = (7438.11+($taxable-42783)*30/100)-1280;
+    if($taxable>=13686 && $taxable<23884){
+    $paye1 = (1229.8+($taxable-12298)*15/100)-1408.00;
+    }else if($taxable>=23884 && $taxable<35470){
+    $paye1 = ((1229.8+((11586)*0.15))+($taxable-23884)*20/100)-1408.00;
+    }else if($taxable>=35470 && $taxable<47059){
+    $paye1 = ((1229.8+(11586*0.15)+((11586)*0.2))+($taxable-35470)*25/100)-1408.00;
+    }else if($taxable>=47059){
+    $paye1 = ((1229.8+(11586*0.15)+(11586*0.2)+((11586)*0.25))+($taxable-47059)*30/100)-1408.00;
     }else{
     $paye1 = 0.00;
     }
@@ -855,6 +859,7 @@ $display .="
          $totalpaye = 0.00;
          $totalnssf = 0.00;
          $totalnhif = 0.00;
+         $totalpension = 0.00;
          $otherdeduction = 0.00;
          $totaldeduction = 0.00;
          $totalnet = 0.00;
@@ -871,34 +876,36 @@ $display .="
 
         foreach($employees as $employee){
          
-         $salary = number_format($employee->basic_pay,2);  
+         $salary = number_format(Payroll::basicpay($employee->id,Input::get('period')),2);  
          
          $hourly = number_format(Payroll::overtimes($employee->id,'Daily',$fperiod),2);
          $daily  = number_format(Payroll::overtimes($employee->id,'Hourly',$fperiod),2);
          $gross = number_format(Payroll::gross($employee->id,$fperiod),2);
          $tax = number_format(Payroll::totaltax($employee->id,$fperiod),2);
          if($employee->income_tax_applicable == 1 && (double)Payroll::gross($employee->id,$fperiod)>=11180 && $employee->income_tax_relief_applicable == 1){
-          $taxrelief = number_format('1280',2);
+          $taxrelief = number_format('1408',2);
           }else{
           $taxrelief = number_format('0.00',2);
           }
          $paye = number_format(Payroll::tax($employee->id,$fperiod),2);
          $nssf = number_format(Payroll::nssf($employee->id,$fperiod),2);
          $nhif = number_format(Payroll::nhif($employee->id,$fperiod),2);
+         $pension = number_format(Payroll::pension($employee->id,$fperiod),2);
          $total_deductions = number_format(Payroll::total_deductions($employee->id,$fperiod),2);
          $net = number_format(Payroll::net($employee->id,$fperiod),2);
 
-          $totalsalary = $totalsalary + (double)$employee->basic_pay;
+          $totalsalary = $totalsalary + (double)Payroll::basicpay($employee->id,Input::get('period'));
           $totalhourly = $totalhourly + (double)Payroll::overtimes($employee->id,'Hourly',$fperiod);
           $totaldaily = $totaldaily + (double)Payroll::overtimes($employee->id,'Daily',$fperiod);
           $totalgross = $totalgross + (double)Payroll::gross($employee->id,$fperiod);
           $totaltax = $totaltax + (double)Payroll::totaltax($employee->id,$fperiod);
           if($employee->income_tax_applicable == 1 && (double)Payroll::gross($employee->id,$fperiod)>=11180 && $employee->income_tax_relief_applicable == 1){
-           $totaltaxrelief = $totaltaxrelief + 1280;
+           $totaltaxrelief = $totaltaxrelief + 1408;
           }
            $totalpaye = $totalpaye + (double)Payroll::tax($employee->id,$fperiod);
            $totalnssf = $totalnssf + (double)Payroll::nssf($employee->id,$fperiod);
            $totalnhif = $totalnhif + (double)Payroll::nhif($employee->id,$fperiod);
+           $totalpension = $totalpension + (double)Payroll::pension($employee->id,$fperiod);
            $totaldeduction = $totaldeduction + (double)Payroll::total_deductions($employee->id,$fperiod);
            $totalnet = $totalnet + (double)Payroll::net($employee->id,$fperiod);
 
@@ -939,7 +946,7 @@ $display .="
           $deductionA = number_format(Payroll::deductions($employee->id,$deduction->id,$fperiod),2);
           $display .="<td align='right'>$deductionA</td>";
           }
-          $display .="<td align='right'>$total_deductions</td>
+          $display .="<td align='right'>$pension</td><td align='right'>$total_deductions</td>
           <td align='right'>$net</td>
           
           </tr>";
@@ -981,7 +988,7 @@ $display .="
            $otherdeduction.$deduction->id = $otherdeduction + (double)Payroll::totaldeductions($deduction->id,$fperiod);
            $display .="<td align='right'><strong>".number_format($otherdeduction.$deduction->id,2)."</strong></td>";
            }
-          $display .="<td align='right'><strong>".number_format($totaldeduction,2)."</strong></td>
+          $display .="<td align='right'><strong>".number_format((double)Payroll::pension($employee->id,$fperiod),2)."</strong></td><td align='right'><strong>".number_format($totaldeduction,2)."</strong></td>
           <td align='right'><strong>".number_format($totalnet,2)."</strong></td>
         </tr>
         ";
@@ -1037,12 +1044,12 @@ $display .="
 
         $payroll->employee_id = $employee->personal_file_number;
        
-        $payroll->basic_pay = $employee->basic_pay; 
+        $payroll->basic_pay = Payroll::basicpay($employee->id,Input::get('period')); 
         
         $payroll->earning_amount = Payroll::total_benefits($employee->id,Input::get('period'));
         $payroll->taxable_income = Payroll::gross($employee->id,Input::get('period'));
         $payroll->paye = Payroll::tax($employee->id,Input::get('period'));
-        $payroll->relief = 1280;
+        $payroll->relief = 1408;
         $payroll->nssf_amount = Payroll::nssf($employee->id,Input::get('period'));
         $payroll->nhif_amount = Payroll::nhif($employee->id,Input::get('period'));
         $payroll->other_deductions = Payroll::deductionall($employee->id,Input::get('period'));
@@ -1261,6 +1268,66 @@ $display .="
                })
              ->where('instalments','>',0)
              ->decrement('instalments');
+        
+        }
+
+
+        $part = explode("-", Input::get('period'));
+        $month = '';
+       if($part[0] == 01){
+         $month = 'Jan';
+        }else if($part[0] == 02){
+         $month = 'Feb';
+        }else if($part[0] == 03){
+         $month = 'Mar';
+        }else if($part[0] == 04){
+         $month = 'Apr';
+        }else if($part[0] == 05){
+         $month = 'May';
+        }else if($part[0] == 06){
+         $month = 'Jun';
+        }else if($part[0] == 07){
+         $month = 'Jul';
+        }else if($part[0] == 8){
+         $month = 'Aug';
+        }else if($part[0] == 9){
+         $month = 'Sep';
+        }else if($part[0] == 10){
+         $month = 'Oct';
+        }else if($part[0] == 11){
+         $month = 'Nov';
+        }else if($part[0] == 12){
+         $month = 'Dec';
+        }
+
+        $cp = DB::table('pensions')
+            ->join('employee', 'pensions.employee_id', '=', 'employee.id')
+            ->where('in_employment','Y')
+            ->where('employee.organization_id',Auth::user()->organization_id)
+            ->count();
+
+        $pensions = DB::table('pensions')
+            ->join('employee', 'pensions.employee_id', '=', 'employee.id')
+            ->where('in_employment','Y')
+            ->where('employee.organization_id',Auth::user()->organization_id)
+            ->get();
+
+        if($cp>0){
+
+        foreach($pensions as $pension){
+        DB::table('transact_pensions')->insert(
+        ['employee_id' => $pension->employee_id, 
+        'organization_id' => Auth::user()->organization_id,
+        'employee_amount' => $pension->employee_contribution, 
+        'employer_amount' => $pension->employer_contribution, 
+        'employee_percentage' => $pension->employee_percentage,
+        'employer_percentage' => $pension->employer_percentage,
+        'financial_month_year'=>Input::get('period'),
+        'month'=>$part[0],
+        'year'=>$part[1]
+        ]
+        );
+        }
         
         }
 
@@ -1618,6 +1685,65 @@ $display .="
                })
              ->where('instalments','>',0)
              ->decrement('instalments');
+        
+        }
+
+        $part = explode("-", Input::get('period'));
+        $month = '';
+       if($part[0] == 01){
+         $month = 'Jan';
+        }else if($part[0] == 02){
+         $month = 'Feb';
+        }else if($part[0] == 03){
+         $month = 'Mar';
+        }else if($part[0] == 04){
+         $month = 'Apr';
+        }else if($part[0] == 05){
+         $month = 'May';
+        }else if($part[0] == 06){
+         $month = 'Jun';
+        }else if($part[0] == 07){
+         $month = 'Jul';
+        }else if($part[0] == 8){
+         $month = 'Aug';
+        }else if($part[0] == 9){
+         $month = 'Sep';
+        }else if($part[0] == 10){
+         $month = 'Oct';
+        }else if($part[0] == 11){
+         $month = 'Nov';
+        }else if($part[0] == 12){
+         $month = 'Dec';
+        }
+
+        $cp = DB::table('pensions')
+            ->join('employee', 'pensions.employee_id', '=', 'employee.id')
+            ->where('in_employment','Y')
+            ->where('employee.organization_id',Auth::user()->organization_id)
+            ->count();
+
+        $pensions = DB::table('pensions')
+            ->join('employee', 'pensions.employee_id', '=', 'employee.id')
+            ->where('in_employment','Y')
+            ->where('employee.organization_id',Auth::user()->organization_id)
+            ->get();
+
+        if($cp>0){
+
+        foreach($pensions as $pension){
+        DB::table('transact_pensions')->insert(
+        ['employee_id' => $pension->employee_id, 
+        'organization_id' => Auth::user()->organization_id,
+        'employee_amount' => $pension->employee_contribution, 
+        'employer_amount' => $pension->employer_contribution, 
+        'employee_percentage' => $pension->employee_percentage,
+        'employer_percentage' => $pension->employer_percentage,
+        'financial_month_year'=>Input::get('period'),
+        'month'=>$part[0],
+        'year'=>$part[1]
+        ]
+        );
+        }
         
         }
 

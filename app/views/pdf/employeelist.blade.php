@@ -107,7 +107,7 @@ body {
 
 	<div class="content" style='margin-top:-70px;'>
 
-<div align="center"><strong>Employee List Report </strong></div><br>
+<div align="center"><strong>Employee List Report For Period {{$from}} And {{$to}} </strong></div><br>
     <table class="table table-bordered" border='1' cellspacing='0' cellpadding='0'>
 
       <tr>
@@ -123,8 +123,15 @@ body {
         <td><strong>Kra Pin</strong></td>  
         <td><strong>Nssf NO.</strong></td>
         <td><strong>Nhif NO.</strong></td>
+        @if($type == 'all')
         <td><strong>Status</strong></td>
-
+        <td><strong>Date Joined</strong></td>
+        <td><strong>Date of Termination</strong></td>
+        @elseif($type == 'active')
+        <td><strong>Date Joined</strong></td>
+        @elseif($type == 'deactive')
+        <td><strong>Date of Termination</strong></td>
+        @endif
       </tr>
       <?php $i =1; ?>
       @foreach($employees as $employee)
@@ -176,12 +183,20 @@ body {
         <td></td>
         @endif
 
+        @if($type == 'all')
         @if($employee->in_employment == 'Y')
         <td>Active</td>
         @else
         <td>Deactivated</td>
         @endif
-       
+        <td>{{$employee->date_joined}}</td>
+        <td>{{$employee->termination_date}}</td>
+        @elseif($type == 'active')
+        <td>{{$employee->date_joined}}</td>
+        @elseif($type == 'deactive')
+        <td>{{$employee->termination_date}}</td>
+        @endif
+
        
         </tr>
       <?php $i++; ?>

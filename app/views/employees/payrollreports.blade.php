@@ -43,6 +43,10 @@
           <a href="{{ URL::to('payrollReports/selectnontaxableincome') }}" >Non Taxable Income Report</a>
        </li> 
 
+       <li> 
+          <a href="{{ URL::to('payrollReports/selectPension') }}" >Pension Report</a>
+       </li>  
+
        <li>
           <a href="{{ URL::to('payrollReports/selectRelief') }}"> Relief Report</a>
        </li>  

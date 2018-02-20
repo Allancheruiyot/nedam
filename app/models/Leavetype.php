@@ -46,4 +46,11 @@ class Leavetype extends \Eloquent {
 
 	}
 
+	public static function getName($id){
+
+		$leavetype = Leavetype::find($id);
+
+		return $leavetype->name;
+	}
+
 }

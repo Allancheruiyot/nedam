@@ -1,4 +1,4 @@
-@extends('layouts.membercss')
+@extends('layouts.employeecss')
 @section('content')
 
 
@@ -80,22 +80,7 @@
             <td>{{$employee->work_permit_number}}</td>
           </tr>
           @endif
-
-          <tr><td>Supervisor:</td>     
-        @if($c>0)
-        <?php
-        $sup = Supervisor::where('employee_id',$employee->id)->first();
-        $supervisor = Employee::where('id',$sup->supervisor_id)->first();
-        ?>
-        <td>{{$supervisor->first_name.' '.$supervisor->last_name}}</td>
-        @else
-        <td></td>
-        @endif
-        </tr>
-        
-         
-          
-          
+  
         
       </table>
   

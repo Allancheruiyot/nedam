@@ -172,7 +172,19 @@ $('.datepicker28').datepicker({
 });
 </script>
 
+<script type="text/javascript">
+$(function(){ 
 
+$('.year').datepicker({
+    format: " yyyy", // Notice the Extra space at the beginning
+    viewMode: "years", 
+    minViewMode: "years",
+    endDate: '+0d',
+    autoclose: true
+});
+});
+
+</script>
 
 <script language="javascript" type="text/javascript"> 
 var timer = 0;

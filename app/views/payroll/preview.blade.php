@@ -25,7 +25,7 @@ $start  = date('Y-m-01', strtotime($end_date));
                   var p1 = <?php echo $part[0]?>;
                   var p2 = "-";
                   var p3 = <?php echo $part[1]?>;
-                  var type = <?php echo $type?>;
+                  var type = "<?php echo $type?>";
 
                   console.log(p1+p2+p3);
 
@@ -37,7 +37,7 @@ $start  = date('Y-m-01', strtotime($end_date));
                           'period1'  : p1,
                           'period2'  : p2,
                           'period3'  : p3,
-                          'type'  : p3
+                          'type'     : type
                       },
                       success : function(d){
                        
@@ -196,6 +196,7 @@ function asMoney($value) {
          @foreach($deductions as $deduction)
          <th>{{$deduction->deduction_name}}</th>
          @endforeach
+         <th>Pension Contribution</th>
          <th>Total Deductions</th>
          <th>Net Pay</th>
 
@@ -216,6 +217,7 @@ function asMoney($value) {
          $totalpaye = 0.00;
          $totalnssf = 0.00;
          $totalnhif = 0.00;
+         $totalpension = 0.00;
          $otherdeduction = 0.00;
          $totaldeduction = 0.00;
          $totalnet = 0.00;
@@ -230,11 +232,11 @@ function asMoney($value) {
           <?php
 
           
-           $totalsalary = $totalsalary + (double)$employee->basic_pay;
+           $totalsalary = $totalsalary + Payroll::basicpay($employee->id,Input::get('period'));
         
           ?>
           
-          <td align="right">{{ asMoney((double)$employee->basic_pay) }}</td>
+          <td align="right">{{ Payroll::basicpay($employee->id,Input::get('period')) }}</td>
        
           @foreach($earnings as $earning)
           <td align="right">{{ asMoney((double)Payroll::earnings($employee->id,$earning->id,$period)) }}</td>
@@ -259,7 +261,7 @@ function asMoney($value) {
           ?>
           <?php
           if($employee->income_tax_applicable == 1 && (double)Payroll::gross($employee->id,$period)>=11180 && $employee->income_tax_relief_applicable == 1){
-           $totaltaxrelief = $totaltaxrelief + 1280;
+           $totaltaxrelief = $totaltaxrelief + 1408;
           }
           ?>
           <?php
@@ -279,7 +281,7 @@ function asMoney($value) {
           @endforeach
           <td align="right">{{ asMoney((double)Payroll::totaltax($employee->id,$period)) }}</td>
           @if($employee->income_tax_applicable == 1 && (double)Payroll::gross($employee->id,$period)>=11180 && $employee->income_tax_relief_applicable == 1)
-          <td align="right">{{ asMoney('1280') }}</td>
+          <td align="right">{{ asMoney('1408') }}</td>
           @else
           <td align="right">{{ asMoney('0.00') }}</td>
           @endif
@@ -292,7 +294,9 @@ function asMoney($value) {
           @foreach($deductions as $deduction)
           <td align="right">{{ asMoney((double)Payroll::deductions($employee->id,$deduction->id,$period)) }}</td>
           @endforeach
+          <td align="right">{{ asMoney((double)Payroll::pension($employee->id,$period)) }}</td>
           <?php
+           $totalpension = $totalpension + (double)Payroll::pension($employee->id,$period);
            $totaldeduction = $totaldeduction + (double)Payroll::total_deductions($employee->id,$period);
           ?>
           <?php
@@ -351,6 +355,7 @@ function asMoney($value) {
           ?>
           <td align='right'><strong>{{asMoney($otherdeduction.$deduction->id)}}</strong></td>
           @endforeach
+          <td align='right'><strong>{{asMoney($totalpension)}}</strong></td>
           <td align='right'><strong>{{asMoney($totaldeduction)}}</strong></td>
           <td align='right'><strong>{{asMoney($totalnet)}}</strong></td>
         </tr>

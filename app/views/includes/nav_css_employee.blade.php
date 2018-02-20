@@ -20,6 +20,8 @@
                         <a href="{{ URL::to('css/balances') }}"><i class="fa fa-list fa-fw"></i> Vacation Balances</a>
                     </li>
 
+                    <li><a href="{{ url('/statement') }}"><i class="fa fa-th-large"></i> <span class="nav-label">Pension statement</span> </a> </li>
+
                 
                    <li>
                         <a href="{{ URL::to('css/payslips') }}"><i class="fa fa-money fa-fw"></i> Payslips</a>

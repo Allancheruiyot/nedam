@@ -1,0 +1,230 @@
+<?php
+
+
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+<html >
+
+
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<style type="text/css">
+
+table {
+  max-width: 100%;
+  background-color: transparent;
+}
+th {
+  text-align: left;
+}
+.table {
+  width: 100%;
+  margin-bottom: 50px;
+}
+hr {
+  margin-top: 1px;
+  margin-bottom: 2px;
+  border: 0;
+  border-top: 2px dotted #eee;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.428571429;
+  color: #333;
+  background-color: #fff;
+}
+
+
+
+ @page  { margin: 170px 30px; }
+ .header { position: top; left: 0px; top: -150px; right: 0px; height: 150px;  text-align: center; }
+ .content {margin-top: -100px; margin-bottom: -150px}
+ .footer { position: fixed; left: 0px; bottom: -180px; right: 0px; height: 50px;  }
+ .footer .page:after { content: counter(page, upper-roman); }
+
+
+
+</style>
+
+</head>
+
+<body>
+
+  <div class="header" style="margin-top:-150px">
+     <table >
+
+      <tr>
+
+
+       
+        <td style="width:150px">
+
+            <img src="<?php echo public_path().'/uploads/logo/'.$organization->logo; ?>" alt="logo" width="80%">
+
+    
+        </td>
+
+        <td>
+        <strong>
+          <?php echo strtoupper($organization->name); ?>
+
+          </strong><br>
+          <?php echo $organization->phone; ?><br>
+          <?php echo $organization->email; ?><br>
+          <?php echo $organization->website; ?><br>
+          <?php echo $organization->address; ?>
+
+       
+
+        </td>
+        
+
+      </tr>
+
+
+      <tr>
+
+        <hr>
+      </tr>
+
+
+
+    </table>
+   </div>
+
+<br>
+
+<div class="footer">
+     <p class="page">Page <?php $PAGE_NUM ?></p>
+   </div>
+
+
+	<div class="content" style='margin-top:-70px;'>
+
+<div align="center"><strong>Employee List Report For Period <?php echo $from; ?> And <?php echo $to; ?> </strong></div><br>
+    <table class="table table-bordered" border='1' cellspacing='0' cellpadding='0'>
+
+      <tr>
+        
+
+
+        <td width='20'><strong># </strong></td>
+        <td><strong>Payroll NO. </strong></td>
+        <td><strong>Employee</strong></td>
+        <td><strong>Branch </strong></td>
+        <td><strong>Department </strong></td>
+        <td><strong>Gender</strong></td>
+        <td><strong>Kra Pin</strong></td>  
+        <td><strong>Nssf NO.</strong></td>
+        <td><strong>Nhif NO.</strong></td>
+        <?php if($type == 'all'): ?>
+        <td><strong>Status</strong></td>
+        <td><strong>Date Joined</strong></td>
+        <td><strong>Date of Termination</strong></td>
+        <?php elseif($type == 'active'): ?>
+        <td><strong>Date Joined</strong></td>
+        <?php elseif($type == 'deactive'): ?>
+        <td><strong>Date of Termination</strong></td>
+        <?php endif; ?>
+      </tr>
+      <?php $i =1; ?>
+      <?php foreach($employees as $employee): ?>
+      <tr>
+
+
+       <td td width='20'><?php echo $i; ?></td>
+        <td><?php echo $employee->personal_file_number; ?></td>
+         <?php if($employee->middle_name != null || $employee->middle_name != ''): ?>
+        <td> <?php echo $employee->first_name.' '.$employee->middle_name.' '.$employee->last_name; ?></td>
+        <?php else: ?>
+        <td> <?php echo $employee->first_name.' '.$employee->last_name; ?></td>
+        <?php endif; ?>
+        
+         <?php if($employee->branch_id != 0): ?>
+        <td> <?php echo $employee->branch->name; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+       
+
+        <?php if($employee->department_id != 0): ?>
+        <td> <?php echo $employee->department->department_name; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+
+        <?php if($employee->gender != null): ?>
+        <td><?php echo $employee->gender; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        
+        <?php if($employee->pin != null): ?>
+        <td><?php echo $employee->pin; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+
+        <?php if($employee->social_security_number != null): ?>
+        <td><?php echo $employee->social_security_number; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+
+        <?php if($employee->hospital_insurance_number != null): ?>
+        <td><?php echo $employee->hospital_insurance_number; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+
+        <?php if($type == 'all'): ?>
+        <?php if($employee->in_employment == 'Y'): ?>
+        <td>Active</td>
+        <?php else: ?>
+        <td>Deactivated</td>
+        <?php endif; ?>
+        <td><?php echo $employee->date_joined; ?></td>
+        <td><?php echo $employee->termination_date; ?></td>
+        <?php elseif($type == 'active'): ?>
+        <td><?php echo $employee->date_joined; ?></td>
+        <?php elseif($type == 'deactive'): ?>
+        <td><?php echo $employee->termination_date; ?></td>
+        <?php endif; ?>
+
+       
+        </tr>
+      <?php $i++; ?>
+   
+    <?php endforeach; ?>
+
+     
+
+
+    </table>
+
+<br><br>
+
+    
+
+
+
+
+
+   
+</div>
+
+
+</body>
+
+</html>
+
+
+
