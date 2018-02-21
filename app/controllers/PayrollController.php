@@ -131,7 +131,10 @@ class PayrollController extends \BaseController {
     public function create()
     {
 
-      if(!Entrust::can('reprocess_payroll')){
+      $unlock = Lockpayroll::where('user_id',Confide::user()->id)->where('period',Input::get('period'))->count();
+
+      if(!Entrust::can('reprocess_payroll') && $unlock == 0){
+
       $check = DB::table('transact')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->count(); 
