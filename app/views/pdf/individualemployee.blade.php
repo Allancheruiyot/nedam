@@ -358,7 +358,7 @@ body {
         </tr>
         <tr><td><strong>Date Joined:</strong></td>
         @if($employee->date_joined != null)
-        <td>{{$employee->date_joined}}</td>
+        <td>{{date('d-M-Y',strtotime($employee->date_joined))}}</td>
         @else
         <td></td>
         @endif
@@ -372,7 +372,7 @@ body {
         
         @if($employee->termination_date != null)
         <tr><td><strong>Date of Termination:</strong></td>
-        <td>{{$employee->termination_date}}</td> 
+        <td>{{date('d-M-Y',strtotime($employee->termination_date))}}</td> 
         </tr>
         @endif
     </table>

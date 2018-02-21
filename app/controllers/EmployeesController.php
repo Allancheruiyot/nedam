@@ -331,7 +331,7 @@ class EmployeesController extends \BaseController {
         }
         $employee->postal_address = Input::get('address');
         $employee->postal_zip = Input::get('zip');
-        $employee->date_joined = Input::get('djoined');
+        $employee->date_joined = date('Y-m-d',strtotime(Input::get('djoined')));
         if(Input::get('bank_id')==''){
         $employee->bank_id = null;
         }else{
@@ -637,7 +637,7 @@ class EmployeesController extends \BaseController {
         }
         $employee->postal_address = Input::get('address');
         $employee->postal_zip = Input::get('zip');
-        $employee->date_joined = Input::get('djoined');
+        $employee->date_joined = date('Y-m-d',strtotime(Input::get('djoined')));
         if(Input::get('bank_id')==''){
         $employee->bank_id = null;
         }else{

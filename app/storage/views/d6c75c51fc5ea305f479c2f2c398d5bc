@@ -38,6 +38,11 @@
                             <li>
                               <a href="<?php echo URL::to('payroll'); ?>"><i class="fa fa-credit-card fa-fw"></i>Payroll</a>
                             </li>
+                            <?php if(Entrust::can('reprocess_payroll')): ?>
+                            <li>
+                              <a href="<?php echo URL::to('unlockpayroll/index'); ?>"><i class="fa fa-lock fa-fw"></i>Approve Payroll Rerun</a>
+                            </li>
+                            <?php endif; ?>
                         </ul>
                     </li> 
 

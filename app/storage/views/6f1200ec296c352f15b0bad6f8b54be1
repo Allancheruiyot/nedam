@@ -1,0 +1,55 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	<div class="col-lg-12">
+  <h3>View Payroll</h3>
+
+<hr>
+</div>	
+</div>
+
+
+<div class="row">
+	<div class="col-lg-5">
+
+    
+		
+		 <?php if($errors->has()): ?>
+        <div class="alert alert-danger">
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if(Lockpayroll::checkAvailable($transact->financial_month_year) == 0): ?>
+        <a class="btn btn-info btn-sm" href="<?php echo URL::to('unlockpayroll/'.$transact->id); ?>">Unlock Payroll</a></li>
+        <?php endif; ?>
+
+        <table class="table table-condensed table-bordered table-responsive table-hover">
+            <tr>
+                <td>Period</td><td><?php echo $transact->financial_month_year; ?></td>
+            </tr>
+            <tr>
+                <td>Processed by</td><td><?php echo Transact::getUser($transact->user_id); ?></td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                 <?php if(Lockpayroll::checkAvailable($transact->financial_month_year) == 0): ?>
+                 <td>Locked</td>
+                 <?php else: ?>
+                 <td>Unlocked</td>
+                  <?php endif; ?>
+            </tr>
+        </table>
+
+       
+		
+
+  </div>
+
+</div>
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.payroll', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

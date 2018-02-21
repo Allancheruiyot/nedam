@@ -222,7 +222,7 @@ function asMoney($value) {
         
         <tr><td><strong>Date Joined:</strong></td>
         @if($employee->date_joined != null)
-        <td>{{$employee->date_joined}}</td>
+        <td>{{date('d-M-Y',strtotime($employee->date_joined))}}</td>
         @else
         <td></td>
         @endif

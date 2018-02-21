@@ -1,0 +1,71 @@
+<?php $__env->startSection('content'); ?>
+
+
+
+
+<div class="row">
+
+	<div class="col-lg-12">
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+    			<a class="btn btn-info btn-sm" href="<?php echo URL::to('roles/create'); ?>">new role</a>
+  			</div>
+  			<div class="panel-body">
+
+				<table id="users" class="display compact table table-bordered table-striped" cellspacing="0" width="100%">
+					<thead>
+						
+						
+						<th>Role</th>
+						<th></th>
+						
+					</thead>
+					<tbody>
+              			 <?php foreach($roles as $role): ?>
+              			 <tr>
+               			
+               			<td><?php echo $role->name; ?></td>
+               			
+               			<td>
+
+               				<div class="btn-group">
+  								<button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    								Action <span class="caret"></span>
+  								</button>
+  				
+  								<ul class="dropdown-menu" role="menu">
+                    <li><a href="<?php echo URL::to('roles/show/'.$role->id); ?>">Permissions</a></li>
+    								<li><a href="<?php echo URL::to('roles/edit/'.$role->id); ?>">Edit</a></li>
+
+    								
+    								<li><a href="<?php echo URL::to('roles/destroy/'.$role->id); ?>">Delete</a></li>
+  								</ul>
+							</div>
+
+               			</td>
+               		</tr>
+               			<?php endforeach; ?>
+
+ 
+					</tbody>
+				</table>
+			</div>	
+		</div>	
+	</div>	
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.system', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

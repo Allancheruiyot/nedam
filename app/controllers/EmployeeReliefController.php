@@ -14,7 +14,7 @@ class EmployeeReliefController extends \BaseController {
 		          ->join('relief', 'employee_relief.relief_id', '=', 'relief.id')
 		          ->where('in_employment','=','Y')
 		          ->where('employee.organization_id',Confide::user()->organization_id)
-		          ->select('employee_relief.id','first_name','middle_name','last_name','relief_amount','relief_name')
+		          ->select('employee_relief.id','first_name','middle_name','last_name','relief_amount','relief_name','percentage','premium')
 		          ->get();
 		Audit::logaudit('Employee Reliefs', 'view', 'viewed employee relief');
 		return View::make('employee_relief.index', compact('rels'));
@@ -76,6 +76,10 @@ class EmployeeReliefController extends \BaseController {
 
 		$rel->relief_id = Input::get('relief');
 
+		$rel->percentage = str_replace( '%', '', Input::get('percentage'));
+
+		$rel->premium = str_replace( ',', '', Input::get('premium'));
+
 		$a = str_replace( ',', '', Input::get('amount') );
 
         $rel->relief_amount = $a;
@@ -136,6 +140,10 @@ class EmployeeReliefController extends \BaseController {
 
 		$rel->relief_id = Input::get('relief');
 
+		$rel->percentage = str_replace( '%', '', Input::get('percentage'));
+
+		$rel->premium = str_replace( ',', '', Input::get('premium'));
+
         $a = str_replace( ',', '', Input::get('amount') );
 
         $rel->relief_amount = $a;
@@ -169,7 +177,7 @@ class EmployeeReliefController extends \BaseController {
 		          ->join('relief', 'employee_relief.relief_id', '=', 'relief.id')
 		          ->where('employee_relief.id','=',$id)
 		          ->where('employee.organization_id',Confide::user()->organization_id)
-		          ->select('employee_relief.id','first_name','last_name','relief_amount','relief_name','middle_name','photo','signature')
+		          ->select('employee_relief.id','first_name','last_name','relief_amount','relief_name','middle_name','photo','signature','premium','percentage')
 		          ->first();
 
 		$organization = Organization::find(Confide::user()->organization_id);

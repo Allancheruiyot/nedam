@@ -3731,6 +3731,10 @@ Route::post('shownet', 'PayrollController@disp');
 Route::post('showgross', 'PayrollController@dispgross');
 Route::post('payroll/preview', 'PayrollController@create');
 Route::get('payrollpreviewprint/{period}', 'PayrollController@previewprint');
+Route::get('unlockpayroll/index', 'PayrollController@unlockindex');
+Route::get('payroll/view/{id}', 'PayrollController@viewpayroll');
+Route::get('unlockpayroll/{id}', 'PayrollController@unlockpayroll');
+Route::post('unlockpayroll', 'PayrollController@dounlockpayroll');
 Route::post('createNewAccount', 'PayrollController@createaccount');
 
 Route::get('payrollcalculator', function(){
@@ -5350,3 +5354,5 @@ Route::get('api/pay', function(){
     $employee = Employee::find($id);
     return number_format($employee->basic_pay,2);
 });
+
+Route::get('send/p9', 'ReportsController@Sendmail_p9form');

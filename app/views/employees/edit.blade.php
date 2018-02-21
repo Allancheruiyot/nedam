@@ -1694,7 +1694,7 @@ $(document).ready(function() {
                         <label for="username">Date joined <span style="color:red">*</span></label>
                         <div class="right-inner-addon ">
                         <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control datepicker"  readonly="readonly" placeholder="" type="text" name="djoined" id="djoined" value="{{{ $employee->date_joined }}}">
+                        <input class="form-control datepicker"  readonly="readonly" placeholder="" type="text" name="djoined" id="djoined" value="{{{ date('d-M-Y',strtotime($employee->date_joined)) }}}">
                         </div>
                         </div>
                   </div>

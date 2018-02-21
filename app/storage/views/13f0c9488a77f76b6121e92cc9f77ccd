@@ -1,9 +1,11 @@
-@extends('layouts.payroll')
-@section('content')
+<?php echo HTML::script('media/jquery-1.12.0.min.js'); ?>
+
+
+<?php $__env->startSection('content'); ?>
 
 <div class="row">
 	<div class="col-lg-12">
-  <h3>Update Employee Relief</h3>
+  <h3>New Employee Relief</h3>
 
 <hr>
 </div>	
@@ -15,17 +17,18 @@
 
     
 		
-		 @if ($errors->has())
+		 <?php if($errors->has()): ?>
         <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                {{ $error }}<br>        
-            @endforeach
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
         </div>
-        @endif
+        <?php endif; ?>
 
+  <?php echo HTML::style('jquery-ui-1.11.4.custom/jquery-ui.css'); ?>
 
-  {{ HTML::style('jquery-ui-1.11.4.custom/jquery-ui.css') }}
-  {{ HTML::script('jquery-ui-1.11.4.custom/jquery-ui.js') }}
+  <?php echo HTML::script('jquery-ui-1.11.4.custom/jquery-ui.js'); ?>
+
 
   <style>
     label, input { display:block; }
@@ -40,17 +43,17 @@
     .ui-dialog 
     {
     position: fixed;
-    margin-top: 450px;
+    margin-bottom: 950px;
     }
 
 
-    .ui-dialog-titlebar-close {
-  background: url("{{ URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_888888_256x240.png'); }}") repeat scroll -93px -128px rgba(0, 0, 0, 0);
-  border: medium none;
-}
-.ui-dialog-titlebar-close:hover {
-  background: url("{{ URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_222222_256x240.png'); }}") repeat scroll -93px -128px rgba(0, 0, 0, 0);
-}
+   .ui-dialog-titlebar-close {
+    background: url("<?php echo URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_888888_256x240.png');; ?>") repeat scroll -93px -128px rgba(0, 0, 0, 0);
+    border: medium none;
+    }
+   .ui-dialog-titlebar-close:hover {
+    background: url("<?php echo URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_222222_256x240.png');; ?>") repeat scroll -93px -128px rgba(0, 0, 0, 0);
+    }
     
   </style>
 
@@ -130,7 +133,7 @@ function totalB() {
 
       function displaydata(){
        $.ajax({
-                      url     : "{{URL::to('reloaddata')}}",
+                      url     : "<?php echo URL::to('reloaddata'); ?>",
                       type    : "POST",
                       async   : false,
                       data    : { },
@@ -142,7 +145,7 @@ function totalB() {
        }*/
 
         $.ajax({
-            url     : "{{URL::to('createRelief')}}",
+            url     : "<?php echo URL::to('createRelief'); ?>",
                       type    : "POST",
                       async   : false,
                       data    : {
@@ -156,7 +159,7 @@ function totalB() {
                          }));
                       }        
         });
-        
+       
         dialog.dialog( "close" );
       }
       return valid;
@@ -193,9 +196,10 @@ function totalB() {
   });
   </script>
  
-   {{ HTML::script('datepicker/js/bootstrap-datepicker.min.js') }}
+   <?php echo HTML::script('datepicker/js/bootstrap-datepicker.min.js'); ?>
 
-<div id="dialog-form" title="Create new allowance type">
+
+<div id="dialog-form" title="Create new relief type">
   <p class="validateTips">Please insert Relief Type.</p>
  
   <form>
@@ -209,36 +213,37 @@ function totalB() {
   </form>
 </div>
 
-
-
-		 <form method="POST" action="{{{ URL::to('employee_relief/update/'.$rel->id) }}}" accept-charset="UTF-8">
+		 <form method="POST" action="<?php echo e(URL::to('employee_relief')); ?>" accept-charset="UTF-8">
    
     <fieldset>
-        <div class="form-group">
-                        <div class="form-group">
-            <label for="username">Employee</label>
-            <input class="form-control" placeholder="" type="text" readonly name="employee" id="employee" value="{{ $rel->employee->first_name.' '.$rel->employee->last_name }}">
-        </div> 
-                
-                    </div>
 
-
-        <div class="form-group">
-         <label for="username">Relief Type <span style="color:red">*</span></label>
-                        <select id="relief" name="relief" class="form-control">
+       <div class="form-group">
+                        <label for="username">Employee <span style="color:red">*</span></label>
+                        <select name="employee" class="form-control">
                            <option></option>
-                           <option value="cnew">Create New</option>
-                            @foreach($reliefs as $relief)
-                            <option value="{{ $relief->id }}"<?= ($rel->relief_id==$relief->id)?'selected="selected"':''; ?>> {{ $relief->relief_name }}</option>
-                            @endforeach
+                            <?php foreach($employees as $employee): ?>
+                            <option value="<?php echo $employee->id; ?>"> <?php echo $employee->first_name.' '.$employee->middle_name.' '.$employee->last_name; ?></option>
+                            <?php endforeach; ?>
                         </select>
                 
-        </div>          
+                    </div>                    
+
+         <div class="form-group">
+         <label for="username">Relief Type <span style="color:red">*</span></label>
+                        <select name="relief" id="relief" class="form-control">
+                           <option></option>
+                           <option value="cnew">Create New</option>
+                            <?php foreach($reliefs as $relief): ?>
+                            <option value="<?php echo $relief->id; ?>"> <?php echo $relief->relief_name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                
+        </div> 
 
         <div class="form-group">
             <label for="username">Percentage on Premium(%) <span style="color:red">*</span> </label>
             
-            <input class="form-control" placeholder="" type="text" name="percentage" onkeypress="totalB()" onkeyup="totalB()" id="percentage" value="{{$rel->percentage}}">
+            <input class="form-control" placeholder="" type="text" name="percentage" onkeypress="totalB()" onkeyup="totalB()" id="percentage" value="<?php echo e(Input::old('percentage')); ?>">
             
         </div>         
 
@@ -246,8 +251,8 @@ function totalB() {
         <div class="form-group">
             <label for="username">Insurance Premium <span style="color:red">*</span> </label>
             <div class="input-group">
-            <span class="input-group-addon">{{$currency->shortname}}</span>
-            <input class="form-control" placeholder="" onkeypress="totalBalance()" onkeyup="totalBalance()" type="text" name="premium" id="premium" value="{{$rel->premium * 100}}">
+            <span class="input-group-addon"><?php echo $currency->shortname; ?></span>
+            <input class="form-control" placeholder="" onkeypress="totalBalance()" onkeyup="totalBalance()" type="text" name="premium" id="premium" value="<?php echo e(Input::old('premium')); ?>">
             </diV>
             <script type="text/javascript">
            $(document).ready(function() {
@@ -256,20 +261,19 @@ function totalB() {
           </script> 
         </div>
 
-
         <div class="form-group">
-            <label for="username">Amount <span style="color:red">*</span></label>
+            <label for="username">Relief Amount <span style="color:red">*</span> </label>
             <div class="input-group">
-            <span class="input-group-addon">{{$currency->shortname}}</span>
-            <input class="form-control" placeholder="" readonly="" type="text" name="amount" id="amount" value="{{ number_format($rel->relief_amount,2)}}">
-            </div>
+            <span class="input-group-addon"><?php echo $currency->shortname; ?></span>
+            <input class="form-control" placeholder="" type="text" readonly name="amount" id="amount" value="<?php echo e(Input::old('amount')); ?>">
+            </diV>
             
         </div>
-
+        
         
         <div class="form-actions form-group">
         
-          <button type="submit" class="btn btn-primary btn-sm">Update Employee Relief</button>
+          <button type="submit" class="btn btn-primary btn-sm">Create Employee Relief</button>
         </div>
 
     </fieldset>
@@ -280,5 +284,5 @@ function totalB() {
 
 </div>
 
-
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.payroll', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

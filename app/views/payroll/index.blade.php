@@ -206,6 +206,10 @@ var per = document.getElementById("period").value;
   </form>
 </div>
 
+    @if (Session::get('notice'))
+            <div class="alert alert-info">{{ Session::get('notice') }}</div>
+        @endif
+
     @if (Session::has('flash_message'))
 
       <div class="alert alert-success">

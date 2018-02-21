@@ -1,0 +1,82 @@
+<?php $__env->startSection('content'); ?>
+
+
+<div class="row">
+
+<div class="col-lg-5 ">
+<h4><font color='green'>Mail Configuration</font></h4>
+<hr/>
+
+ <?php if(Session::get('notice')): ?>
+            <div class="alert alert"><?php echo Session::get('notice'); ?></div>
+        <?php endif; ?>
+
+ <form method="POST" action="<?php echo e(URL::to('mails')); ?>" accept-charset="UTF-8">
+
+        <input class="form-control" type="hidden" name="user_type" id="user_type" value="admin">
+   
+    <fieldset>
+        <div class="form-group">
+            <label for="username">Driver</label>
+            <input class="form-control" type="text" name="driver" id="driver" value="<?php echo $mail->driver; ?>" required readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Host</label>
+            <input class="form-control" type="text" name="host" id="host" value="<?php echo $mail->host; ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Email</label>
+            <input class="form-control" type="text" name="email" id="email" value="<?php echo $mail->username; ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Password</label>
+            <input class="form-control" type="password" name="password" id="password" value="<?php echo $mail->password; ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Port</label>
+            <input class="form-control" type="text" name="port" id="port" value="<?php echo $mail->port; ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Encryption</label>
+            <input class="form-control" type="text" name="encryption" id="encryption" value="<?php echo $mail->encryption; ?>" >
+        </div>
+
+        
+        
+
+        <?php if(Session::get('error')): ?>
+            <div class="alert alert-error alert-danger">
+                <?php if(is_array(Session::get('error'))): ?>
+                    <?php echo head(Session::get('error')); ?>
+
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>    
+      
+        
+        <div class="form-actions form-group">
+        
+          <button type="submit" class="btn btn-primary btn-sm">Update</button>
+
+          <a href="<?php echo URL::to('mailtest'); ?>" class="btn btn-info btn-sm pull-right"> Test Connnection</a>
+        </div>
+
+    </fieldset>
+</form>
+	
+
+
+</div>	
+
+
+
+</div>
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.system', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

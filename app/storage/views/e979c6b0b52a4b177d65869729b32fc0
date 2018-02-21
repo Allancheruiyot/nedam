@@ -207,6 +207,10 @@ var per = document.getElementById("period").value;
   </form>
 </div>
 
+    <?php if(Session::get('notice')): ?>
+            <div class="alert alert-info"><?php echo Session::get('notice'); ?></div>
+        <?php endif; ?>
+
     <?php if(Session::has('flash_message')): ?>
 
       <div class="alert alert-success">

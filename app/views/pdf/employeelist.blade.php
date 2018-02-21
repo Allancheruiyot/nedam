@@ -189,12 +189,12 @@ body {
         @else
         <td>Deactivated</td>
         @endif
-        <td>{{$employee->date_joined}}</td>
-        <td>{{$employee->termination_date}}</td>
+        <td>{{date('d-M-Y',strtotime($employee->date_joined))}}</td>
+        <td>{{date('d-M-Y',strtotime($employee->termination_date))}}</td>
         @elseif($type == 'active')
-        <td>{{$employee->date_joined}}</td>
+        <td>{{date('d-M-Y',strtotime($employee->date_joined))}}</td>
         @elseif($type == 'deactive')
-        <td>{{$employee->termination_date}}</td>
+        <td>{{date('d-M-Y',strtotime($employee->termination_date))}}</td>
         @endif
 
        

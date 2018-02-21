@@ -56,6 +56,29 @@
     
   </style>
 
+  <script type="text/javascript">
+document.getElementById("edate").value = '';
+ function totalBalance() {
+      var percentage = document.getElementById("percentage").value;
+      var premium = document.getElementById("premium").value.replace(/,/g,'');
+      var total = (percentage * premium * 10)/100;
+      total=total.toLocaleString('en-US',{minimumFractionDigits: 2});
+      document.getElementById("amount").value = total;
+
+}
+
+function totalB() {
+      var percentage = document.getElementById("percentage").value;
+      var premium = document.getElementById("premium").value.replace(/,/g,'');
+      var total = (percentage * premium)/100 ;
+      total=total.toLocaleString('en-US',{minimumFractionDigits: 2});
+      document.getElementById("amount").value = total;
+
+}
+
+
+</script>
+
   <script>
   $(function() {
     var dialog, form,
@@ -213,20 +236,36 @@
                             @endforeach
                         </select>
                 
-        </div>          
+        </div> 
+
+        <div class="form-group">
+            <label for="username">Percentage on Premium(%) <span style="color:red">*</span> </label>
+            
+            <input class="form-control" placeholder="" type="text" name="percentage" onkeypress="totalB()" onkeyup="totalB()" id="percentage" value="{{{ Input::old('percentage') }}}">
+            
+        </div>         
 
 
         <div class="form-group">
-            <label for="username">Amount <span style="color:red">*</span> </label>
+            <label for="username">Insurance Premium <span style="color:red">*</span> </label>
             <div class="input-group">
             <span class="input-group-addon">{{$currency->shortname}}</span>
-            <input class="form-control" placeholder="" type="text" name="amount" id="amount" value="{{{ Input::old('amount') }}}">
+            <input class="form-control" placeholder="" onkeypress="totalBalance()" onkeyup="totalBalance()" type="text" name="premium" id="premium" value="{{{ Input::old('premium') }}}">
             </diV>
             <script type="text/javascript">
            $(document).ready(function() {
-           $('#amount').priceFormat();
+           $('#premium').priceFormat();
            });
           </script> 
+        </div>
+
+        <div class="form-group">
+            <label for="username">Relief Amount <span style="color:red">*</span> </label>
+            <div class="input-group">
+            <span class="input-group-addon">{{$currency->shortname}}</span>
+            <input class="form-control" placeholder="" type="text" readonly name="amount" id="amount" value="{{{ Input::old('amount') }}}">
+            </diV>
+            
         </div>
         
         

@@ -234,7 +234,7 @@ function asMoney($value) {
         
         <tr><td><strong>Date Joined:</strong></td>
         <?php if($employee->date_joined != null): ?>
-        <td><?php echo $employee->date_joined; ?></td>
+        <td><?php echo date('d-M-Y',strtotime($employee->date_joined)); ?></td>
         <?php else: ?>
         <td></td>
         <?php endif; ?>

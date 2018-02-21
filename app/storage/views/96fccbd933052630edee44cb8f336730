@@ -1,5 +1,4 @@
-@extends('layouts.payroll')
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="row">
 	<div class="col-lg-12">
@@ -15,17 +14,19 @@
 
     
 		
-		 @if ($errors->has())
+		 <?php if($errors->has()): ?>
         <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                {{ $error }}<br>        
-            @endforeach
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
         </div>
-        @endif
+        <?php endif; ?>
 
 
-  {{ HTML::style('jquery-ui-1.11.4.custom/jquery-ui.css') }}
-  {{ HTML::script('jquery-ui-1.11.4.custom/jquery-ui.js') }}
+  <?php echo HTML::style('jquery-ui-1.11.4.custom/jquery-ui.css'); ?>
+
+  <?php echo HTML::script('jquery-ui-1.11.4.custom/jquery-ui.js'); ?>
+
 
   <style>
     label, input { display:block; }
@@ -45,11 +46,11 @@
 
 
     .ui-dialog-titlebar-close {
-  background: url("{{ URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_888888_256x240.png'); }}") repeat scroll -93px -128px rgba(0, 0, 0, 0);
+  background: url("<?php echo URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_888888_256x240.png');; ?>") repeat scroll -93px -128px rgba(0, 0, 0, 0);
   border: medium none;
 }
 .ui-dialog-titlebar-close:hover {
-  background: url("{{ URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_222222_256x240.png'); }}") repeat scroll -93px -128px rgba(0, 0, 0, 0);
+  background: url("<?php echo URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_222222_256x240.png');; ?>") repeat scroll -93px -128px rgba(0, 0, 0, 0);
 }
     
   </style>
@@ -130,7 +131,7 @@ function totalB() {
 
       function displaydata(){
        $.ajax({
-                      url     : "{{URL::to('reloaddata')}}",
+                      url     : "<?php echo URL::to('reloaddata'); ?>",
                       type    : "POST",
                       async   : false,
                       data    : { },
@@ -142,7 +143,7 @@ function totalB() {
        }*/
 
         $.ajax({
-            url     : "{{URL::to('createRelief')}}",
+            url     : "<?php echo URL::to('createRelief'); ?>",
                       type    : "POST",
                       async   : false,
                       data    : {
@@ -193,7 +194,8 @@ function totalB() {
   });
   </script>
  
-   {{ HTML::script('datepicker/js/bootstrap-datepicker.min.js') }}
+   <?php echo HTML::script('datepicker/js/bootstrap-datepicker.min.js'); ?>
+
 
 <div id="dialog-form" title="Create new allowance type">
   <p class="validateTips">Please insert Relief Type.</p>
@@ -211,13 +213,13 @@ function totalB() {
 
 
 
-		 <form method="POST" action="{{{ URL::to('employee_relief/update/'.$rel->id) }}}" accept-charset="UTF-8">
+		 <form method="POST" action="<?php echo e(URL::to('employee_relief/update/'.$rel->id)); ?>" accept-charset="UTF-8">
    
     <fieldset>
         <div class="form-group">
                         <div class="form-group">
             <label for="username">Employee</label>
-            <input class="form-control" placeholder="" type="text" readonly name="employee" id="employee" value="{{ $rel->employee->first_name.' '.$rel->employee->last_name }}">
+            <input class="form-control" placeholder="" type="text" readonly name="employee" id="employee" value="<?php echo $rel->employee->first_name.' '.$rel->employee->last_name; ?>">
         </div> 
                 
                     </div>
@@ -228,9 +230,9 @@ function totalB() {
                         <select id="relief" name="relief" class="form-control">
                            <option></option>
                            <option value="cnew">Create New</option>
-                            @foreach($reliefs as $relief)
-                            <option value="{{ $relief->id }}"<?= ($rel->relief_id==$relief->id)?'selected="selected"':''; ?>> {{ $relief->relief_name }}</option>
-                            @endforeach
+                            <?php foreach($reliefs as $relief): ?>
+                            <option value="<?php echo $relief->id; ?>"<?= ($rel->relief_id==$relief->id)?'selected="selected"':''; ?>> <?php echo $relief->relief_name; ?></option>
+                            <?php endforeach; ?>
                         </select>
                 
         </div>          
@@ -238,7 +240,7 @@ function totalB() {
         <div class="form-group">
             <label for="username">Percentage on Premium(%) <span style="color:red">*</span> </label>
             
-            <input class="form-control" placeholder="" type="text" name="percentage" onkeypress="totalB()" onkeyup="totalB()" id="percentage" value="{{$rel->percentage}}">
+            <input class="form-control" placeholder="" type="text" name="percentage" onkeypress="totalB()" onkeyup="totalB()" id="percentage" value="<?php echo $rel->percentage; ?>">
             
         </div>         
 
@@ -246,8 +248,8 @@ function totalB() {
         <div class="form-group">
             <label for="username">Insurance Premium <span style="color:red">*</span> </label>
             <div class="input-group">
-            <span class="input-group-addon">{{$currency->shortname}}</span>
-            <input class="form-control" placeholder="" onkeypress="totalBalance()" onkeyup="totalBalance()" type="text" name="premium" id="premium" value="{{$rel->premium * 100}}">
+            <span class="input-group-addon"><?php echo $currency->shortname; ?></span>
+            <input class="form-control" placeholder="" onkeypress="totalBalance()" onkeyup="totalBalance()" type="text" name="premium" id="premium" value="<?php echo $rel->premium * 100; ?>">
             </diV>
             <script type="text/javascript">
            $(document).ready(function() {
@@ -260,8 +262,8 @@ function totalB() {
         <div class="form-group">
             <label for="username">Amount <span style="color:red">*</span></label>
             <div class="input-group">
-            <span class="input-group-addon">{{$currency->shortname}}</span>
-            <input class="form-control" placeholder="" readonly="" type="text" name="amount" id="amount" value="{{ number_format($rel->relief_amount,2)}}">
+            <span class="input-group-addon"><?php echo $currency->shortname; ?></span>
+            <input class="form-control" placeholder="" readonly="" type="text" name="amount" id="amount" value="<?php echo number_format($rel->relief_amount,2); ?>">
             </div>
             
         </div>
@@ -281,4 +283,5 @@ function totalB() {
 </div>
 
 
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.payroll', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

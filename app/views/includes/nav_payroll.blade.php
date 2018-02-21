@@ -38,6 +38,11 @@
                             <li>
                               <a href="{{ URL::to('payroll') }}"><i class="fa fa-credit-card fa-fw"></i>Payroll</a>
                             </li>
+                            @if(Entrust::can('reprocess_payroll'))
+                            <li>
+                              <a href="{{ URL::to('unlockpayroll/index') }}"><i class="fa fa-lock fa-fw"></i>Approve Payroll Rerun</a>
+                            </li>
+                            @endif
                         </ul>
                     </li> 
 

@@ -13,7 +13,8 @@ function asMoney($value) {
 	<div class="col-lg-12">
 
 
-<a class="btn btn-info btn-sm "  href="{{ URL::to('employee_relief/view/'.$rel->id)}}">update details</a>
+<a class="btn btn-info btn-sm "  href="{{ URL::to('employee_relief/edit/'.$rel->id)}}">update details</a>
+<a class="btn btn-danger btn-sm " onclick="return (confirm('Are you sure you want to delete this employee`s relief?'))" href="{{ URL::to('employee_relief/delete/'.$rel->id)}}">Delete</a>
 
 <hr>
 </div>	
@@ -40,7 +41,9 @@ function asMoney($value) {
       @endif
       </tr>
       <tr><td><strong>Relief Type: </strong></td><td>{{$rel->relief_name}}</td></tr>
-      <tr><td><strong>Amount: </strong></td><td align="right">{{asMoney($rel->relief_amount)}}</td></tr>
+      <tr><td><strong>Percentage on Premium(%): </strong></td><td>{{$rel->percentage}}</td></tr>
+      <tr><td><strong>Insurance Premium: </strong></td><td>{{asMoney($rel->premium)}}</td></tr>
+      <tr><td><strong>Amount: </strong></td><td>{{asMoney($rel->relief_amount)}}</td></tr>
 </table>
 </div>
 

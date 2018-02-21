@@ -1,0 +1,6 @@
+
+<p> Hello <?php echo $employee->first_name.' '.$employee->last_name; ?>! </p>
+<p> Below is your p9 form for year <?php echo date('Y'); ?>.</p>
+<br><br>
+<p>Regards,</p>
+<p><?php echo $organization->name; ?></p>

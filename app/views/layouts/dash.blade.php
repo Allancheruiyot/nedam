@@ -6,7 +6,7 @@
 	#page-dash {
     padding: 0 15px;
     padding-top: 20px !important;
-    margin: 0 200px 0 200px;
+    
     min-height: 100vh;
     background-color: #fff;
 }

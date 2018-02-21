@@ -1,0 +1,120 @@
+<?php
+
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+
+
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	<div class="col-lg-12">
+  <h3>Reliefs</h3>
+
+<hr>
+</div>	
+</div>
+
+
+<div class="row">
+	<div class="col-lg-12">
+
+     <?php if(Session::has('flash_message')): ?>
+
+      <div class="alert alert-success">
+      <?php echo Session::get('flash_message'); ?>
+
+     </div>
+    <?php endif; ?>
+
+     <?php if(Session::has('delete_message')): ?>
+
+      <div class="alert alert-danger">
+      <?php echo Session::get('delete_message'); ?>
+
+     </div>
+    <?php endif; ?>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          <a class="btn btn-info btn-sm" href="<?php echo URL::to('employee_relief/create'); ?>">new employee relief</a>
+        </div>
+        <div class="panel-body">
+
+
+    <table id="users" class="table table-condensed table-bordered table-responsive table-hover">
+
+
+      <thead>
+
+        <th>#</th>
+        <th>Employee</th>
+        <th>Relief Type</th>
+        <th>Percentage on Premium (%)</th>
+        <th>Insurance Premium</th>
+        <th>Amount</th>
+        <th>Action</th>
+
+      </thead>
+
+     
+
+      <tbody>
+
+        <?php $i = 1; ?>
+        <?php foreach($rels as $rel): ?>
+
+        <tr>
+
+          <td> <?php echo $i; ?></td>
+          <?php if($rel->middle_name == null || $rel->middle_name == ''): ?>
+          <td><?php echo $rel->first_name.' '.$rel->last_name; ?></td>
+          <?php else: ?>
+          <td><?php echo $rel->first_name.' '.$rel->middle_name.' '.$rel->last_name; ?></td>
+          <?php endif; ?>
+          <td><?php echo $rel->relief_name; ?></td>
+          <td><?php echo $rel->percentage; ?></td>
+          <td><?php echo asMoney((double)$rel->premium); ?></td>
+          <td><?php echo asMoney((double)$rel->relief_amount); ?></td>
+          <td>
+
+                  <div class="btn-group">
+                  <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    Action <span class="caret"></span>
+                  </button>
+          
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="<?php echo URL::to('employee_relief/view/'.$rel->id); ?>">View</a></li>
+
+                    <li><a href="<?php echo URL::to('employee_relief/edit/'.$rel->id); ?>">Update</a></li>
+                   
+                    <li><a href="<?php echo URL::to('employee_relief/delete/'.$rel->id); ?>" onclick="return (confirm('Are you sure you want to delete this employee`s relief?'))">Delete</a></li>
+                    
+                  </ul>
+              </div>
+
+                    </td>
+
+
+
+        </tr>
+
+        <?php $i++; ?>
+        <?php endforeach; ?>
+
+
+      </tbody>
+
+
+    </table>
+  </div>
+
+
+  </div>
+
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.payroll', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

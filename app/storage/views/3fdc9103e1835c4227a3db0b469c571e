@@ -1,27 +1,8 @@
 <?php echo $__env->make('includes.head', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('includes.nav', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('includes.nav_organization', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
-<style type="text/css">
-	
-	#page-dash {
-    padding: 0 15px;
-    padding-top: 20px !important;
-    
-    min-height: 100vh;
-    background-color: #fff;
-}
-
-@media(min-width:768px) {
-    #page-dash {
-        position: inherit;
-        padding: 0 30px;
-        min-height: 100vh;
-        border-left: 1px solid #e7e7e7;
-    }
-}
-</style>
-
-<div id="page-dash">
+<div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
                     <?php echo $__env->yieldContent('content'); ?>
