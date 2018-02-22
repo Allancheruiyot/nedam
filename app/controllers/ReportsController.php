@@ -19448,23 +19448,18 @@ public function p9form(){
     public function mergestatutory(){
 
         if(Input::get('format') == "excel"){
-       $total = DB::table('transact')
-        ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-        ->where('employee.organization_id',Confide::user()->organization_id)
-        ->where('social_security_applicable' ,'=', 1)
-        ->where('financial_month_year' ,'=', Input::get('period'))
-        ->sum('nssf_amount');
-
+      if(Input::get('type') == "month"){
+       
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('social_security_applicable' ,'=', 1)
-            ->where('financial_month_year' ,'=', Input::get('period'))
+            ->where('financial_month_year' ,'=', Input::get('periodmonth'))
             ->get(); 
 
        $organization = Organization::find(Confide::user()->organization_id);
 
-       $part = explode("-", Input::get('period'));
+       $part = explode("-", Input::get('periodmonth'));
               
               $m = "";
 
@@ -19477,7 +19472,7 @@ public function p9form(){
               $month = $m."_".$part[1];
 
     
-  Excel::create('Nssf Report '.$month, function($excel) use($data,$total,$organization) {
+  Excel::create('Merged Statutory Report '.$month, function($excel) use($data,$organization) {
 
     require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php");
     require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/IOFactory.php");
@@ -19488,11 +19483,11 @@ public function p9form(){
    $objPHPExcel->setActiveSheetIndex(0); 
     
 
-    $excel->sheet('Nssf Report', function($sheet) use($data,$total,$organization,$objPHPExcel){
+    $excel->sheet('Merged Statutory Report', function($sheet) use($data,$organization,$objPHPExcel){
 
 
                $sheet->row(1, array(
-              'Employer Name: ',$organization->name
+              'Organization: ',$organization->name
               ));
               
               $sheet->cell('A1', function($cell) {
@@ -19502,11 +19497,10 @@ public function p9form(){
 
               });
 
-
               $sheet->row(2, array(
-              'Employer Code: ',$organization->nssf_no
+              'Period: ', Input::get('periodmonth')
               ));
-              
+
               $sheet->cell('A2', function($cell) {
 
                // manipulate the cell
@@ -19514,20 +19508,22 @@ public function p9form(){
 
               });
 
+              $sheet->mergeCells('A3:F3');
               $sheet->row(3, array(
-              'Contribution Period: ', Input::get('period')
+              'MERGED STATUTORY REPORT FOR '.Input::get('periodmonth')
               ));
-
-              $sheet->cell('A3', function($cell) {
-
-               // manipulate the cell
-                $cell->setFontWeight('bold');
-
-              });
 
               $sheet->row(4, array(
-              'PAYROLL NO.', 'EMPLOYEE NAME', 'NSSF NO.', 'STD AMT.','VOL AMT.','TOTAL AMT.','ID NO.','REMARKS'
+              '#','PAYROLL NO.', 'EMPLOYEE NAME', 'PAYE AMOUNT', 'NSSF AMOUNT','NHIF AMOUNT'
               ));
+
+              $sheet->row(3, function ($r) {
+
+             // call cell manipulation methods
+              $r->setAlignment('center');
+              $r->setFontWeight('bold');
+ 
+              });
 
               $sheet->row(4, function ($r) {
 
@@ -19537,9 +19533,16 @@ public function p9form(){
               });
                
             $row = 5;
+            $totalpaye = 0;
+            $totalnssf = 0;
+            $totalnhif = 0;
              
              
              for($i = 0; $i<count($data); $i++){
+
+              $totalpaye = $totalpaye + $data[$i]->paye;
+              $totalnssf = $totalnssf + $data[$i]->nssf_amount;
+              $totalnhif = $totalnhif + $data[$i]->nhif_amount;
 
               $name = '';
             
@@ -19550,14 +19553,14 @@ public function p9form(){
              }
 
              $sheet->row($row, array(
-             $data[$i]->personal_file_number,$name,$data[$i]->social_security_number,$data[$i]->nssf_amount,'',$data[$i]->nssf_amount*2,$data[$i]->identity_number,''
+             ($i+1),$data[$i]->personal_file_number,$name,$data[$i]->paye,$data[$i]->nssf_amount,$data[$i]->nhif_amount
              ));
              
              $row++;
              
              }       
              $sheet->row($row, array(
-             '','Total','',$total,'',$total*2,'',''
+             '','','Total',$totalpaye,$totalnssf,$totalnhif
              ));
             $sheet->row($row, function ($r) {
 
@@ -19569,6 +19572,186 @@ public function p9form(){
     });
 
   })->download('xls');
+}else if(Input::get('type') == 'year'){
+
+  $organization = Organization::find(Confide::user()->organization_id);
+
+    
+  Excel::create('Annual Merged Statutory Report '.Input::get('periodyear'), function($excel) use($organization) {
+
+    require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php");
+    require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/IOFactory.php");
+
+
+   $objPHPExcel = new PHPExcel(); 
+   // Set the active Excel worksheet to sheet 0
+   $objPHPExcel->setActiveSheetIndex(0); 
+    
+
+    $excel->sheet('Annual Merged Statutory Report', function($sheet) use($organization,$objPHPExcel){
+
+
+               $sheet->row(1, array(
+              'Organization: ',$organization->name
+              ));
+              
+              $sheet->cell('A1', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(2, array(
+              'Period: ', Input::get('periodyear')
+              ));
+
+              $sheet->cell('A2', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->mergeCells('A4:F4');
+              $sheet->row(4, array(
+              'ANNUAL MERGED STATUTORY REPORT FOR YEAR '.Input::get('periodyear')
+              ));
+
+              $k = 5;
+
+              for($j = 1; $j<=12; $j++){
+
+
+              $data = Transact::getTransact($j,Input::get('periodyear'));
+              $sheet->mergeCells('A'.($j+$k).':F'.($j+$k));
+              if($j == 1 ){ 
+               $sheet->row($j+$k, array(
+              'JANUARY '.Input::get('periodyear')
+              ));
+              }elseif($j == 2 ){
+               $sheet->row($j+$k, array(
+              'FEBRUARY '.Input::get('periodyear')
+              ));
+              }elseif($j == 3 ){
+              $sheet->row($j+$k, array(
+              'MARCH '.Input::get('periodyear')
+              ));
+              }elseif($j == 4 ){
+              $sheet->row($j+$k, array(
+              'APRIL '.Input::get('periodyear')
+              ));
+              }elseif($j == 5 ){
+              $sheet->row($j+$k, array(
+              'MAY '.Input::get('periodyear')
+              ));
+              }elseif($j == 6 ){
+              $sheet->row($j+$k, array(
+              'JUNE '.Input::get('periodyear')
+              ));
+              }elseif($j == 7 ){
+              $sheet->row($j+$k, array(
+              'JULY '.Input::get('periodyear')
+              ));
+              }elseif($j == 8 ){
+              $sheet->row($j+$k, array(
+              'AUGUST '.Input::get('periodyear')
+              ));
+              }elseif($j == 9 ){
+              $sheet->row($j+$k, array(
+              'SEPTEMBER '.Input::get('periodyear')
+              ));
+              }elseif($j == 10 ){
+              $sheet->row($j+$k, array(
+              'OCTOBER '.Input::get('periodyear')
+              ));
+              }elseif($j == 11 ){
+              $sheet->row($j+$k, array(
+              'NOVEMBER '.Input::get('periodyear')
+              ));
+              }elseif($j == 12 ){
+              $sheet->row($j+$k, array(
+              'DECEMBER '.Input::get('periodyear')
+              ));
+              }
+
+             
+
+              $sheet->row($j+$k+1, array(
+              '#','PAYROLL NO.', 'EMPLOYEE NAME', 'PAYE AMOUNT', 'NSSF AMOUNT','NHIF AMOUNT'
+              ));
+
+
+              $sheet->row(4, function ($r) {
+
+             // call cell manipulation methods
+              $r->setAlignment('center');
+              $r->setFontWeight('bold');
+ 
+              });
+
+              $sheet->row($j+$k+1, function ($r) {
+
+             // call cell manipulation methods
+              $r->setAlignment('center'); 
+              $r->setFontWeight('bold');
+ 
+              });
+
+              $sheet->row($j+$k, function ($r) {
+
+             // call cell manipulation methods
+              $r->setAlignment('center'); 
+              $r->setFontWeight('bold');
+ 
+              });
+               
+            $row = $j+$k+2;
+            $totalpaye = 0;
+            $totalnssf = 0;
+            $totalnhif = 0;
+             
+             
+             for($i = 0; $i<count($data); $i++){
+
+              $totalpaye = $totalpaye + $data[$i]->paye;
+              $totalnssf = $totalnssf + $data[$i]->nssf_amount;
+              $totalnhif = $totalnhif + $data[$i]->nhif_amount;
+
+              $name = '';
+            
+             if($data[$i]->middle_name == '' || $data[$i]->middle_name == null){
+               $name= $data[$i]->first_name.' '.$data[$i]->last_name;
+             }else{
+               $name=$data[$i]->first_name.' '.$data[$i]->middle_name.' '.$data[$i]->last_name;
+             }
+
+             $sheet->row($row, array(
+             ($i+1),$data[$i]->personal_file_number,$name,$data[$i]->paye,$data[$i]->nssf_amount,$data[$i]->nhif_amount
+             ));
+             
+             $row++;
+             
+             }       
+             $sheet->row($row, array(
+             '','','Total',$totalpaye,$totalnssf,$totalnhif
+             ));
+            $sheet->row($row, function ($r) {
+
+            // call cell manipulation methods
+            $r->setFontWeight('bold');
+
+            });
+
+
+            $k = $row - $j + 2;
+
+          }
+             
+    });
+
+  })->download('xls');
+}
   
   }else{
     if(Input::get('type') == 'month'){
