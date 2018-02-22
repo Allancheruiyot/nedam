@@ -32,6 +32,10 @@
        </li>
 
        <li>
+           <a href="{{ URL::to('mergeStatutory/selectPeriod') }}"> Merge Statutory Report</a>
+       </li>
+
+       <li>
           <a href="{{ URL::to('itax/download') }}">Download Itax Template</a>
        </li>
 

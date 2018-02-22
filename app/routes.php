@@ -1477,6 +1477,8 @@ Route::get('payrollReports/selectNhifPeriod', 'ReportsController@period_nhif');
 Route::post('payrollReports/nhifReturns', 'ReportsController@nhifReturns');
 Route::get('payrollReports/selectNssfExcelPeriod', 'ReportsController@period_excel');
 Route::post('payrollReports/nssfExcel', 'ReportsController@export');
+Route::get('mergeStatutory/selectPeriod', 'ReportsController@mergeperiod');
+Route::post('mergeStatutory/report', 'ReportsController@mergestatutory');
 Route::get('reports/selectEmployeeOccurence', 'ReportsController@selEmp');
 Route::post('reports/occurence', 'ReportsController@occurence');
 Route::get('reports/CompanyProperty/selectPeriod', 'ReportsController@propertyperiod');

@@ -19440,5 +19440,221 @@ public function p9form(){
   }
   }
 
+  public function mergeperiod()
+  {
+    return View::make('pdf.mergeSelect');
+  }
+
+    public function mergestatutory(){
+
+        if(Input::get('format') == "excel"){
+       $total = DB::table('transact')
+        ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
+        ->where('employee.organization_id',Confide::user()->organization_id)
+        ->where('social_security_applicable' ,'=', 1)
+        ->where('financial_month_year' ,'=', Input::get('period'))
+        ->sum('nssf_amount');
+
+        $data = DB::table('transact')
+            ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
+            ->where('employee.organization_id',Confide::user()->organization_id)
+            ->where('social_security_applicable' ,'=', 1)
+            ->where('financial_month_year' ,'=', Input::get('period'))
+            ->get(); 
+
+       $organization = Organization::find(Confide::user()->organization_id);
+
+       $part = explode("-", Input::get('period'));
+              
+              $m = "";
+
+              if(strlen($part[0]) == 1){
+                $m = "0".$part[0];
+              }else{
+                $m = $part[0];
+              }
+              
+              $month = $m."_".$part[1];
+
+    
+  Excel::create('Nssf Report '.$month, function($excel) use($data,$total,$organization) {
+
+    require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php");
+    require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/IOFactory.php");
+
+
+   $objPHPExcel = new PHPExcel(); 
+   // Set the active Excel worksheet to sheet 0
+   $objPHPExcel->setActiveSheetIndex(0); 
+    
+
+    $excel->sheet('Nssf Report', function($sheet) use($data,$total,$organization,$objPHPExcel){
+
+
+               $sheet->row(1, array(
+              'Employer Name: ',$organization->name
+              ));
+              
+              $sheet->cell('A1', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+
+              $sheet->row(2, array(
+              'Employer Code: ',$organization->nssf_no
+              ));
+              
+              $sheet->cell('A2', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(3, array(
+              'Contribution Period: ', Input::get('period')
+              ));
+
+              $sheet->cell('A3', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(4, array(
+              'PAYROLL NO.', 'EMPLOYEE NAME', 'NSSF NO.', 'STD AMT.','VOL AMT.','TOTAL AMT.','ID NO.','REMARKS'
+              ));
+
+              $sheet->row(4, function ($r) {
+
+             // call cell manipulation methods
+              $r->setFontWeight('bold');
+ 
+              });
+               
+            $row = 5;
+             
+             
+             for($i = 0; $i<count($data); $i++){
+
+              $name = '';
+            
+             if($data[$i]->middle_name == '' || $data[$i]->middle_name == null){
+               $name= $data[$i]->first_name.' '.$data[$i]->last_name;
+             }else{
+               $name=$data[$i]->first_name.' '.$data[$i]->middle_name.' '.$data[$i]->last_name;
+             }
+
+             $sheet->row($row, array(
+             $data[$i]->personal_file_number,$name,$data[$i]->social_security_number,$data[$i]->nssf_amount,'',$data[$i]->nssf_amount*2,$data[$i]->identity_number,''
+             ));
+             
+             $row++;
+             
+             }       
+             $sheet->row($row, array(
+             '','Total','',$total,'',$total*2,'',''
+             ));
+            $sheet->row($row, function ($r) {
+
+            // call cell manipulation methods
+            $r->setFontWeight('bold');
+
+        });
+             
+    });
+
+  })->download('xls');
+  
+  }else{
+    if(Input::get('type') == 'month'){
+
+    $currencies = DB::table('currencies')
+            ->whereNull('organization_id')->orWhere('organization_id',Confide::user()->organization_id)
+            ->select('shortname')
+            ->get();
+
+    $statutories = DB::table('transact')
+            ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
+            ->where('employee.organization_id',Confide::user()->organization_id)
+            ->where('financial_month_year' ,'=', Input::get('periodmonth'))
+            ->get(); 
+
+    $organization = Organization::find(Confide::user()->organization_id);
+
+    $part = explode("-", Input::get('periodmonth'));
+              
+              $m = "";
+
+              if(strlen($part[0]) == 1){
+                $m = "0".$part[0];
+              }else{
+                $m = $part[0];
+              }
+              
+              $month = $m."_".$part[1];
+
+
+    $period = "";
+
+    if($part[0] == 01){
+         $period = 'JANUARY '.$part[1];
+        }else if($part[0] == 02){
+         $period = 'FEBRUARY '.$part[1];
+        }else if($part[0] == 03){
+         $period = 'MARCH '.$part[1];
+        }else if($part[0] == 04){
+         $period = 'APRIL '.$part[1];
+        }else if($part[0] == 05){
+         $period = 'MAY '.$part[1];
+        }else if($part[0] == 06){
+         $period = 'JUNE '.$part[1];
+        }else if($part[0] == 07){
+         $period = 'JULY '.$part[1];
+        }else if($part[0] == 8){
+         $period = 'AUGUST '.$part[1];
+        }else if($part[0] == 9){
+         $period = 'SEPTEMBER '.$part[1];
+        }else if($part[0] == 10){
+         $period = 'OCTOBER '.$part[1];
+        }else if($part[0] == 11){
+         $period = 'NOVEMBER '.$part[1];
+        }else if($part[0] == 12){
+         $period = 'DECEMBER '.$part[1];
+        }
+
+    $pdf = PDF::loadView('pdf.mergedStatutoryReport', compact('statutories','currencies','period','organization'))->setPaper('a4')->setOrientation('potrait');
+  
+    return $pdf->stream('Merged_Statutory_Report_'.$month.'.pdf');
+    
+    }else if(Input::get('type') == 'year'){
+
+    $period = Input::get('periodyear');
+
+    $currencies = DB::table('currencies')
+            ->whereNull('organization_id')->orWhere('organization_id',Confide::user()->organization_id)
+            ->select('shortname')
+            ->get();
+
+    $statutories = DB::table('transact')
+            ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
+            ->where('employee.organization_id',Confide::user()->organization_id)
+            ->get(); 
+
+
+    $organization = Organization::find(Confide::user()->organization_id);
+
+    $pdf = PDF::loadView('pdf.mergedYearStatutoryReport', compact('statutories','currencies','period','organization'))->setPaper('a4')->setOrientation('potrait');
+  
+    return $pdf->stream('Annual_Merged_Statutory_Report_'.Input::get('periodyear').'.pdf');
+    
+    
+    }
+    }
+  }
 
 }
