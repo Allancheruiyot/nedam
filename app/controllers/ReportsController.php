@@ -14,8 +14,8 @@ class ReportsController extends \BaseController {
 
     if(Input::get('format') == "excel"){
       if(Input::get('status') == 'Active'){
-         $from = date('d-m-Y',strtotime(Input::get('from')));
-         $to   = date('d-m-Y',strtotime(Input::get('to')));
+         $from = date('Y-m-d',strtotime(Input::get('from')));
+         $to   = date('Y-m-d',strtotime(Input::get('to')));
 
          $data = Employee::where('in_employment','=','Y')->where('organization_id',Confide::user()->organization_id)->whereBetween('date_joined', array($from, $to))->get();
 
@@ -203,8 +203,8 @@ class ReportsController extends \BaseController {
 
   })->download('xls');
       }else if(Input::get('status') == 'All'){
-        $from = date('d-m-Y',strtotime(Input::get('from')));
-        $to   = date('d-m-Y',strtotime(Input::get('to')));
+        $from = date('Y-m-d',strtotime(Input::get('from')));
+        $to   = date('Y-m-d',strtotime(Input::get('to')));
 
         $data = Employee::where('organization_id',Confide::user()->organization_id)->whereBetween('date_joined', array($from, $to))->get();
 
@@ -309,8 +309,8 @@ class ReportsController extends \BaseController {
 
     if(Input::get('status') == 'Active'){
 
-    $from = date('d-m-Y',strtotime(Input::get('from')));
-    $to   = date('d-m-Y',strtotime(Input::get('to')));
+    $from = date('Y-m-d',strtotime(Input::get('from')));
+    $to   = date('Y-m-d',strtotime(Input::get('to')));
     $type = 'active';
 
     $employees = Employee::where('in_employment','=','Y')->where('organization_id',Confide::user()->organization_id)->whereBetween('date_joined', array($from, $to))->get();
@@ -337,8 +337,8 @@ class ReportsController extends \BaseController {
 
     }else if(Input::get('status') == 'All'){
 
-    $from = date('d-m-Y',strtotime(Input::get('from')));
-    $to   = date('d-m-Y',strtotime(Input::get('to')));
+    $from = date('Y-m-d',strtotime(Input::get('from')));
+    $to   = date('Y-m-d',strtotime(Input::get('to')));
     $type = 'all';
 
     $employees = Employee::where('organization_id',Confide::user()->organization_id)->whereBetween('date_joined', array($from, $to))->get();
