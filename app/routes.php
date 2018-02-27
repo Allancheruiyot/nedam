@@ -4556,7 +4556,6 @@ Route::get('template/deductions', function(){
 });
 
 
-
 /* #################### IMPORT EMPLOYEES ################################## */
 
 Route::post('import/employees', function(){
@@ -4618,6 +4617,163 @@ Route::post('import/employees', function(){
       
     }  
     }  
+
+  });
+   
+  }
+
+
+
+  return Redirect::back()->with('notice', 'Employees have been succeffully imported');
+
+
+
+  
+
+});
+
+
+
+/* #################### IMPORT TRIAL EMPLOYEES ################################## */
+
+Route::post('import/trialemployees', function(){
+
+  
+  if(Input::hasFile('trialemployees')){
+
+      $destination = public_path().'/migrations/';
+
+      $filename = str_random(12);
+
+      $ext = Input::file('trialemployees')->getClientOriginalExtension();
+      $file = $filename.'.'.$ext;
+
+
+
+      
+      
+     
+      Input::file('trialemployees')->move($destination, $file);
+
+
+  
+
+
+    Excel::selectSheetsByIndex(0)->load(public_path().'/migrations/'.$file, function($reader){
+
+          $results = $reader->get();
+          $organization = Organization::find(Confide::user()->organization_id); 
+
+          $cres = count($results); 
+          $cemp = DB::table('employee')->where('organization_id',Confide::user()->organization_id)->count();   
+          $limit = $organization->payroll_licensed;
+
+/*
+          if($limit<$cres){
+           return Redirect::route('migrate')->withDeleteMessage('The imported employees exceed the licensed limit! Please upgrade your license');
+          } else if($limit<($cres+$cemp)){
+             return Redirect::route('migrate')->withDeleteMessage('The imported employees exceed the licensed limit! Please upgrade your license');
+          }else{*/
+
+    $x = 1;
+  
+    foreach ($results as $result) {
+
+      $employee = new Employee;
+
+      $employee->personal_file_number = $result->employment_number;
+      
+      $employee->first_name = 'firstname '.$x;
+      $employee->last_name = 'lastname '.$x;
+      $employee->middle_name = 'middlename '.$x;
+      $employee->identity_number = $x;
+      $employee->branch_id = 1;
+      $employee->department_id = 1;
+      $employee->email_office = 'email'.$x.'@lixnet.net';
+      $employee->basic_pay = str_replace( ',', '', $result->basic_pay);
+      $employee->organization_id = Confide::user()->organization_id;
+      $employee->save();
+
+      $travelallowance = Allowance::where('allowance_name','Travel Allowance')->first();
+      $actingallowance = Allowance::where('allowance_name','Acting Allowance')->first();
+      $otherallowance  = Allowance::where('allowance_name','Other Allowance')->first();
+
+      if($result->travel_allowance != ''){
+
+      $allowance = new EAllowances;
+
+      $allowance->employee_id = $employee->id;
+
+      $allowance->allowance_id = $travelallowance->id;
+
+      $allowance->allowance_amount = str_replace( ',', '', $result->travel_allowance);
+
+      $allowance->save();
+      }
+
+      if($result->no >= 1 && $result->no <= 72){
+
+      $pension = new Pension;
+
+        $pension->employee_id = $employee->id;
+        $pension->employee_contribution=str_replace(",","",$result->basic_pay) * 0.1;
+        $pension->employer_contribution=str_replace(",","",$result->basic_pay) * 0.1;
+        $pension->employee_percentage=10;
+        $pension->employer_percentage=10;
+        $pension->type='Percentage';
+        $pension->save();
+      }
+
+
+      if($result->other_allowance != ''){
+
+      $allowance = new EAllowances;
+
+      $allowance->employee_id = $employee->id;
+
+      $allowance->allowance_id = $otherallowance->id;
+
+      $allowance->allowance_amount = str_replace( ',', '', $result->other_allowance);
+
+      $allowance->save();
+      }
+
+      if($result->acting_allowance != ''){
+      $allowance = new EAllowances;
+
+      $allowance->employee_id = $employee->id;
+
+      $allowance->allowance_id = $actingallowance->id;
+
+      $allowance->allowance_amount = str_replace( ',', '', $result->acting_allowance);
+
+      $allowance->save();
+      }
+
+
+      $deductionid = DB::table('deductions')->where('deduction_name', '=', 'Arrears')->pluck('id');
+
+      if($result->arrears != ''){
+
+      $deduction = new EDeduction;
+
+      $deduction->employee_id = $employee->id;
+
+      $deduction->deduction_id = $deductionid;
+
+      $deduction->deduction_amount = str_replace( ',', '', $result->arrears);
+
+      $deduction->deduction_date = date('Y-m-d');
+
+      $deduction->save();  
+      }    
+
+
+
+      $x++;
+      
+    }  
+    //}  
 
   });
    

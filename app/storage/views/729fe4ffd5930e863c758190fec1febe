@@ -1,5 +1,4 @@
-@extends('layouts.payroll')
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="row">
   
@@ -7,27 +6,28 @@
   DATA MIGRATION
     <hr>
 
-    @if (Session::get('notice'))
-            <div class="alert alert-success">{{ Session::get('notice') }}</div>
-        @endif
+    <?php if(Session::get('notice')): ?>
+            <div class="alert alert-success"><?php echo Session::get('notice'); ?></div>
+        <?php endif; ?>
 
-    @if (Session::has('delete_message'))
+    <?php if(Session::has('delete_message')): ?>
 
       <div class="alert alert-danger">
-      {{ Session::get('delete_message') }}
+      <?php echo Session::get('delete_message'); ?>
+
      </div>
-    @endif
+    <?php endif; ?>
 
 <!-- <div class="col-lg-12">
 <p><strong>Migrate Employees</strong></p>
 
 <div class="col-lg-4">
 
-<a href="{{URL::to('template/employees')}}" > <i class="glyphicon glyphicon-file"></i> Download Employees Template</a>
+<a href="<?php echo URL::to('template/employees'); ?>" > <i class="glyphicon glyphicon-file"></i> Download Employees Template</a>
     <p>&nbsp;</p>
   </div>
     
-    <form method="post" action="{{URL::to('import/employees')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/employees'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
 <div class="col-lg-4">
     <div class="form-group">
 
@@ -50,11 +50,11 @@
 
 <div class="col-lg-4">
 
-<a href="{{URL::to('template/trialemployees')}}" > <i class="glyphicon glyphicon-file"></i> Download Employees Template</a>
+<a href="<?php echo URL::to('template/trialemployees'); ?>" > <i class="glyphicon glyphicon-file"></i> Download Employees Template</a>
     <p>&nbsp;</p>
   </div>
     
-    <form method="post" action="{{URL::to('import/trialemployees')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/trialemployees'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
 <div class="col-lg-4">
     <div class="form-group">
 
@@ -80,11 +80,11 @@
     <div class="col-lg-4">
 <p><strong>Migrate Earnings</strong></p>
 
-<a href="{{URL::to('template/earnings')}}" > <i class="glyphicon glyphicon-file"></i> Download Earnings Template</a>
+<a href="<?php echo URL::to('template/earnings'); ?>" > <i class="glyphicon glyphicon-file"></i> Download Earnings Template</a>
     <p>&nbsp;</p>
   </div>
 
-   <form method="post" action="{{URL::to('import/earnings')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+   <form method="post" action="<?php echo URL::to('import/earnings'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
 <div class="col-lg-4">
       <div class="form-group">
 
@@ -111,10 +111,10 @@
     <div class="col-lg-4">
 <p><strong>Migrate Allowances</strong></p>
 
-<a href="{{URL::to('template/allowances')}}" > <i class="glyphicon glyphicon-file"></i> Download Allowances Template</a>
+<a href="<?php echo URL::to('template/allowances'); ?>" > <i class="glyphicon glyphicon-file"></i> Download Allowances Template</a>
     <p>&nbsp;</p>
   </div>
-    <form method="post" action="{{URL::to('import/allowances')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/allowances'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
     <div class="col-lg-4">
       <div class="form-group">
 
@@ -144,10 +144,10 @@
   <div class="col-lg-4">
 <p><strong>Migrate Reliefs</strong></p>
 
-<a href="{{URL::to('template/reliefs')}}" > <i class="glyphicon glyphicon-file"></i> Download Relief Template</a>
+<a href="<?php echo URL::to('template/reliefs'); ?>" > <i class="glyphicon glyphicon-file"></i> Download Relief Template</a>
     <p>&nbsp;</p>
   </div>
-    <form method="post" action="{{URL::to('import/reliefs')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/reliefs'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
    <div class="col-lg-4">
       <div class="form-group">
 
@@ -175,11 +175,11 @@
 <div class="col-lg-4">
 <p><strong>Migrate Deductions</strong></p>
 
-<a href="{{URL::to('template/deductions')}}" > <i class="glyphicon glyphicon-file"></i> Download Deduction Template</a>
+<a href="<?php echo URL::to('template/deductions'); ?>" > <i class="glyphicon glyphicon-file"></i> Download Deduction Template</a>
     <p>&nbsp;</p>
   </div>
 
-    <form method="post" action="{{URL::to('import/deductions')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/deductions'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
 <div class="col-lg-4">
       <div class="form-group">
 
@@ -204,11 +204,11 @@
 <div class="col-lg-4">
 <p><strong>Migrate Pension</strong></p>
 
-<a href="{{URL::to('template/pensions')}}" > <i class="glyphicon glyphicon-file"></i> Download Pension Template</a>
+<a href="<?php echo URL::to('template/pensions'); ?>" > <i class="glyphicon glyphicon-file"></i> Download Pension Template</a>
     <p>&nbsp;</p>
   </div>
 
-    <form method="post" action="{{URL::to('import/pensions')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/pensions'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
 <div class="col-lg-4">
       <div class="form-group">
 
@@ -236,11 +236,11 @@
 <p><strong>Migrate Bank </strong></p>
   
 
- <a href="{{asset('/Excel/banks.xls') }}"> <i class="glyphicon glyphicon-file"></i> Download Banks Template</a>
+ <a href="<?php echo asset('/Excel/banks.xls'); ?>"> <i class="glyphicon glyphicon-file"></i> Download Banks Template</a>
     <p>&nbsp;</p>
   </div>
 
-    <form method="post" action="{{URL::to('import/banks')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/banks'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
     <div class="col-lg-4">
       <div class="form-group">
 
@@ -267,11 +267,11 @@
   <div class="col-lg-4">
 <p><strong>Migrate Bank Branches</strong></p>
 
-  <a href="{{asset('/Excel/bank_branches.xls') }}"> <i class="glyphicon glyphicon-file"></i> Download Bank Branches Template</a>
+  <a href="<?php echo asset('/Excel/bank_branches.xls'); ?>"> <i class="glyphicon glyphicon-file"></i> Download Bank Branches Template</a>
     <p>&nbsp;</p>
   </div>
 
-    <form method="post" action="{{URL::to('import/bankBranches')}}" accept-charset="UTF-8" enctype="multipart/form-data">
+    <form method="post" action="<?php echo URL::to('import/bankBranches'); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
 <div class="col-lg-4">
       <div class="form-group">
 
@@ -296,4 +296,5 @@
 </div>
   
 
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.payroll', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
