@@ -133,12 +133,13 @@ body {
       <tr>
 
         <td width='20'><strong># </strong></td>
-        <td><strong>No </strong></td>
-        <td><strong>BENEFICIARY NAME </strong></td>
-        <td><strong>ID Number/STAFF NUMBER </strong></td>
-        <td><strong>BANK SORT CODE </strong></td>
-        <td><strong>DESTINATION ACCOUNT NUMBER</strong></td>
-        <td><strong>NET AMOUNT</strong></td>    
+        <td><strong>STAFF NO. </strong></td>
+        <td><strong>EMPLOYEE NAME </strong></td>
+        <td><strong>CODE </strong></td>
+        <td><strong>ACCOUNT NO.</strong></td>
+        <td><strong>AMOUNT</strong></td>    
+        <td><strong>PAY MTHD</strong></td>    
+        <td><strong>DR AC</strong></td>    
       </tr>
       <?php $i =1; ?>
       @foreach($rems as $rem)
@@ -152,13 +153,6 @@ body {
         @else
         <td> {{$rem->first_name.' '.$rem->last_name}}</td>
         @endif
-
-        @if($rem->identity_number != null || $rem->identity_number != '')
-        <td> {{ $rem->identity_number }}</td>
-        @else
-        <td> {{ $rem->work_permit_number }}</td>
-        @endif
-
         <td> {{ $rem->bank_eft_code }}</td>
 
         @if($rem->bank_account_number != null)
@@ -168,6 +162,8 @@ body {
         @endif
        
         <td align="right"> {{ asMoney($rem->net ) }}</td>
+        <td> corporate salary transfer</td>
+        <td> {{ $organization->bank_account_number }}</td>
         </tr>
       <?php $i++; ?>
    

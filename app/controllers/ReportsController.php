@@ -7912,7 +7912,7 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('mode_of_payment' ,'=', 'Bank')
@@ -7930,7 +7930,7 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('mode_of_payment' ,'=', 'Bank')
@@ -7995,7 +7995,7 @@ class ReportsController extends \BaseController {
               
 
               $sheet->row(2, array(
-              'No', 'BENEFICIARY NAME','ID NUMBER/STAFF NUMBER','BANK SORT CODE', 'DESTINATION ACCOUNT NUMBER','NET AMOUNT'
+              'STAFF NO.', 'EMPLOYEE NAME','CODE', 'ACCOUNT NO.','AMOUNT','PAY MTHD','DR AC'
               ));
 
               $sheet->row(2, function ($r) {
@@ -8025,7 +8025,7 @@ class ReportsController extends \BaseController {
                $name=$data[$i]->first_name.' '.$data[$i]->middle_name.' '.$data[$i]->last_name;
              }
              $sheet->row($row, array(
-             $data[$i]->personal_file_number,$name,$idno,$data[$i]->bank_eft_code,$data[$i]->bank_account_number,$data[$i]->net
+             $data[$i]->personal_file_number,$name,$data[$i]->bank_eft_code,$data[$i]->bank_account_number,$data[$i]->net,'corporate salary transfer',$organization->bank_account_number
              ));
 
              $sheet->cell('F'.$row, function($cell) {
@@ -8069,7 +8069,7 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8089,7 +8089,7 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8155,7 +8155,7 @@ class ReportsController extends \BaseController {
               
 
               $sheet->row(2, array(
-              'No', 'BENEFICIARY NAME','ID NUMBER/STAFF NUMBER','BANK SORT CODE', 'DESTINATION ACCOUNT NUMBER','NET AMOUNT'
+              'STAFF NO.', 'EMPLOYEE NAME','CODE', 'ACCOUNT NO.','AMOUNT','PAY MTHD','DR AC'
               ));
 
               $sheet->row(2, function ($r) {
@@ -8229,7 +8229,7 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8249,7 +8249,7 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8313,7 +8313,7 @@ class ReportsController extends \BaseController {
               });
 
               $sheet->row(2, array(
-              'No', 'BENEFICIARY NAME','ID NUMBER/STAFF NUMBER','BANK SORT CODE', 'DESTINATION ACCOUNT NUMBER','NET AMOUNT'
+              'STAFF NO.', 'EMPLOYEE NAME','CODE', 'ACCOUNT NO.','AMOUNT','PAY MTHD','DR AC'
               ));
 
               $sheet->row(2, function ($r) {
@@ -8390,7 +8390,7 @@ class ReportsController extends \BaseController {
         
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('department_id' ,'=', Input::get('department'))
@@ -8411,7 +8411,7 @@ class ReportsController extends \BaseController {
         
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('department_id' ,'=', Input::get('department'))
@@ -8475,7 +8475,7 @@ class ReportsController extends \BaseController {
 
               
               $sheet->row(2, array(
-              'No', 'BENEFICIARY NAME','ID NUMBER/STAFF NUMBER','BANK SORT CODE', 'DESTINATION ACCOUNT NUMBER','NET AMOUNT'
+              'STAFF NO.', 'EMPLOYEE NAME','CODE', 'ACCOUNT NO.','AMOUNT','PAY MTHD','DR AC'
               ));
 
               $sheet->row(2, function ($r) {
@@ -8554,7 +8554,7 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('mode_of_payment' ,'=', 'Bank')
@@ -8571,7 +8571,7 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('mode_of_payment' ,'=', 'Bank')
@@ -8604,7 +8604,7 @@ class ReportsController extends \BaseController {
 
         $part = explode("-", Input::get('period'));
               
-              $m = "";
+              /*$m = "";
 
               if(strlen($part[0]) == 1){
                 $m = "0".$part[0];
@@ -8612,12 +8612,12 @@ class ReportsController extends \BaseController {
                 $m = $part[0];
               }
               
-              $month = $m."_".$part[1];
+              $month = $m."_".$part[1];*/
 
 
     $pdf = PDF::loadView('pdf.remittanceReport', compact('rems','branch','bank','total','currencies','period','organization'))->setPaper('a4')->setOrientation('landscape');
   
-    return $pdf->stream('Pay_Remittance_'.$month.'.pdf');
+    return $pdf->stream('Pay_Remittance_'.Input::get('period').'.pdf');
 
         }else if(Input::get('department') == 'All'){
 
@@ -8632,7 +8632,7 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('branch_id' ,'=', Input::get('branch'))
@@ -8652,7 +8652,7 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('branch_id' ,'=', Input::get('branch'))
@@ -8683,7 +8683,7 @@ class ReportsController extends \BaseController {
 
         $part = explode("-", Input::get('period'));
               
-              $m = "";
+              /*$m = "";
 
               if(strlen($part[0]) == 1){
                 $m = "0".$part[0];
@@ -8691,11 +8691,11 @@ class ReportsController extends \BaseController {
                 $m = $part[0];
               }
               
-              $month = $m."_".$part[1];
+              $month = $m."_".$part[1];*/
 
     $pdf = PDF::loadView('pdf.remittanceReport', compact('rems','branch','bank','total','emps','currencies','period','organization'))->setPaper('a4')->setOrientation('landscape');
   
-    return $pdf->stream('Pay_Remittance_'.$month.'.pdf');
+    return $pdf->stream('Pay_Remittance_'.Input::get('period').'.pdf');
 
         } else if(Input::get('branch') == 'All'){
 
@@ -8710,7 +8710,7 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8730,7 +8730,7 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8761,7 +8761,7 @@ class ReportsController extends \BaseController {
 
         $part = explode("-", Input::get('period'));
               
-              $m = "";
+              /*$m = "";
 
               if(strlen($part[0]) == 1){
                 $m = "0".$part[0];
@@ -8769,11 +8769,11 @@ class ReportsController extends \BaseController {
                 $m = $part[0];
               }
               
-              $month = $m."_".$part[1];
+              $month = $m."_".$part[1];*/
 
     $pdf = PDF::loadView('pdf.remittanceReport', compact('rems','total','branch','bank','currencies','period','organization'))->setPaper('a4')->setOrientation('landscape');
   
-    return $pdf->stream('Pay_Remittance_'.$month.'.pdf');
+    return $pdf->stream('Pay_Remittance_'.Input::get('period').'.pdf');
 
         }  else if(Input::get('branch') != 'All' && Input::get('department') != 'All'){
 
@@ -8790,7 +8790,7 @@ class ReportsController extends \BaseController {
 
       $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8812,7 +8812,7 @@ class ReportsController extends \BaseController {
 
       $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8843,7 +8843,7 @@ class ReportsController extends \BaseController {
 
         $part = explode("-", Input::get('period'));
               
-              $m = "";
+              /*$m = "";
 
               if(strlen($part[0]) == 1){
                 $m = "0".$part[0];
@@ -8851,11 +8851,11 @@ class ReportsController extends \BaseController {
                 $m = $part[0];
               }
               
-              $month = $m."_".$part[1];
+              $month = $m."_".$part[1];*/
 
     $pdf = PDF::loadView('pdf.remittanceReport', compact('rems','branch','bank','total','currencies','period','organization'))->setPaper('a4')->setOrientation('landscape');
   
-    return $pdf->stream('Pay_Remittance_'.$month.'.pdf');
+    return $pdf->stream('Pay_Remittance_'.Input::get('period').'.pdf');
 
         }                       
     
@@ -16851,7 +16851,7 @@ public function period_advrem()
 
         $data = DB::table('transact_advances')
             ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('mode_of_payment' ,'=', 'Bank')
@@ -17088,7 +17088,7 @@ public function period_advrem()
 
         $data = DB::table('transact_advances')
             ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('mode_of_payment' ,'=', 'Bank')
@@ -17325,7 +17325,7 @@ public function period_advrem()
         
         $data = DB::table('transact_advances')
             ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('department_id' ,'=', Input::get('department'))
@@ -17572,7 +17572,7 @@ public function period_advrem()
 
         $rems = DB::table('transact_advances')
             ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('mode_of_payment' ,'=', 'Bank')
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -17623,7 +17623,7 @@ public function period_advrem()
 
         $rems = DB::table('transact_advances')
             ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('mode_of_payment' ,'=', 'Bank')
@@ -17663,7 +17663,7 @@ public function period_advrem()
         } else if(Input::get('branch') == 'All'){
           $total = DB::table('transact_advances')
           ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-          ->join('banks', 'employee.banK_id', '=', 'banks.id')
+          ->join('banks', 'employee.bank_id', '=', 'banks.id')
           ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
           ->where('department_id' ,'=', Input::get('department'))
           ->where('mode_of_payment' ,'=', 'Bank')
@@ -17728,7 +17728,7 @@ public function period_advrem()
 
         $rems = DB::table('transact_advances')
             ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -17789,7 +17789,7 @@ public function period_advrem()
 
         $data = DB::table('transact_advances')
             ->join('employee', 'transact_advances.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.banK_id', '=', 'banks.id')
+            ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('financial_month_year' ,'=', Input::get('period'))
