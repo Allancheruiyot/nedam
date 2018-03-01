@@ -475,6 +475,103 @@ Route::get('template/employees', function(){
 
 
               $sheet->row(1, array(
+     'PERSONAL FILE NUMBER', 'FIRST NAME', 'LAST NAME', 'ID NUMBER','BRANCH','DEPARTMENT', 'BASIC PAY', 'DATE JOINED',''
+));
+
+             
+                $empdata = array();
+
+                foreach($employees as $d){
+
+                  $empdata[] = $d->personal_file_number.':'.$d->first_name.' '.$d->last_name.' '.$d->middle_name;
+                }
+
+                $emplist = implode(", ", $empdata);
+
+                
+
+                $listdata = array();
+
+                foreach($data as $d){
+
+                  $listdata[] = $d->allowance_name;
+                }
+
+                $list = implode(", ", $listdata);
+   
+
+    for($i=2; $i <= 250; $i++){
+
+                $objValidation = $sheet->getCell('B'.$i)->getDataValidation();
+                $objValidation->setType(\PHPExcel_Cell_DataValidation::TYPE_LIST);
+                $objValidation->setErrorStyle(\PHPExcel_Cell_DataValidation::STYLE_INFORMATION);
+                $objValidation->setAllowBlank(false);
+                $objValidation->setShowInputMessage(true);
+                $objValidation->setShowErrorMessage(true);
+                $objValidation->setShowDropDown(true);
+                $objValidation->setErrorTitle('Input error');
+                $objValidation->setError('Value is not in list.');
+                $objValidation->setPromptTitle('Pick from list');
+                $objValidation->setPrompt('Please pick a value from the drop-down list.');
+                $objValidation->setFormula1('"'.$list.'"'); //note this!
+
+
+
+                $objValidation = $sheet->getCell('A'.$i)->getDataValidation();
+                $objValidation->setType(\PHPExcel_Cell_DataValidation::TYPE_LIST);
+                $objValidation->setErrorStyle(\PHPExcel_Cell_DataValidation::STYLE_INFORMATION);
+                $objValidation->setAllowBlank(false);
+                $objValidation->setShowInputMessage(true);
+                $objValidation->setShowErrorMessage(true);
+                $objValidation->setShowDropDown(true);
+                $objValidation->setErrorTitle('Input error');
+                $objValidation->setError('Value is not in list.');
+                $objValidation->setPromptTitle('Pick from list');
+                $objValidation->setPrompt('Please pick a value from the drop-down list.');
+                $objValidation->setFormula1('"'.$emplist.'"'); //note this!
+
+    }
+
+                
+
+                
+        
+
+    });
+
+  })->export('xls');
+});
+
+/*
+* Template routes and generators 
+*/
+
+
+Route::get('template/bulkemployees', function(){
+
+  $bank_data = Bank::all();
+
+  $bankbranch_data = BBranch::all();
+ 
+  $branch_data = Branch::all();
+
+  $department_data = Department::all();
+
+  $employeetype_data = EType::all();
+
+  $jobgroup_data = JGroup::all();
+
+  Excel::create('Employees', function($excel) use($bank_data, $bankbranch_data, $branch_data, $department_data, $employeetype_data, $jobgroup_data, $employees) {
+
+    require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php");
+    require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/Cell/DataValidation.php");
+
+    
+
+    $excel->sheet('employees', function($sheet) use($bank_data, $bankbranch_data, $branch_data, $department_data, $employeetype_data, $jobgroup_data, $employees){
+
+
+              $sheet->row(1, array(
      'PERSONAL FILE NUMBER','EMPLOYEE', 'FIRST NAME', 'LAST NAME', 'ID', 'KRA PIN', 'BASIC PAY', ''
 ));
 
