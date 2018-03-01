@@ -1,0 +1,35 @@
+<form role="form" method="POST" action="<?php echo e(URL::to('/users/login')); ?>" accept-charset="UTF-8">
+    <input type="hidden" name="_token" value="<?php echo e(Session::getToken()); ?>">
+    <fieldset>
+        <div class="form-group">
+            <label for="email"><?php echo e(Lang::get('confide::confide.e_mail')); ?></label>
+            <input class="form-control" tabindex="1" placeholder="<?php echo e(Lang::get('confide::confide.e_mail')); ?>" type="text" name="email" id="email" value="<?php echo e(Input::old('email')); ?>">
+        </div>
+        <div class="form-group">
+        <label for="password">
+            <?php echo e(Lang::get('confide::confide.password')); ?>
+
+        </label>
+        <input class="form-control" tabindex="2" placeholder="<?php echo e(Lang::get('confide::confide.password')); ?>" type="password" name="password" id="password">
+        <p class="help-block">
+            <a href="<?php echo e(URL::to('/users/forgot_password')); ?>"><?php echo e(Lang::get('confide::confide.login.forgot_password')); ?></a>
+        </p>
+        </div>
+        <div class="checkbox">
+            <label for="remember">
+                <input tabindex="4" type="checkbox" name="remember" id="remember" value="1"> <?php echo e(Lang::get('confide::confide.login.remember')); ?>
+
+            </label>
+        </div>
+        <?php if(Session::get('error')): ?>
+            <div class="alert alert-error alert-danger"><?php echo e(Session::get('error')); ?></div>
+        <?php endif; ?>
+
+        <?php if(Session::get('notice')): ?>
+            <div class="alert"><?php echo e(Session::get('notice')); ?></div>
+        <?php endif; ?>
+        <div class="form-group text-right">
+            <button tabindex="3" type="submit" class="btn btn-primary"><?php echo e(Lang::get('confide::confide.login.submit')); ?> &nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i></button>
+        </div>
+    </fieldset>
+</form>
