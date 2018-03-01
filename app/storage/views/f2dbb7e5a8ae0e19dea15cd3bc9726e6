@@ -135,12 +135,13 @@ body {
       <tr>
 
         <td width='20'><strong># </strong></td>
-        <td><strong>No </strong></td>
-        <td><strong>BENEFICIARY NAME </strong></td>
-        <td><strong>ID Number/STAFF NUMBER </strong></td>
-        <td><strong>BANK SORT CODE </strong></td>
-        <td><strong>DESTINATION ACCOUNT NUMBER</strong></td>
-        <td><strong>NET AMOUNT</strong></td>    
+        <td><strong>STAFF NO. </strong></td>
+        <td><strong>EMPLOYEE NAME </strong></td>
+        <td><strong>CODE </strong></td>
+        <td><strong>ACCOUNT NO.</strong></td>
+        <td><strong>AMOUNT</strong></td>    
+        <td><strong>PAY MTHD</strong></td>    
+        <td><strong>DR AC</strong></td>    
       </tr>
       <?php $i =1; ?>
       <?php foreach($rems as $rem): ?>
@@ -154,13 +155,6 @@ body {
         <?php else: ?>
         <td> <?php echo $rem->first_name.' '.$rem->last_name; ?></td>
         <?php endif; ?>
-
-        <?php if($rem->identity_number != null || $rem->identity_number != ''): ?>
-        <td> <?php echo $rem->identity_number; ?></td>
-        <?php else: ?>
-        <td> <?php echo $rem->work_permit_number; ?></td>
-        <?php endif; ?>
-
         <td> <?php echo $rem->bank_eft_code; ?></td>
 
         <?php if($rem->bank_account_number != null): ?>
@@ -170,6 +164,8 @@ body {
         <?php endif; ?>
        
         <td align="right"> <?php echo asMoney($rem->net ); ?></td>
+        <td> corporate salary transfer</td>
+        <td> <?php echo $organization->bank_account_number; ?></td>
         </tr>
       <?php $i++; ?>
    
