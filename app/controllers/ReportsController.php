@@ -8039,7 +8039,7 @@ class ReportsController extends \BaseController {
              
              }       
              $sheet->row($row, array(
-             '','','','','Total',$total
+             '','','','Total',$total
              ));
             $sheet->row($row, function ($r) {
 
@@ -8199,7 +8199,7 @@ class ReportsController extends \BaseController {
              
              }       
              $sheet->row($row, array(
-             '','','','','Total',$total
+             '','','','Total',$total
              ));
             $sheet->row($row, function ($r) {
 
@@ -8357,7 +8357,7 @@ class ReportsController extends \BaseController {
              
              }       
              $sheet->row($row, array(
-             '','','','','Total',$total
+             '','','','Total',$total
              ));
             $sheet->row($row, function ($r) {
 
@@ -8518,7 +8518,7 @@ class ReportsController extends \BaseController {
              
              }       
              $sheet->row($row, array(
-             '','','','','Total',$total
+             '','','','Total',$total
              ));
             $sheet->row($row, function ($r) {
 

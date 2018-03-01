@@ -170,7 +170,7 @@ body {
     @endforeach
     
   
-    <tr><td align="right" colspan='6'><strong>Total Remittances: </strong></td><td align="right" >{{ asMoney($total ) }}</td></tr>     
+    <tr><td align="right" colspan='5'><strong>Total Remittances: </strong></td><td align="right" >{{ asMoney($total ) }}</td><td></td><td></td></tr>     
 
     </table>
 
