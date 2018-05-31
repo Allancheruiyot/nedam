@@ -1,0 +1,59 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	<div class="col-lg-12">
+  <h4><font color='green'>Update Stations</font></h4>
+
+<hr>
+</div>	
+</div>
+
+
+<div class="row">
+	<div class="col-lg-5">
+
+    
+		
+		 <?php if($errors->has()): ?>
+        <div class="alert alert-danger">
+            <?php foreach($errors->all() as $error): ?>
+                <?php echo $error; ?><br>        
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+		 <form method="POST" action="<?php echo e(URL::to('stations/update/'.$stations->id)); ?>" accept-charset="UTF-8">
+   <font color="red"><i>All fields marked with * are mandatory</i></font>
+    <fieldset>
+        <div class="form-group">
+            <label for="username">Station Name <span style="color:red">*</span> :</label>
+            <input class="form-control" placeholder="" type="text" name="station_name" id="name" value="<?php echo $stations->station_name; ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Location <span style="color:red">*</span> :</label>
+            <input class="form-control" placeholder="" type="text" name="location" id="name" value="<?php echo $stations->location; ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Description <span style="color:red">*</span> :</label>
+            <input class="form-control" placeholder="" type="text" name="description" id="name" value="<?php echo $stations->description; ?>" required>
+        </div>
+
+        
+
+        <div class="form-actions form-group">
+        
+          <button type="submit" class="btn btn-primary btn-sm">Update</button>
+        </div>
+
+    </fieldset>
+</form>
+		
+
+  </div>
+
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.erp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

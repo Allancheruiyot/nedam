@@ -1,0 +1,67 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+	<div class="col-lg-12">
+  <h4><font color='green'>Station</font></h4>
+
+<hr>
+</div>
+</div>
+	
+</div>
+<br>
+<p>
+
+
+<div class="row">
+	<div class="col-lg-5">
+
+    <?php if(Session::has('flash_message')): ?>
+
+      <div class="alert alert-success">
+      <?php echo Session::get('flash_message'); ?>
+
+     </div>
+    <?php endif; ?>
+
+    <?php if(Session::has('delete_message')): ?>
+
+      <div class="alert alert-danger">
+      <?php echo Session::get('delete_message'); ?>
+
+     </div>
+    <?php endif; ?>
+
+    
+      
+        
+
+
+    <table  class="table table-condensed table-bordered table-responsive table-hover">
+
+     <tr>
+      <td colspan="2"><font color="green">Station details</font></td>
+    </tr>
+     <tr>
+       <td>Station Name</td><td><?php echo $stations->station_name; ?></td>
+     </tr>
+      <tr>
+       <td>Location</td><td><?php echo $stations->location; ?></td>
+     </tr>
+     <tr>
+       <td>Description</td><td><?php echo $stations->description; ?></td>
+     </tr>
+     <tr>
+       <td>Quantity In</td><td>0</td>
+     </tr>        
+
+    </table>
+ </div>
+
+
+  
+
+</div>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.erp', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

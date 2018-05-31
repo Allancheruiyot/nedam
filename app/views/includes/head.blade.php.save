@@ -155,12 +155,9 @@ $('.datepicker42').datepicker({
 $(function(){
 $('.datepicker21').datepicker({
     format: "yyyy-mm-dd",
-    assumeNearbyYear: true,   
-    autoclose: true,
-    todayBtn: 'linked',
-    todayHighlight: true
+       
+    autoclose: true
 });
-
 });
 </script>
 

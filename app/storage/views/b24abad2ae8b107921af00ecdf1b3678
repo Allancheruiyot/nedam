@@ -34,25 +34,6 @@ hr {
   border-top: 2px dotted #eee;
 }
 
-.hr1 {
-  display: block;
-    height: 1px;
-    width: 300px;
-    border: 0;
-    border-top: 1px solid #000;
-    padding: 0;
-}
-
-.hr2 {
-  display: block;
-    height: 1px;
-    width: 300px;
-    margin-top: -100px;
-    border: 0;
-    border-top: 1px solid #000;
-    padding: 0;
-}
-
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
@@ -77,7 +58,7 @@ body {
 
 <body>
 
-  <div class="header" style='margin-top:-150px;'>
+  <div class="header" style="margin-top:-150px">
      <table >
 
       <tr>
@@ -118,7 +99,7 @@ body {
 
     </table>
    </div>
-
+<br>
 
 
 <div class="footer">
@@ -126,55 +107,48 @@ body {
    </div>
 
 
-	<div class="content" style='margin-top:-50px;'>
-    
-   <div align="center" style="margin-bottom:20px"><strong><?php echo $organization->name; ?></strong></div>
-
+    <div class="content" style='margin-top:-70px;'>
+    <?php if($employee->middle_name != null || $employee->middle_name != ''): ?>
+    <div align="center"><strong>Kin`s Report for <?php echo $employee->first_name.' '.$employee->middle_name.' '.$employee->last_name; ?></strong></div><br>
+    <?php else: ?>
+    <div align="center"><strong>Kin`s Report for <?php echo $employee->first_name.' '.$employee->last_name; ?></strong></div><br>
+    <?php endif; ?>
     <table class="table table-bordered" border='1' cellspacing='0' cellpadding='0'>
 
       <tr>
+        
+
 
         <td width='20'><strong># </strong></td>
-        <td><strong>STAFF NO. </strong></td>
-        <td><strong>EMPLOYEE NAME </strong></td>
-        <td><strong>CODE </strong></td>
-        <td><strong>ACCOUNT NO.</strong></td>
-        <td><strong>AMOUNT</strong></td>    
-        <td><strong>PAY MTHD</strong></td>    
-        <td><strong>DR AC</strong></td>    
+        <td><strong>Relationship</strong></td>
+        <td><strong>Kin Id no.</strong></td>
+        <td><strong>kin Contact</strong></td>
       </tr>
       <?php $i =1; ?>
-      <?php foreach($rems as $rem): ?>
+      <?php foreach($kins as $kin): ?>
       <tr>
-
-
        <td td width='20'><?php echo $i; ?></td>
-        <td> <?php echo $rem->personal_file_number; ?></td>
-         <?php if($rem->middle_name != null || $rem->middle_name != ''): ?>
-        <td> <?php echo $rem->first_name.' '.$rem->middle_name.' '.$rem->last_name; ?></td>
-        <?php else: ?>
-        <td> <?php echo $rem->first_name.' '.$rem->last_name; ?></td>
-        <?php endif; ?>
-        <td> <?php echo $rem->bank_eft_code; ?></td>
-
-        <?php if($rem->bank_account_number != null): ?>
-        <td> <?php echo $rem->bank_account_number; ?></td>
-         <?php else: ?>
-        <td></td>
-        <?php endif; ?>
        
-        <td align="right"> <?php echo asMoney($rem->net ); ?></td>
-        <td> corporate salary transfer</td>
-        <td> <?php echo $organization->bank_account_number; ?></td>
-        </tr>
+        <td> <?php echo $kin->relationship; ?></td>
+        <td> <?php echo $kin->id_number; ?></td>
+        <td> <?php echo $kin->contact; ?></td>
+     </tr>
       <?php $i++; ?>
    
     <?php endforeach; ?>
-    
-  
-    <tr><td align="right" colspan='5'><strong>Total Remittances: </strong></td><td align="right" ><?php echo asMoney($total ); ?></td><td></td><td></td></tr>     
+
+     
+
 
     </table>
+
+<br><br>
+
+    
+
+
+
+
 
    
 </div>

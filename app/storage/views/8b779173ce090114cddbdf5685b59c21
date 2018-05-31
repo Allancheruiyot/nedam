@@ -1,0 +1,277 @@
+<?php 
+	function asMoney($value){
+		return number_format($value, 2);
+	}
+?>
+
+
+<?php $__env->startSection('content'); ?>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#select_all').on('click',function(){
+        if(this.checked){
+            $('.checkbox').each(function(){
+                this.checked = true;
+            });
+        }else{
+             $('.checkbox').each(function(){
+                this.checked = false;
+            });
+        }
+    });
+    
+    $('.checkbox').on('click',function(){
+        if($('.checkbox:checked').length == $('.checkbox').length){
+            $('#select_all').prop('checked',true);
+        }else{
+            $('#select_all').prop('checked',false);
+        }
+    });
+});
+</script>
+
+<style type="text/css">
+	td.total{
+		border-bottom: 3px double #777 !important;
+		font-weight: bold !important;
+	}
+</style>
+
+<!-- PAGE -->
+<div class="row">
+	<div class="col-lg-12">
+		<h4><font color="green">Expense Claims</font></h4>
+		<hr>
+	</div>
+</div>
+
+<!-- SUCCESS MESSAGE -->
+<?php if(Session::has('success')): ?>
+<div class="alert alert-success fade in">
+	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+   <strong>Success! </strong>&emsp;<?php echo Session::get('success'); ?><br>
+   <?php echo Session::forget('success'); ?>
+
+</div>
+<?php endif; ?>
+
+<!-- ERROR MESSAGE -->
+<?php if(Session::has('error')): ?>
+<div class="alert alert-danger fade in">
+	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+   <strong>Error! </strong>&emsp;<?php echo Session::get('error'); ?><br>
+   <?php echo Session::forget('error'); ?>
+
+</div>
+<?php endif; ?>
+
+<!-- BODY SECTION -->
+<div class="row">
+	<div class="col-lg-12">
+		<!-- TAB LINKS -->
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#claimReceipts">Claim Receipts</a></li>
+			<li><a data-toggle="tab" href="#awaitingAuthorization">Awaiting Authorization (<?php echo count($waitingClaims); ?>)</a></li>
+			<li><a data-toggle="tab" href="#awaitingPayment">Awaiting Payment (<?php echo count($paymentClaims); ?>)</a></li>
+			<li><a data-toggle="tab" href="#completedClaims">Settled Claims (<?php echo count($settledClaims); ?>)</a></li>
+			<li><a data-toggle="tab" href="#declinedClaims">Declined Claims (<?php echo count($declinedClaims); ?>)</a></li>
+		</ul>
+
+		<!-- TAB CONTENT -->
+		<div class="tab-content">
+
+			<!-- CURRENT CLAIMS TAB -->
+			<div id="claimReceipts" class="tab-pane fade in active">
+				<form action="<?php echo URL::to('expense_claims/submitClaim'); ?>" method="POST">
+				<hr>
+					<a href="<?php echo URL::to('expense_claims/newReceipt'); ?>" class="btn btn-info btn-sm"><i class="fa fa-plus-square fa-fw"></i> Add Receipt</a>&emsp;
+					<button type="submit" class="btn btn-warning btn-sm"><i class="fa fa-paper-plane fa-fw"></i> Submit for Approval</button>
+				<hr>
+
+				<table class="table table-condensed table-bordered table-responsive table-hover">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="select_all" value=""></th>
+							<th>Receipt From</th>
+							<th>Receipt Date</th>
+							<th>Date Entered</th>
+							<th>Items</th>
+							<th>Status</th>
+							<th>Amount</th>
+							<!-- <th>Action</th> -->
+						</tr>
+					</thead>
+					<tbody>
+						<?php if(count($receipts) > 0): ?>
+						<?php foreach($receipts as $receipt): ?>
+						<tr>
+							<td><input type="checkbox" class="checkbox" name="receipt[]" value="<?php echo $receipt->id; ?>"></td>
+							<td><?php echo $receipt->receipt_from; ?></td>
+							<td><?php echo date('M d, Y', strtotime($receipt->transaction_date)); ?></td>
+							<td><?php echo date('M d, Y', strtotime($receipt->created_at)); ?></td>
+							<td><?php echo ClaimReceiptItem::receiptData($receipt->id)->items; ?></td>
+							<td><?php echo $receipt->status; ?></td>
+							<td><?php echo asMoney(ClaimReceiptItem::receiptData($receipt->id)->total); ?></td>
+							<!-- <td>
+								<a href="<?php echo URL::to('expense_claims/editReceipt/'.$receipt->id); ?>" class="btn btn-success btn-sm">Edit</a>
+							</td> -->
+						</tr>
+						<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+				</form>
+			</div><!-- ./END OF CURRENT CLAIMS -->
+
+
+			<!-- AWAITING AUTHORIZATION -->
+			<div id="awaitingAuthorization" class="tab-pane fade in">
+				<hr>
+				<table class="table table-condensed table-bordered table-responsive table-hover">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Name (Claimer)</th>
+							<th>Date Submitted</th>
+							<th>Receipts</th>
+							<th>Total</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php $count=1; $claimTotal=0; ?>
+						<?php if(count($waitingClaims) > 0): ?>
+						<?php foreach($waitingClaims as $waitingClaim): ?>
+						<?php $claimTotal+=ClaimReceiptItem::getTotals(ClaimReceipt::getId($waitingClaim->id))->grand; ?>
+						<tr>
+							<td><?php echo $count; ?></td>
+							<td><?php echo $waitingClaim->claimer; ?></td>
+							<td><?php echo date('M d, Y', strtotime($waitingClaim->date_submitted)); ?></td>
+							<td><?php echo ClaimReceipt::getReceipt($waitingClaim->id)->receipts; ?></td>
+							<td><?php echo asMoney(ClaimReceiptItem::getTotals(ClaimReceipt::getId($waitingClaim->id))->grand); ?></td>
+							<td>
+								<a href="<?php echo URL::to('expense_claims/approveClaim/'.$waitingClaim->id); ?>" class="btn btn-info btn-sm">View</a>
+							</td>
+						</tr>
+						<?php $count++ ?>
+						<?php endforeach; ?>
+						<?php endif; ?>
+						<tr>
+							<td colspan="3"></td>
+							<td class="total">Claim Total</td>
+							<td class="total"><?php echo asMoney($claimTotal); ?></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div><!-- ./AWAITING AUTHORIZATION -->
+
+
+			<!-- AWAITING PAYMENT -->
+			<div id="awaitingPayment" class="tab-pane fade in">
+				<table class="table table-condensed table-bordered table-responsive table-hover users">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Name (Claimer)</th>
+							<th>Date Submitted</th>
+							<th>Receipts</th>
+							<th>Total</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php $count=1 ?>
+						<?php if(count($paymentClaims) > 0): ?>
+						<?php foreach($paymentClaims as $paymentClaim): ?>
+						<tr>
+							<td><?php echo $count; ?></td>
+							<td><?php echo $paymentClaim->claimer; ?></td>
+							<td><?php echo date('M d, Y', strtotime($paymentClaim->date_submitted)); ?></td>
+							<td><?php echo ClaimReceipt::getReceipt($paymentClaim->id)->receipts; ?></td>
+							<td><?php echo asMoney(ClaimReceiptItem::getTotals(ClaimReceipt::getId($paymentClaim->id))->grand); ?></td>
+							<td>
+								<a href="<?php echo URL::to('expense_claims/payClaim/'.$paymentClaim->id); ?>" class="btn btn-info btn-sm">Pay Claim</a>
+							</td>
+						</tr>
+						<?php $count++ ?>
+						<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div><!-- ./AWAITING PAYMENT -->
+
+
+			<!-- COMPLETED & PAYED CLAIMS -->
+			<div id="completedClaims" class="tab-pane fade in">
+				<table class="table table-condensed table-bordered table-responsive table-hover users">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Name (Claimer)</th>
+							<th>Date Payed</th>
+							<th>Receipts</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php $count=1 ?>
+						<?php if(count($settledClaims) > 0): ?>
+						<?php foreach($settledClaims as $settledClaim): ?>
+						<tr>
+							<td><?php echo $count; ?></td>
+							<td><?php echo $settledClaim->claimer; ?></td>
+							<td><?php echo date('M d, Y', strtotime($settledClaim->updated_at)); ?></td>
+							<td><?php echo ClaimReceipt::getReceipt($settledClaim->id)->receipts; ?></td>
+							<td><?php echo asMoney(ClaimReceiptItem::getTotals(ClaimReceipt::getId($settledClaim->id))->grand); ?></td>
+						</tr>
+						<?php $count++ ?>
+						<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div><!-- ./COMPLETED & SETTLED CLAIMS -->
+
+
+			<!-- DECLINED CLAIMS -->
+			<div id="declinedClaims" class="tab-pane fade in">
+				<table class="table table-condensed table-bordered table-responsive table-hover users">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Name (Claimer)</th>
+							<th>Date Submitted</th>
+							<th>Receipts</th>
+							<th>Total</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php $count=1 ?>
+						<?php if(count($declinedClaims) > 0): ?>
+						<?php foreach($declinedClaims as $declinedClaim): ?>
+						<tr>
+							<td><?php echo $count; ?></td>
+							<td><?php echo $declinedClaim->claimer; ?></td>
+							<td><?php echo date('M d, Y', strtotime($declinedClaim->date_submitted)); ?></td>
+							<td><?php echo ClaimReceipt::getReceipt($declinedClaim->id)->receipts; ?></td>
+							<td><?php echo asMoney(ClaimReceiptItem::getTotals(ClaimReceipt::getId($declinedClaim->id))->grand); ?></td>
+							<td>
+								<a href="<?php echo URL::to('expense_claims/approveClaim/'.$declinedClaim->id); ?>" class="btn btn-info btn-sm">View Claim</a>
+							</td>
+						</tr>
+						<?php $count++ ?>
+						<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div><!-- ./DECLINED CLAIMS -->
+
+		</div>
+	</div>
+</div>
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.accounting', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

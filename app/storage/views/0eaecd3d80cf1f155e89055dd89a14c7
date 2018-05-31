@@ -1,0 +1,15 @@
+<?php echo $__env->make('includes.head', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('includes.nav', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('includes.nav_system', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+<div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <?php echo $__env->yieldContent('content'); ?>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+<?php echo $__env->make('includes.footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

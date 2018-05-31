@@ -219,12 +219,12 @@ class EmployeesController extends \BaseController {
 	public function store()
 	{
 		//
-	$validator = Validator::make($data = Input::all(), Employee::$rules,Employee::$messages);
+/*	$validator = Validator::make($data = Input::all(), Employee::$rules,Employee::$messages);
 
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
-		}
+		}*/
 		
         
         try
@@ -528,14 +528,14 @@ class EmployeesController extends \BaseController {
 
 		//$validator = Employee::validateUpdate(Input::all(), $id);
 
-		$validator = Validator::make(Input::all(), Employee::rolesUpdate($employee->id),Employee::$messages);
+	/*	$validator = Validator::make(Input::all(), Employee::rolesUpdate($employee->id),Employee::$messages);
 
 		//$validator = Validator::make($data = Input::all(), Employee::$rules,Employee::$messages);
 
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
-		}
+		}*/
 
         if ( Input::hasFile('image')) {
 

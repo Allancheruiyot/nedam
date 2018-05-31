@@ -168,9 +168,12 @@ $('.datepicker42').datepicker({
 $(function(){
 $('.datepicker21').datepicker({
     format: "yyyy-mm-dd",
-   
-    autoclose: true
+    assumeNearbyYear: true,   
+    autoclose: true,
+    todayBtn: 'linked',
+    todayHighlight: true
 });
+
 });
 </script>
 

@@ -1,0 +1,393 @@
+<?php
+
+
+function asMoney($value) {
+  return number_format($value, 2);
+}
+
+?>
+<html >
+
+
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<style type="text/css">
+
+table {
+  max-width: 100%;
+  background-color: transparent;
+}
+th {
+  text-align: left;
+}
+.table {
+  width: 70%;
+  margin-bottom: 50px;
+}
+.t {
+  width: 30%;
+  margin-bottom: 2px;
+}
+hr {
+  margin-top: 1px;
+  margin-bottom: 2px;
+  border: 0;
+  border-top: 2px dotted #eee;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.428571429;
+  color: #333;
+  background-color: #fff;
+}
+
+.emp {
+    display: inline-block;
+    width:700px;
+}
+.pic {
+    display: inline-block;
+    width:200px;
+}
+
+
+ @page  { margin: 170px 30px; }
+ .header { position: top; left: 0px; top: -150px; right: 0px; height: 150px;  text-align: center; }
+ .content {margin-top: -100px; margin-bottom: -150px}
+ .footer { position: fixed; left: 0px; bottom: -180px; right: 0px; height: 50px;  }
+ .footer .page:after { content: counter(page, upper-roman); }
+
+
+
+</style>
+
+</head>
+
+<body>
+
+  <div class="header" style="margin-top:-150px">
+     <table >
+
+      <tr>
+
+
+       
+        <td style="width:150px">
+
+            <img src="<?php echo public_path().'/uploads/logo/'.$organization->logo; ?>" alt="logo" width="80%">
+
+    
+        </td>
+
+        <td>
+        <strong>
+          <?php echo strtoupper($organization->name); ?>
+
+          </strong><br>
+          <?php echo $organization->phone; ?><br>
+          <?php echo $organization->email; ?><br>
+          <?php echo $organization->website; ?><br>
+          <?php echo $organization->address; ?>
+
+       
+
+        </td>
+        
+
+      </tr>
+
+
+      <tr>
+
+        <hr>
+      </tr>
+
+
+
+    </table>
+   </div>
+
+<div class="footer">
+     <p class="page">Page <?php $PAGE_NUM ?></p>
+   </div>
+
+   <div style='width:1000px;'>
+
+<div class="pic">
+<table class="t">
+<tr>
+    <?php if($employee->photo != null || $employee->photo != ''): ?>
+    <td><img src="<?php echo asset('/public/uploads/employees/photo/'.$employee->photo); ?>" alt="Photo" width="150px"/></td>
+    <?php else: ?>
+    <td></td>
+    <?php endif; ?>
+</tr>
+<tr>
+    <?php if($employee->signature != null || $employee->signature != ''): ?>
+    <td><img src="<?php echo asset('/public/uploads/employees/signature/'.$employee->signature); ?>" alt="Signature" width="100px"/></td>
+    <?php else: ?>
+    <td></td>
+    <?php endif; ?>
+</tr>
+</table>
+</div>
+
+
+
+
+	<div class="emp">
+
+
+    <table class="table table-bordered" border='1' cellspacing='0' cellpadding='0'>
+      <tr><td><strong>Payroll Number: </strong></td><td><?php echo $employee->personal_file_number; ?></td></tr>
+      <?php if($employee->middle_name != null || $employee->middle_name != ' '): ?>
+      <tr><td><strong>Employee Name: </strong></td><td> <?php echo $employee->last_name.' '.$employee->first_name.' '.$employee->middle_name; ?></td>
+      <?php else: ?>
+      <td><strong>Employee Name: </strong></td><td> <?php echo $employee->last_name.' '.$employee->first_name; ?></td>
+      <?php endif; ?>
+      </tr>
+      <tr><td><strong>Identity Number: </strong></td><td><?php echo $employee->identity_number; ?></td></tr>
+      <tr><td><strong>Kra Pin: </strong></td>
+        <?php if($employee->pin != null): ?>
+        <td><?php echo $employee->pin; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Nssf Number: </strong></td>
+        <?php if($employee->social_security_number != null): ?>
+        <td><?php echo $employee->social_security_number; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Nhif Number: </strong></td>
+        <?php if($employee->hospital_insurance_number != null): ?>
+        <td><?php echo $employee->hospital_insurance_number; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Work Permit: </strong></td>
+        <?php if($employee->work_permit_number != null): ?>
+        <td><?php echo $employee->work_permit_number; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Job Title: </strong></td>
+        <?php if($employee->job_title != null): ?>
+        <td><?php echo $employee->job_title; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Branch: </strong></td> 
+        <?php if($employee->branch_id != 0): ?>
+        <td> <?php echo $employee->branch->name; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Department: </strong></td>
+        <?php if($employee->department_id != 0): ?>
+        <td> <?php echo $employee->department->department_name; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Job Group: </strong></td>
+        <?php if($employee->job_group_id != 0): ?>
+        <td>
+            <?php 
+            $jgroup = DB::table('job_group')->where('id', '=', $employee->job_group_id)->pluck('job_group_name');            
+            ?>
+
+            <?php echo $jgroup; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td colspan='2' style='height:20px;'></td></tr>
+        <?php if(count($benefits) > 0): ?>
+        <tr><td colspan='2' ><strong>Job group benefits: </strong></td></tr>
+        <tr><td><strong>Name: </strong></td><td><strong>Amount</strong></td></tr>
+      <?php foreach($benefits as $benefit): ?>
+      <tr><td><?php echo Benefitsetting::getBenefit($benefit->benefit_id); ?></td>
+      <td><?php echo asMoney($benefit->amount); ?></td></tr>
+      <?php endforeach; ?>
+      <tr><td colspan='2' style='height:20px;'></td></tr>
+        <?php else: ?>
+        <?php endif; ?>
+
+        <tr><td><strong>Employee Type: </strong></td>
+        <?php if($employee->type_id != 0): ?>
+        <td>
+            <?php 
+            $etype = DB::table('employee_type')->where('id', '=', $employee->type_id)->pluck('employee_type_name');            
+            ?>
+
+            <?php echo $etype; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Gender:</strong></td>
+        <?php if($employee->gender != null): ?>
+        <td><?php echo $employee->gender; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Marital Status:</strong></td>
+        <?php if($employee->marital_status != null): ?>
+        <td><?php echo $employee->marital_status; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Date of Birth:</strong></td>
+        <?php if($employee->yob != null): ?>
+        <td><?php echo $employee->yob; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Citizenship:</strong></td>
+        <?php if($employee->citizenship_id != null || $employee->citizenship_id != ''): ?>
+        <td><?php 
+            $citizenship = DB::table('citizenships')->where('id', '=', $employee->citizenship_id)->pluck('name');            
+            ?>
+
+            <?php echo $citizenship; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+
+        <tr><td><strong>Employee Bank: </strong></td>
+        <?php if($employee->bank_id != 0): ?>
+        <td>
+            <?php 
+            $bank = DB::table('banks')->where('id', '=', $employee->bank_id)->pluck('bank_name');            
+            ?>
+
+            <?php echo $bank; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+ 
+        <tr><td><strong>Bank Branch: </strong></td>
+        <?php if($employee->bank_id != 0): ?>
+        <td>
+            <?php 
+            $bbranch = DB::table('bank_branches')->where('id', '=', $employee->bank_branch_id)->pluck('bank_branch_name');            
+            ?>
+
+            <?php echo $bbranch; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Mode of Payment: </strong></td>
+        <?php if($employee->mode_of_payment == 'Others'): ?>
+        <td><?php echo $employee->custom_field1; ?></td>
+        <?php else: ?>
+        <td><?php echo $employee->mode_of_payment; ?></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Bank Account Number:</strong></td>
+        <?php if($employee->bank_account_number != null): ?>
+        <td><?php echo $employee->bank_account_number; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Sort Code:</strong></td>
+        <?php if($employee->bank_eft_code != null): ?>
+        <td><?php echo $employee->bank_eft_code; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Swift Code:</strong></td>
+        <?php if($employee->swift_code != null): ?>
+        <td><?php echo $employee->swift_code; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Office Email:</strong></td>
+        <?php if($employee->email_office != null): ?>
+        <td><?php echo $employee->email_office; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Personal Email:</strong></td>
+        <?php if($employee->email_personal != null): ?>
+        <td><?php echo $employee->email_personal; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Mobile Phone:</strong></td>
+        <?php if($employee->telephone_mobile != null): ?>
+        <td><?php echo $employee->telephone_mobile; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Postal Address:</strong></td>
+        <?php if($employee->postal_address != null): ?>
+        <td><?php echo $employee->postal_address; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Postal Zip:</strong></td>
+        <?php if($employee->postal_zip != null): ?>
+        <td><?php echo $employee->postal_zip; ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+        <tr><td><strong>Date Joined:</strong></td>
+        <?php if($employee->date_joined != null): ?>
+        <td><?php echo date('d-M-Y',strtotime($employee->date_joined)); ?></td>
+        <?php else: ?>
+        <td></td>
+        <?php endif; ?>
+        </tr>
+         <tr><td><strong>In Employment:</strong></td>
+        <?php if($employee->in_employment == 'Y'): ?>
+        <td>Yes</td>
+        <?php else: ?>
+        <td>No</td>
+        <?php endif; ?>
+        
+        <?php if($employee->termination_date != null): ?>
+        <tr><td><strong>Date of Termination:</strong></td>
+        <td><?php echo date('d-M-Y',strtotime($employee->termination_date)); ?></td> 
+        </tr>
+        <?php endif; ?>
+    </table>
+
+<br><br>
+
+   <div>
+</div>
+
+
+</body>
+
+</html>
+
+
+

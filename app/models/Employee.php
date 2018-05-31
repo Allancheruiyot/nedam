@@ -23,7 +23,7 @@ class Employee extends Eloquent {
 
 
 	// Add your validation rules here
-	public static $rules = [
+/*	public static $rules = [
 	     'personal_file_number' => 'required|unique:employee',
 	     'lname' => 'required',
 		 'fname' => 'required',
@@ -102,7 +102,7 @@ class Employee extends Eloquent {
         'swift_code.unique'=>'That swift code already exists!',
         'bank_account_number.unique'=>'That bank account number already exists!',
         'bank_eft_code.unique'=>'That bank eft code already exists!',
-    );
+    );*/
 
 	// Don't forget to fill this array
 	protected $fillable = [];

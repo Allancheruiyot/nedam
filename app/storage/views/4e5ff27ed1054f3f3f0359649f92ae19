@@ -1,0 +1,52 @@
+<?php $__env->startSection('content'); ?>
+
+
+<div class="row">
+
+	<div class="col-lg-5">
+
+		<form method="post" action="<?php echo URL::to('users/password/'.$user->id); ?>">
+
+
+        <div class="form-group">
+            <label for="password"><?php echo e(Lang::get('confide::confide.password')); ?></label>
+            <input class="form-control" placeholder="<?php echo e(Lang::get('confide::confide.password')); ?>" type="password" name="password" id="password">
+        </div>
+
+
+        <div class="form-group">
+            <label for="password_confirmation"><?php echo e(Lang::get('confide::confide.password_confirmation')); ?></label>
+            <input class="form-control" placeholder="<?php echo e(Lang::get('confide::confide.password_confirmation')); ?>" type="password" name="password_confirmation" id="password_confirmation">
+        </div>
+
+         <div class="form-actions form-group">
+        
+          <button type="submit" class="btn btn-info btn-sm">Update Password</button>
+        </div>
+
+        </form>
+
+        <?php if(Session::has('error')): ?>
+            <div class="alert alert-error alert-danger">
+                
+                    <?php echo Session::get('error'); ?>
+
+               
+            </div>
+        <?php endif; ?>
+		
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.system', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

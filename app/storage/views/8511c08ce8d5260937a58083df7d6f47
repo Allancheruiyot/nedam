@@ -1,12 +1,33 @@
 <?php echo HTML::script('media/jquery-1.8.0.min.js'); ?>
 
+
+<?php 
+$organization = Organization::find(Confide::user()->organization_id);
+
+$string = $organization->name;
+
+function initials($str,$pfn) {
+    $ret = '';
+    foreach (explode(' ', $str) as $word){
+      if($word == null){
+        $ret .= strtoupper($str[0]); 
+      }else{
+        $ret .= strtoupper($word[0]);
+      }
+      }
+    return $ret.'.'.($pfn+1);
+}
+
+?>
+
+
 <style>
 #imagePreview {
     width: 180px;
     height: 180px;
     background-position: center center;
-    background-image:url("<?php echo asset('/public/uploads/employees/photo/'.$employee->photo); ?>");
     background-size: cover;
+    background-image:url("<?php echo asset('/public/uploads/employees/photo/default_photo.png'); ?>");
     -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
     display: inline-block;
 }
@@ -14,9 +35,9 @@
     width: 180px;
     height: 100px;
     background-position: center center;
-    background-image:url("<?php echo asset('/public/uploads/employees/signature/'.$employee->signature); ?>");
     background-size: cover;
     -webkit-box-shadow: 0 0 1px 1px rgba(0, 0, 0, .3);
+    background-image:url("<?php echo asset('/public/uploads/employees/signature/sign_av.jpg'); ?>");
     display: inline-block;
 }
 </style>
@@ -78,46 +99,24 @@ tr,#dcontainer input,#dcontainer textarea{height:30px;width:180px;border:1px sol
 
 <script type="text/javascript">
 $(document).ready(function() {
+    $('#contract').hide();
 
-$('#modep option#om').each(function() {
-    if (this.selected){
-        $('#newmode').show();
-    }else{
-        $('#newmode').hide();
-        $('#omode').val('');
-    }
-});
+    $('#newmode').hide();
 
-$("#modep").on("change", function()
+    $("#modep").on("change", function()
     {
     if($(this).val() == 'Others'){
         $('#newmode').show();
-        $('#omode').val('<?php echo $employee->custom_field1; ?>');
     }else{
         $('#newmode').hide();
         $('#omode').val('');
     }
     });
 
-$('#type_id').each(function() {
-    if ($(this).val() == 2){
-       $('#startdate').val("<?php echo $employee->start_date; ?>");
-       $('#enddate').val("<?php echo $employee->end_date; ?>");
-       $('#contract').show();
-     }else{
-       $('#contract').hide();
-       $('#startdate').val('');
-       $('#enddate').val('');
-     }
-
-});
     $("#type_id").on("change", function()
     {
     if($(this).val() == 2){
         $('#contract').show();
-        $('#startdate').val("<?php echo $employee->start_date; ?>");
-        $('#enddate').val("<?php echo $employee->end_date; ?>");
-
     }else{
         $('#contract').hide();
         $('#startdate').val('');
@@ -137,7 +136,7 @@ $('#type_id').each(function() {
             reader.onloadend = function(){ // set image data as background of div
                 $("#imagePreview").css("background-image", "url("+this.result+")");
             }
-            }
+        }
     });
 
     $('#bank_id').change(function(){
@@ -145,15 +144,15 @@ $('#type_id').each(function() {
         { option: $(this).val() }, 
         function(data) {
             $('#bbranch_id').empty(); 
+            $('#bbranch_id').append("<option>----------------select Bank Branch--------------------</option>");
+            $('#bbranch_id').append("<option value='cnew'>Create New</option>");
             $.each(data, function(key, element) {
-                $('#bbranch_id').append("<option value='" + key +"'>" + element + "</option>");
+            $('#bbranch_id').append("<option value='" + key +"'>" + element + "</option>");
             });
         });
     });
-
 });
 </script>
-
 
 
 <script type="text/javascript">
@@ -177,41 +176,220 @@ $(document).ready(function() {
 
 <?php $__env->startSection('content'); ?>
 
+
 <div class="row">
   <div class="col-lg-12">
 
-
-        <?php echo HTML::style('jquery-ui-1.11.4.custom/jquery-ui.css'); ?>
+    
+  <?php echo HTML::style('jquery-ui-1.11.4.custom/jquery-ui.css'); ?>
 
   <?php echo HTML::script('jquery-ui-1.11.4.custom/jquery-ui.js'); ?>
 
 
-  <style>
-    label, input#cname, input#ename { display:block; }
-    input.text { margin-bottom:12px; width:95%; padding: .4em; }
-    fieldset { padding:0; border:0; margin-top:25px; }
-    h1 { font-size: 1.2em; margin: .6em 0; }
-    div#users-contain { width: 350px; margin: 20px 0; }
-    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
-    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
-    .ui-dialog .ui-state-error { padding: .3em; }
-    .validateTips { border: 1px solid transparent; padding: 0.3em; }
-    .ui-dialog 
-    {
-    position: fixed;
-    margin-bottom: 1150px;
+  <script type="text/javascript">
+  $(document).ready(function(){
+    
+      $('#empdetails').click(function(e){
+        e.preventDefault();
+
+        /*var kdata = $('.kindata').map(function(){
+          return this.value;
+        }).get();*/
+
+        var kind= $('.kindata').serialize();
+
+        var docdata = new FormData($("#form3"));
+
+        //var docdata= $('.docdata').serialize();
+
+        /*var kfn = $('input[name^="kin_first_name"]').map(function(){
+          return this.value;
+        }).get();
+
+        var kln = $('input[name^="kin_last_name"]').map(function(){
+          return this.value;
+        }).get();
+
+        var kmn = $('input[name^="kin_middle_name"]').map(function(){
+          return this.value;
+        }).get();
+
+        var kid = $('input[name^="id_number"]').map(function(){
+          return this.value;
+        }).get();
+
+        var krel = $('input[name^="relationship"]').map(function(){
+          return this.value;
+        }).get();
+
+        var kcon = $('input[name^="contact"]').map(function(){
+          return this.value;
+        }).get();*/
+
+        /*var path = $('input[name^="path"]').map(function(){
+          return this.value;
+        }).get();
+
+        var name = $('input[name^="doc_name"]').map(function(){
+          return this.value;
+        }).get();
+
+        var desc = $('input[name^="description"]').map(function(){
+          return this.value;
+        }).get();
+
+        var fdate = $('input[name^="fdate"]').map(function(){
+          return this.value;
+        }).get();
+
+        var edate = $('input[name^="edate"]').map(function(){
+          return this.value;
+        }).get();
+
+        var __data = $('input[name^="kin_first_name"]').serialize();*/
+
+
+        var fname = $( "#fname" ),
+            lname = $( "#lname" ),
+            identity_number = $( "#identity_number" ),
+            dob = $( "#dob" ),
+            gender = $( ".gen" ),
+            jgroup = $( "#jgroup_id" ),
+            type = $( "#type_id" ), 
+            pay = $( "#pay" ),
+            djoined = $( "#djoined" ),
+            email_office = $( "#email_office" ),
+            email_personal = $( "#email_personal" ),
+            allFields = $( [] ).add( fname ).add( lname ).add( identity_number ).add( dob ).add( gender ).add( jgroup ).add( type ).add( pay ).add( djoined ).add( email_office ).add( email_personal ),
+            tips = $( ".validateTips" );
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength( o,m) {
+      if ( o.val().length == 0 ) {
+        o.addClass( "ui-state-error" );
+        updateTips( m );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
     }
 
+    var valid = true;
+      allFields.removeClass( "ui-state-error" );
 
-    .ui-dialog-titlebar-close {
-  background: url("<?php echo URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_888888_256x240.png');; ?>") repeat scroll -93px -128px rgba(0, 0, 0, 0);
-  border: medium none;
-}
-.ui-dialog-titlebar-close:hover {
-  background: url("<?php echo URL::asset('jquery-ui-1.11.4.custom/images/ui-icons_222222_256x240.png');; ?>") repeat scroll -93px -128px rgba(0, 0, 0, 0);
-}
-    
-  </style>
+      /*valid = valid && checkLength( lname, "Please insert last name!" );
+ 
+      valid = valid && checkLength( fname, "Please insert first name!" );
+
+      valid = valid && checkLength( identity_number, "Please insert employee`s identity number!" );
+
+      valid = valid && checkLength( dob, "Please insert employee`s date of birth!" );
+
+      valid = valid && checkLength( gender, "Please select gender!" );
+
+      valid = valid && checkLength( jgroup, "Please select employee`s job group!" );
+
+      valid = valid && checkLength( type, "Please select employee`s type!" );
+
+      valid = valid && checkLength( djoined, "Please insert date employee joined company!" );
+
+      valid = valid && checkLength( email_office, "Please insert employee`s office email address!" );
+
+      valid = valid && checkRegexp( lname, /^[a-z]([0-9a-z_\s])+$/i, "Please insert a valid name for last name!" );
+
+      valid = valid && checkRegexp( fname, /^[a-z]([0-9a-z_\s])+$/i, "Please insert a valid name for first name!" );
+
+      valid = valid && checkRegexp( email_office, /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, "Please insert a valid office email address!" );
+
+      valid = valid && checkRegexp( email_personal, /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/, "Please insert a valid personal email address!" );
+*/
+      
+ 
+     
+
+        
+            //get form id
+             $.ajax({
+                      url     : "<?php echo URL::to('createEmployee'); ?>",
+                      type    : "POST",
+                      async   : false,
+                      data    : {
+                                 'personal_file_number':$('#personal_file_number').val(),
+                                 'image' :$('#uploadFile').val(),
+                                 'signature' :$('#signFile').val(),
+                                 'fname' :$('#fname').val(),
+                                 'lname' :$('#lname').val(),
+                                 'mname' :$('#mname').val(),
+                                 'identity_number' :$('#identity_number').val(),
+                                 'passport_number' :$('#passport_number').val(),
+                                 'dob' :$('#dob').val(),
+                                 'status' :$('#status').val(),
+                                 'citizenship' :$('#citizenship').val(),
+                                 'education' :$('#education').val(),
+                                 'gender' :$('#gender').val(),
+                                 'pin' :$('#pin').val(),
+                                 'social_security_number' :$('#social_security_number').val(),
+                                 'hospital_insurance_number' :$('#hospital_insurance_number').val(),
+                                 'i_tax' :$('#itax').val(),
+                                 'i_tax_relief' :$('#irel').val(),
+                                 'a_nssf' :$('#a_nssf').val(),
+                                 'a_nhif' :$('#a_nhif').val(),
+                                 'modep' :$('#modep').val(),
+                                 'omode' :$('#omode').val(),
+                                 'bank_id' :$('#bank_id').val(),
+                                 'bbranch_id' :$('#bbranch_id').val(),
+                                 'bank_account_number' :$('#bank_account_number').val(),
+                                 'bank_eft_code' :$('#bank_eft_code').val(),
+                                 'swift_code' :$('#swift_code').val(),
+                                 'branch_id' :$('#branch_id').val(),
+                                 'department_id' :$('#department_id').val(),
+                                 'jgroup_id' :$('#jgroup_id').val(),
+                                 'type_id' :$('#type_id').val(),
+                                 'startdate' :$('#startdate').val(),
+                                 'enddate' :$('#enddate').val(),
+                                 'work_permit_number' :$('#work_permit_number').val(),
+                                 'jtitle' :$('#jtitle').val(),
+                                 'pay' :$('#pay').val(),
+                                 'djoined' :$('#djoined').val(),
+                                 'telephone_mobile' :$('#telephone_mobile').val(),
+                                 'email_office' :$('#email_office').val(),
+                                 'email_personal' :$('#email_personal').val(),
+                                 'zip' :$('#zip').val(),
+                                 'address' :$('#address').val(),
+                                 'ch' :$('#active').val(),
+                                 'kindata':kind,
+                                 'docinfo':docdata
+                               },
+                      success : function(s){
+                        alert(s);
+                      }        
+        });
+        
+        });
+            //this function will create loop for all forms in page
+           
+  });
+  </script>
+
+ 
 
   <script>
   $(function() {
@@ -221,7 +399,7 @@ $(document).ready(function() {
       cname = $( "#cname" ),
       
       allFields = $( [] ).add( cname ),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips1" );
  
     function updateTips( t ) {
       tips
@@ -337,7 +515,7 @@ $(document).ready(function() {
       ename = $( "#ename" ),
       
       allFields = $( [] ).add( ename ),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips2" );
  
     function updateTips( t ) {
       tips
@@ -454,7 +632,7 @@ $(document).ready(function() {
       bname = $( "#bname" ),
       bcode = $( "#bcode" ),
       allFields = $( [] ).add( bname ).add( bcode ),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips3" );
  
     function updateTips( t ) {
       tips
@@ -541,7 +719,7 @@ $(document).ready(function() {
  
     dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
-      height: 330,
+      height: 350,
       width: 350,
       modal: true,
       buttons: {
@@ -580,7 +758,7 @@ $(document).ready(function() {
       bcode = $( "#bcode" ),
       bid   = $( "#bid" ),
       allFields = $( [] ).add( bname ).add( bcode ).add( bid ),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips4" );
  
     function updateTips( t ) {
       tips
@@ -663,7 +841,7 @@ $(document).ready(function() {
  
     dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
-      height: 330,
+      height: 350,
       width: 350,
       modal: true,
       buttons: {
@@ -701,7 +879,7 @@ $(document).ready(function() {
       // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
       bname = $( "#bname" ),
       allFields = $( [] ).add( bname ),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips5" );
  
     function updateTips( t ) {
       tips
@@ -782,7 +960,7 @@ $(document).ready(function() {
  
     dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
-      height: 250,
+      height: 280,
       width: 350,
       modal: true,
       buttons: {
@@ -820,7 +998,7 @@ $(document).ready(function() {
       dname = $( "#dname" ),
       dcode = $( "#dcode" ),
       allFields = $( [] ).add( dname ).add(dcode),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips6" );
  
     function updateTips( t ) {
       tips
@@ -902,7 +1080,7 @@ $(document).ready(function() {
  
     dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
-      height: 250,
+      height: 280,
       width: 350,
       modal: true,
       buttons: {
@@ -940,7 +1118,7 @@ $(document).ready(function() {
       // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
       jname = $( "#jname" ),
       allFields = $( [] ).add( jname ),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips7" );
  
     function updateTips( t ) {
       tips
@@ -975,11 +1153,11 @@ $(document).ready(function() {
       var valid = true;
       allFields.removeClass( "ui-state-error" );
  
-      valid = valid && checkLength( jname, "Please insert department name!" );
+      valid = valid && checkLength( jname, "Please insert job group!" );
 
       //valid = valid && checkLength( bid, "Please select bank for this branch!" );
  
-      valid = valid && checkRegexp( jname, /^[a-z]([0-9a-z_\s])+$/i, "Please insert a valid name for department name." );
+      valid = valid && checkRegexp( jname, /^[a-z]([0-9a-z_\s])+$/i, "Please insert a valid name for job group." );
  
       if ( valid ) {
 
@@ -1021,7 +1199,7 @@ $(document).ready(function() {
  
     dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
-      height: 250,
+      height: 280,
       width: 350,
       modal: true,
       buttons: {
@@ -1058,7 +1236,7 @@ $(document).ready(function() {
       // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
       tname = $( "#tname" ),
       allFields = $( [] ).add( tname ),
-      tips = $( ".validateTips" );
+      tips = $( ".validateTips8" );
  
     function updateTips( t ) {
       tips
@@ -1139,7 +1317,7 @@ $(document).ready(function() {
  
     dialog = $( "#dialog-form" ).dialog({
       autoOpen: false,
-      height: 250,
+      height: 280,
       width: 350,
       modal: true,
       buttons: {
@@ -1169,11 +1347,10 @@ $(document).ready(function() {
   });
   </script>
 
-   <?php echo HTML::script('datepicker/js/bootstrap-datepicker.min.js'); ?>
-
+   
 
 <div id="dialog-form" title="Create new citizenship name">
-  <p class="validateTips">Please insert citizenship name.</p>
+  <p class="validateTips1">Please insert citizenship name.</p>
  
   <form>
     <fieldset>
@@ -1187,7 +1364,7 @@ $(document).ready(function() {
 </div>
 
 <div id="dialog-form" title="Create new education level">
-  <p class="validateTips">Please insert education level.</p>
+  <p class="validateTips2">Please insert education level.</p>
  
   <form>
     <fieldset>
@@ -1201,7 +1378,7 @@ $(document).ready(function() {
 </div>
 
 <div id="dialog-form" title="Create new bank">
-  <p class="validateTips">Please insert bank name.</p>
+  <p class="validateTips3">Please insert bank name.</p>
  
   <form>
     <fieldset>
@@ -1218,7 +1395,7 @@ $(document).ready(function() {
 </div>
 
 <div id="dialog-form" title="Create new bank branch">
-  <p class="validateTips">Please fill fields in *.</p>
+  <p class="validateTips4">Please fill fields in *.</p>
  
   <form>
     <fieldset>
@@ -1237,7 +1414,7 @@ $(document).ready(function() {
 </div>
 
 <div id="dialog-form" title="Create new branch">
-  <p class="validateTips">Please insert branch.</p>
+  <p class="validateTips5">Please insert branch.</p>
  
   <form>
     <fieldset>
@@ -1251,7 +1428,7 @@ $(document).ready(function() {
 </div>
 
 <div id="dialog-form" title="Create new department">
-  <p class="validateTips">Please insert fields in *.</p>
+  <p class="validateTips6">Please insert fields in *.</p>
  
   <form>
     <fieldset>
@@ -1268,7 +1445,7 @@ $(document).ready(function() {
 </div>
 
 <div id="dialog-form" title="Create new job group">
-  <p class="validateTips">Please insert job group.</p>
+  <p class="validateTips7">Please insert job group.</p>
  
   <form>
     <fieldset>
@@ -1282,7 +1459,7 @@ $(document).ready(function() {
 </div>
 
 <div id="dialog-form" title="Create new employee type">
-  <p class="validateTips">Please insert employee type.</p>
+  <p class="validateTips8">Please insert employee type.</p>
  
   <form>
     <fieldset>
@@ -1295,17 +1472,18 @@ $(document).ready(function() {
   </form>
 </div>
 
-    <form method="POST" action="<?php echo e(URL::to('employees/update/'.$employee->id)); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
-    
+     
+ <form method="POST" action="<?php echo e(URL::to('employees')); ?>" accept-charset="UTF-8" enctype="multipart/form-data">
+
   <div class="row">
   <div class="col-lg-12">
-  <h3>Update Employee<button style="margin-left:600px" type="submit" class="btn btn-primary btn-sm">Update Employee</button></h3>
+  <h3>New Employee <button style="margin-left:620px" type="submit" class="btn btn-primary btn-sm">Create Employee</button></h3>
 
-  <hr>
-  </div>  
-  </div>
+<hr>
+</div>  
+</div>
 
-  <?php if($errors->has()): ?>
+<?php if($errors->has()): ?>
         <div class="alert alert-danger">
             <?php foreach($errors->all() as $error): ?>
                 <?php echo $error; ?><br>        
@@ -1313,7 +1491,8 @@ $(document).ready(function() {
         </div>
         <?php endif; ?>
 
-    <ul class="nav nav-tabs" role="tablist">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#personalinfo" aria-controls="personalinfo" role="tab" data-toggle="tab">Personal Info</a></li>
     <li role="presentation"><a href="#pininfo" aria-controls="pininfo" role="tab" data-toggle="tab">Government Info</a></li>
     <li role="presentation"><a href="#payment" aria-controls="payment" role="tab" data-toggle="tab">Payment Info</a></li>
@@ -1328,78 +1507,78 @@ $(document).ready(function() {
 
 <div role="tabpanel" class="tab-pane active" id="personalinfo">
   <br><br>
-
-            <div class="row">
             
-            <input class="form-control" placeholder="" type="hidden" name="photo" id="photo" value="<?php echo e($employee->photo); ?>" >
-            <input class="form-control" placeholder="" type="hidden" name="sign" id="sign" value="<?php echo e($employee->signature); ?>" >
             <div class="col-lg-4">
 
                     <div class="form-group">
                         <label for="username">Personal File Number <span style="color:red">*</span></label>
-                        <input class="form-control" placeholder=""  type="text" name="personal_file_number" id="personal_file_number" value="<?php echo e($employee->personal_file_number); ?>" >
-                    </div>
-
-                     <div class="form-group">
-                        <label for="username">Photo</label><br>
-                        <div id="imagePreview"></div>
-                        <input class="img" placeholder="" type="file" name="image" id="uploadFile" value="<?php echo e($employee->signature); ?>">
+                        <input class="form-control" placeholder="" type="text" name="personal_file_number" id="personal_file_number" value="<?php echo initials($organization->name,$pfn); ?>" >
                     </div>
 
                     <div class="form-group">
-                        <label for="username">Signature</label><br>
-                        <div id="signPreview"><img src="<?php echo e($employee->signature); ?>" alt=""></div>
-                        <input class="img" placeholder="" type="file" name="signature" id="signFile" value="<?php echo e($employee->signature); ?>">
+                        <label for="username">Photo</label><br>
+                        <div id="imagePreview"></div>
+                        <input class="img" placeholder="" type="file" name="image" id="uploadFile" value="<?php echo e(Input::old('image')); ?>">
                     </div>
+            
+                     <div class="form-group">
+                        <label for="username">Signature</label><br>
+                        <div id="signPreview"></div>
+                        <input class="img" placeholder="" type="file" name="signature" id="signFile" value="<?php echo e(Input::old('signature')); ?>">
+                    </div>
+
                   </div>
 
-                  <div class="col-lg-4">
+                    <div class="col-lg-4">
+
 
                     <div class="form-group">
                         <label for="username">Surname <span style="color:red">*</span></label>
-                        <input class="form-control" placeholder="" type="text" name="lname" id="lname" value="<?php echo e($employee->last_name); ?>">
+                        <input class="form-control" placeholder="" type="text" name="lname" id="lname" value="<?php echo e(Input::old('lname')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">First Name <span style="color:red">*</span></label>
-                        <input class="form-control" placeholder="" type="text" name="fname" id="fname" value="<?php echo e($employee->first_name); ?>">
+                        <input class="form-control" placeholder="" type="text" name="fname" id="fname" value="<?php echo e(Input::old('fname')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Other Names </label>
-                        <input class="form-control" placeholder="" type="text" name="mname" id="mname" value="<?php echo e($employee->middle_name); ?>">
+                        <input class="form-control" placeholder="" type="text" name="mname" id="mname" value="<?php echo e(Input::old('mname')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">ID Number <span style="color:red">*</span></label>
-                        <input class="form-control" placeholder="" type="text" name="identity_number" id="identity_number" value="<?php echo e($employee->identity_number); ?>">
+                        <input class="form-control" placeholder="" type="text" name="identity_number" id="identity_number" value="<?php echo e(Input::old('identity_number')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Passport number</label>
-                        <input class="form-control" placeholder="" type="text" name="passport_number" id="passport_number" value="<?php echo e($employee->passport_number); ?>">
+                        <input class="form-control" placeholder="" type="text" name="passport_number" id="passport_number" value="<?php echo e(Input::old('passport_number')); ?>">
                     </div>
-                   </div>
-                   <div class="col-lg-4">
+
+                    </div>
                    
+                   <div class="col-lg-4">
+
                     <div class="form-group">
-                        <label for="username">Date of birth <span style="color:red">*</span></label>
+                        <label for="username">Date of birth  <span style="color:red">*</span></label>
                         <div class="right-inner-addon ">
                         <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control datepicker1" readonly="readonly" placeholder="" type="text" name="dob" id="dob" value="<?php echo e($employee->yob); ?>">
+                        <input class="form-control datepicker1" readonly="readonly" placeholder="" type="text" name="dob" id="dob" value="<?php echo e(Input::old('dob')); ?>">
                     </div>
                     </div>
 
                     <div class="form-group">
                         <label for="username">Marital Status</label>
-                        <select name="status" class="form-control">
+                        <select name="status" id="status" class="form-control">
                             <option></option>
-                            <option value="Single"<?= ($employee->marital_status=='Single')?'selected="selected"':''; ?>>Single</option>
-                            <option value="Married"<?= ($employee->marital_status=='Married')?'selected="selected"':''; ?>>Married</option>
-                            <option value="Divorced"<?= ($employee->marital_status=='Divorced')?'selected="selected"':''; ?>>Divorced</option>
-                            <option value="Separated"<?= ($employee->marital_status=='Separated')?'selected="selected"':''; ?>>Separated</option>
-                            <option value="Widowed"<?= ($employee->marital_status=='Widowed')?'selected="selected"':''; ?>>Widowed</option>
-                            <option value="Others"<?= ($employee->marital_status=='Others')?'selected="selected"':''; ?>Others</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            <option value="Separated">Separated</option>
+                            <option value="Widowed">Widowed</option>
+                            <option value="Others">Others</option>
                         </select>
                 
                     </div>
@@ -1409,124 +1588,120 @@ $(document).ready(function() {
                         <select name="citizenship" id="citizenship" class="form-control">
                             <option></option>
                             <option value="cnew">Create New</option>
-                            <?php foreach($citizenships as $citizenship): ?>
-                            <option value="<?php echo $citizenship->id; ?>"<?= ($employee->citizenship_id==$citizenship->id)?'selected="selected"':''; ?>> <?php echo $citizenship->name; ?></option>
+                             <?php foreach($citizenships as $citizenship): ?>
+                            <option value="<?php echo $citizenship->id; ?>"> <?php echo $citizenship->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                 
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="username">Education Background</label>
                         <select name="education" id="education" class="form-control">
                             <option></option>
                             <option value="cnew">Create New</option>
                             <?php foreach($educations as $education): ?>
-                            <option value="<?php echo $education->id; ?>"<?= ($employee->education_type_id==$education->id)?'selected="selected"':''; ?>> <?php echo $education->education_name; ?></option>
+                            <option value="<?php echo $education->id; ?>"> <?php echo $education->education_name; ?></option>
                             <?php endforeach; ?>
 
                         </select>
                 
                     </div>
 
-                   
 
                     <div class="form-group">
-                        <label for="username">Gender <span style="color:red">*</span></label><br>
-                        <input class=""  type="radio" name="gender" id="gender" value="male"<?= ($employee->gender=='male')?'checked="checked"':''; ?>> Male
-                        <input class=""  type="radio" name="gender" id="gender" value="female"<?= ($employee->gender=='female')?'checked="checked"':''; ?>> Female
+                        <label for="username">Gender  <span style="color:red">*</span></label>
+                        <input class="gen"  type="radio" name="gender" id="gender" value="male"> Male
+                        <input class="gen"  type="radio" name="gender" id="gender" value="female"> Female
                     </div>
-                
 
-            </div>
-
-
-            </div>
+                    </div>
 
           </div>
 
         <div role="tabpanel" class="tab-pane" id="pininfo">
             <br><br>
             <div class="col-lg-4">
-
+                    <div class="form-group"><h3 style='color:Green;strong'>Pin Information</h3></div>
                     <div class="form-group">
                         <label for="username">KRA Pin</label>
-                        <input class="form-control" placeholder="" type="text" name="pin" id="pin" value="<?php echo e($employee->pin); ?>">
+                        <input class="form-control" placeholder="" type="text" name="pin" id="pin" value="<?php echo e(Input::old('pin')); ?>">
                     </div>
 
                      <div class="form-group">
                         <label for="username">Nssf Number</label>
-                        <input class="form-control" placeholder="" type="text" name="social_security_number" id="social_security_number" value="<?php echo e($employee->social_security_number); ?>">
+                        <input class="form-control" placeholder="" type="text" name="social_security_number" id="social_security_number" value="<?php echo e(Input::old('social_security_number')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Nhif Number</label>
-                        <input class="form-control" placeholder="" type="text" name="hospital_insurance_number" id="hospital_insurance_number" value="<?php echo e($employee->hospital_insurance_number); ?>">
+                        <input class="form-control" placeholder="" type="text" name="hospital_insurance_number" id="hospital_insurance_number" value="<?php echo e(Input::old('hospital_insurance_number')); ?>">
                     </div>
-                  </div>
+                     </div>
+
                      <div class="col-lg-4">
                       
-                      <div class="form-group"><h3 style='color:Green;strong;margin-top:15px'>Deductions Applicable</h3></div>
+                      <div class="form-group"><h3 style='color:Green;strong;'>Deductions Applicable</h3></div>
 
                         <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="<?php echo e($employee->income_tax_applicable); ?>" id="itax" name="i_tax"<?= ($employee->income_tax_applicable=='1')?'checked="checked"':''; ?>>
+                            <input type="checkbox" checked name="i_tax" id="itax">
                               Apply Income Tax
                         </label>
                     </div>
 
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="<?php echo e($employee->income_tax_relief_applicable); ?>" id="irel" name="i_tax_relief"<?= ($employee->income_tax_relief_applicable=='1')?'checked="checked"':''; ?>>
+                            <input type="checkbox" checked name="i_tax_relief" id="irel">
                                Apply Income Tax Relief
                         </label>
                     </div>
 
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="<?php echo e($employee->social_security_applicable); ?>" name="a_nssf"<?= ($employee->social_security_applicable=='1')?'checked="checked"':''; ?>>
+                            <input type="checkbox" checked name="a_nssf" id="a_nssf">
                                Apply Nssf
                         </label>
                     </div>
 
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="<?php echo e($employee->hospital_insurance_applicable); ?>" name="a_nhif"<?= ($employee->hospital_insurance_applicable=='1')?'checked="checked"':''; ?>>
+                            <input type="checkbox" checked name="a_nhif" id="a_nhif">
                                 Apply Nhif
                         </label>
-                      </div>
-                     </div>
+                    </div>
                    </div>
+                 </div>
 
-                   <div role="tabpanel" class="tab-pane" id="payment">
+                     <div role="tabpanel" class="tab-pane" id="payment">
                       <br><br>
                        <div class="col-lg-4">
-
+              
                     <div class="form-group">
                         <label for="username">Mode of Payment</label>
                         <select name="modep" id="modep" class="form-control">
                             <option></option>
-                            <option value="Bank"<?= ($employee->mode_of_payment=='Bank')?'selected="selected"':''; ?>>Bank</option>
-                            <option value="Mpesa"<?= ($employee->mode_of_payment=='Mpesa')?'selected="selected"':''; ?>>Mpesa</option>
-                            <option value="Cash"<?= ($employee->mode_of_payment=='Cash')?'selected="selected"':''; ?>>Cash</option>
-                            <option value="Cheque"<?= ($employee->mode_of_payment=='Cheque')?'selected="selected"':''; ?>>Cheque</option>
-                            <option id="om" value="Others"<?= ($employee->mode_of_payment=='Others')?'selected="selected"':''; ?>>Others</option>
+                            <option value="Bank">Bank</option>
+                            <option value="Mpesa">Mpesa</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="Others">Others</option>
                         </select>
-
-                        <div class="form-group" id="newmode">
-                        <label for="username">Insert Mode of Payment</label>
-                        <input class="form-control" placeholder="" type="text" name="omode" id="omode" value="<?php echo $employee->custom_field1; ?>">
-                    </div>     
                 
-                    </div>                    
+                    </div> 
+
+                    <div class="form-group" id="newmode">
+                        <label for="username">Insert Mode of Payment</label>
+                        <input class="form-control" placeholder="" type="text" name="omode" id="omode" value="<?php echo e(Input::old('omode')); ?>">
+                    </div>               
 
                     <div class="form-group">
                         <label for="username">Bank</label>
-                        <select id="bank_id" name="bank_id" class="form-control">
+                        <select name="bank_id" id="bank_id" class="form-control">
                             <option></option>
                             <option value="cnew">Create New</option>
                             <?php foreach($banks as $bank): ?>
-                            <option value="<?php echo $bank->id; ?>"<?= ($employee->bank_id==$bank->id)?'selected="selected"':''; ?>> <?php echo $bank->bank_name; ?></option>
+                            <option value="<?php echo $bank->id; ?>"> <?php echo $bank->bank_name; ?></option>
                             <?php endforeach; ?>
 
                         </select>
@@ -1536,13 +1711,8 @@ $(document).ready(function() {
                       
                      <div class="form-group">
                         <label for="username">Bank Branch</label>
-                        <select id="bbranch_id" name="bbranch_id" class="form-control">
+                        <select name="bbranch_id" id="bbranch_id" class="form-control">
                             <option></option>
-                            <option value="cnew">Create New</option>
-                            <?php foreach($bbranches as $bbranch): ?>
-                            <option value="<?php echo $bbranch->id; ?>"<?= ($employee->bank_branch_id==$bbranch->id)?'selected="selected"':''; ?>> <?php echo $bbranch->bank_branch_name; ?></option>
-                            <?php endforeach; ?>
-
                         </select>
                 
                     </div>
@@ -1550,20 +1720,19 @@ $(document).ready(function() {
                     </div>
 
                     <div class="col-lg-4">
-
                     <div class="form-group">
                         <label for="username">Bank Account Number</label>
-                        <input class="form-control" placeholder="" type="text" name="bank_account_number" id="bank_account_number" value="<?php echo e($employee->bank_account_number); ?>">
+                        <input class="form-control" placeholder="" type="text" name="bank_account_number" id="bank_account_number" value="<?php echo e(Input::old('bank_account_number')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Sort Code</label>
-                        <input class="form-control" placeholder="" type="text" name="bank_eft_code" id="bank_eft_code" value="<?php echo e($employee->bank_eft_code); ?>">
+                        <input class="form-control" placeholder="" type="text" name="bank_eft_code" id="bank_eft_code" value="<?php echo e(Input::old('bank_eft_code')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Swift Code</label>
-                        <input class="form-control" placeholder="" type="text" name="swift_code" id="swift_code" value="<?php echo e($employee->swift_code); ?>">
+                        <input class="form-control" placeholder="" type="text" name="swift_code" id="swift_code" value="<?php echo e(Input::old('swift_code')); ?>">
                     </div>
                      
 
@@ -1571,16 +1740,16 @@ $(document).ready(function() {
 
             </div>
 
-             <div role="tabpanel" class="tab-pane" id="companyinfo">
+          <div role="tabpanel" class="tab-pane" id="companyinfo">
             <br><br>
             <div class="col-lg-4">
                     <div class="form-group">
-                        <label for="username">Employee Branch</label>
+                        <label for="username">Employee Branch </label>
                         <select name="branch_id" id="branch_id" class="form-control">
                             <option></option>
                             <option value="cnew">Create New</option>
                             <?php foreach($branches as $branch): ?>
-                            <option value="<?php echo $branch->id; ?>"<?= ($employee->branch_id==$branch->id)?'selected="selected"':''; ?>> <?php echo $branch->name; ?></option>
+                            <option value="<?php echo $branch->id; ?>"> <?php echo $branch->name; ?></option>
                             <?php endforeach; ?>
 
                         </select>
@@ -1589,12 +1758,12 @@ $(document).ready(function() {
 
 
                      <div class="form-group">
-                        <label for="username">Employee Department</label>
+                        <label for="username">Employee Department </label>
                         <select name="department_id" id="department_id" class="form-control">
                             <option></option>
                             <option value="cnew">Create New</option>
                             <?php foreach($departments as $department): ?>
-                            <option value="<?php echo $department->id; ?>"<?= ($employee->department_id==$department->id)?'selected="selected"':''; ?>> <?php echo $department->department_name.' ('.$department->codes.')'; ?></option>
+                            <option value="<?php echo $department->id; ?>"> <?php echo $department->department_name.' ('.$department->codes.')'; ?></option>
                             <?php endforeach; ?>
 
                         </select>
@@ -1602,12 +1771,12 @@ $(document).ready(function() {
                     </div>
 
                      <div class="form-group">
-                        <label for="username">Job Group <span style="color:red">*</span></label>
+                        <label for="username">Job Group  <span style="color:red">*</span></label>
                         <select name="jgroup_id" id="jgroup_id" class="form-control">
                             <option></option>
                             <option value="cnew">Create New</option>
                             <?php foreach($jgroups as $jgroup): ?>
-                            <option value="<?php echo $jgroup->id; ?>"<?= ($employee->job_group_id==$jgroup->id)?'selected="selected"':''; ?>> <?php echo $jgroup->job_group_name; ?></option>
+                            <option value="<?php echo $jgroup->id; ?>"> <?php echo $jgroup->job_group_name; ?></option>
                             <?php endforeach; ?>
 
                         </select>
@@ -1616,17 +1785,17 @@ $(document).ready(function() {
 
 
                      <div class="form-group">
-                        <label for="username">Employee Type <span style="color:red">*</span></label>
+                        <label for="username">Employee Type  <span style="color:red">*</span></label>
                         <select name="type_id" id="type_id" class="form-control">
                             <option></option>
                             <option value="cnew">Create New</option>
                             <?php foreach($etypes as $etype): ?>
-                            <option id="types" value="<?php echo $etype->id; ?>"<?= ($employee->type_id==$etype->id)?'selected="selected"':''; ?>> <?php echo $etype->employee_type_name; ?></option>
+                            <option value="<?php echo $etype->id; ?>"> <?php echo $etype->employee_type_name; ?></option>
                             <?php endforeach; ?>
 
                         </select>
-                     </div>
-                    
+                
+                    </div>
 
                     <div id="contract">
 
@@ -1634,7 +1803,7 @@ $(document).ready(function() {
                         <label for="username">Start Date <span style="color:red">*</span></label>
                         <div class="right-inner-addon ">
                         <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control datepicker21" readonly="readonly" placeholder="" type="text" name="startdate" id="startdate" value="<?php echo $employee->start_date; ?>">
+                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="startdate" id="startdate" value="<?php echo e(Input::old('startdate')); ?>">
                         </div>
                     </div>
 
@@ -1642,109 +1811,92 @@ $(document).ready(function() {
                         <label for="username">End Date <span style="color:red">*</span></label>
                         <div class="right-inner-addon ">
                         <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control datepicker21" readonly="readonly" placeholder="" type="text" name="enddate" id="enddate" value="<?php echo $employee->end_date; ?>">
+                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="enddate" id="enddate" value="<?php echo e(Input::old('enddate')); ?>">
                         </div>
                      </div>
 
                  </div>
 
-                 </div>
+               </div>
                     <div class="col-lg-4">
-
-                         <div class="form-group">
+                    <div class="form-group">
                         <label for="username">Work Permit Number</label>
-                        <input class="form-control" placeholder="" type="text" name="work_permit_number" id="work_permit_number" value="<?php echo e($employee->work_permit_number); ?>">
+                        <input class="form-control" placeholder="" type="text" name="work_permit_number" id="work_permit_number" value="<?php echo e(Input::old('work_permit_number')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Job Title</label>
-                        <input class="form-control" placeholder="" type="text" name="jtitle" id="jtitle" value="<?php echo e($employee->job_title); ?>">
+                        <input class="form-control" placeholder="" type="text" name="jtitle" id="jtitle" value="<?php echo e(Input::old('jtitle')); ?>">
                     </div>
-                    
-                    <?php if(Entrust::can('manager_payroll')): ?>
-                     <div class="form-group">
-            
-                        <label for="username">Basic Salary <span style="color:red">*</span></label>
-                        <div class="input-group">
-                        <span class="input-group-addon"><?php echo $currency->shortname; ?></span>
-                        <input class="form-control" placeholder="" type="text" name="pay" id="pay" value="<?php echo e($employee->basic_pay*100); ?>">
-                        </div>
-                        <script type="text/javascript">
-                       $(document).ready(function() {
-                       $('#pay').priceFormat();
-                       });
-                       </script>
-                    </div>
-                    <?php else: ?>
-                    <?php if($employee->job_group_id != 2): ?>
+
                     <div class="form-group">
             
-                        <label for="username">Basic Salary <span style="color:red">*</span></label>
+                        <label for="username">Basic Salary  <span style="color:red">*</span></label>
                         <div class="input-group">
                         <span class="input-group-addon"><?php echo $currency->shortname; ?></span>
-                        <input class="form-control" placeholder="" type="text" name="pay" id="pay" value="<?php echo e($employee->basic_pay*100); ?>">
-                        </div>
-                        <script type="text/javascript">
+                        <input class="form-control" placeholder="" type="text" name="pay" id="pay" value="<?php echo e(Input::old('pay')); ?>">
+                       </div>
+                       <script type="text/javascript">
                        $(document).ready(function() {
                        $('#pay').priceFormat();
                        });
                        </script>
                     </div>
-                    <?php endif; ?>
-                    <?php endif; ?>
-                     <div class="form-group">
-                        <label for="username">Date joined <span style="color:red">*</span></label>
+
+                    <div class="form-group">
+                        <label for="username">Date joined  <span style="color:red">*</span></label>
                         <div class="right-inner-addon ">
                         <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control datepicker"  readonly="readonly" placeholder="" type="text" name="djoined" id="djoined" value="<?php echo e(date('d-M-Y',strtotime($employee->date_joined))); ?>">
+                        <input class="form-control datepicker"  readonly="readonly" placeholder=""  type="text" name="djoined" id="djoined" value="<?php echo e(Input::old('djoined')); ?>">
                         </div>
                         </div>
-                  </div>
-                  <div class="col-lg-4">
+
+                        </div>
+
+                        <div class="col-lg-4">
                   <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="<?php echo e($employee->in_employment); ?>"<?= ($employee->in_employment=='Y')?'checked="checked"':''; ?> name="active">
+                            <input id="ch" type="checkbox" checked name="active">
                                 In Employment
                         </label>
                     </div>
-                  </div>
-                </div>
-                
-                    
-                    
-                    <div role="tabpanel" class="tab-pane" id="contactinfo">
+                 </div>
+                      </div>
+
+                      <div role="tabpanel" class="tab-pane" id="contactinfo">
                         <br>
                         <div class="col-lg-6">
                     <div class="form-group">
                         <label for="username">Phone Number</label>
-                        <input class="form-control" placeholder="" type="text" name="telephone_mobile" id="telephone_mobile" value="<?php echo e($employee->telephone_mobile); ?>">
+                        <input class="form-control" placeholder="" type="text" name="telephone_mobile" id="telephone_mobile" value="<?php echo e(Input::old('telephone_mobile')); ?>">
                     </div>
 
                     <div class="form-group">
-                        <label for="username">Office Email<span style="color:red">*</span></label>
-                        <input class="form-control" placeholder="" type="text" name="email_office" id="email_office" value="<?php echo e($employee->email_office); ?>">
+                        <label for="username">Office Email <span style="color:red">*</span></label>
+                        <input class="form-control" placeholder="" type="text" name="email_office" id="email_office" value="<?php echo e(Input::old('email_office')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Personal Email</label>
-                        <input class="form-control" placeholder="" type="text" name="email_personal" id="email_personal" value="<?php echo e($employee->email_personal); ?>">
+                        <input class="form-control" placeholder="" type="text" name="email_personal" id="email_personal" value="<?php echo e(Input::old('email_personal')); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="username">Postal Zip</label>
-                        <input class="form-control" placeholder="" type="text" name="zip" id="zip" value="<?php echo e($employee->postal_zip); ?>">
+                        <input class="form-control" placeholder="" type="text" name="zip" id="zip" value="<?php echo e(Input::old('zip')); ?>">
                     </div>
 
                      <div class="form-group">
                         <label for="username">Postal Address</label>
-                        <textarea class="form-control"  name="address" id="address"><?php echo e($employee->postal_address); ?></textarea>
+                        <textarea class="form-control"  name="address" id="address"><?php echo e(Input::old('address')); ?></textarea>
                     </div>
-        
-                   </div>
-                  
-                   </div>
 
-                   <div role="tabpanel" class="tab-pane" id="kins">
+                  </div>
+
+                 </div>
+
+
+<div role="tabpanel" class="tab-pane" id="kins">
 
 <h4 align="center"><strong>Next of Kin</strong></h4>
 <div id='ncontainer'>
@@ -1760,9 +1912,6 @@ $(document).ready(function() {
     <th>Relationship</th>
     <th>Contact</th>
   </tr>
- 
-  <?php if($countk == 0): ?>
-
   <tr>
     <td><input type='checkbox' class='ncase'/></td>
     <td><span id='nsnum'>1.</span></td>
@@ -1773,23 +1922,6 @@ $(document).ready(function() {
     <td><input class="kindata" type='text' id='relationship' name='relationship[0]' value="<?php echo e(Input::old('relationship[0]')); ?>"/></td>
     <td><textarea class="kindata" name="contact[0]" id="contact"><?php echo e(Input::old('contact[0]')); ?></textarea></td>
   </tr>
-
-  <?php else: ?>
-  <?php $i = 1; ?>
-  <?php foreach($kins as $kin): ?>
-  <tr>
-    <td><input type='checkbox' class='ncase'/></td>
-    <td><span id='nsnum'><?php echo $i; ?>.</span></td>
-    <td><input class="kindata" type='text' id='first_name' name='kin_first_name[<?php echo $i-1; ?>]' value="<?php echo $kin->first_name; ?>"/></td>
-    <td><input class="kindata" type='text' id='last_name' name='kin_last_name[<?php echo $i-1; ?>]' value="<?php echo $kin->last_name; ?>"/></td>
-    <td><input class="kindata" type='text' id='middle_name' name='kin_middle_name[<?php echo $i-1; ?>]' value="<?php echo $kin->middle_name; ?>"/></td>
-    <td><input class="kindata" type='text' id='id_number' name='id_number[<?php echo $i-1; ?>]' value="<?php echo $kin->id_number; ?>"/> </td>
-    <td><input class="kindata" type='text' id='relationship' name='relationship[<?php echo $i-1; ?>]' value="<?php echo $kin->relationship; ?>"/></td>
-    <td><textarea class="kindata" name="contact[<?php echo $i-1; ?>]" id="contact"><?php echo $kin->contact; ?></textarea></td>
-  </tr>
-  <?php $i++; ?>
-  <?php endforeach; ?>
-  <?php endif; ?>
 </table>
 
 <button type="button" class='ndelete'>- Delete</button>
@@ -1849,7 +1981,7 @@ function check(){
 <div id='dcontainer'>
 
 <table id="docEmp" width="500" border="1" cellspacing="0">
-  <tr>
+    <tr>
     <th><input class='dcheck_all' type='checkbox' onclick="dselect_all()"/></th>
     <th>#</th>
     <th width="200">Document</th>
@@ -1857,54 +1989,24 @@ function check(){
     <th>Description</th>
     <th>Date From</th>
     <th>End Date</th>
-  </tr>
-
-  <?php if($countd == 0): ?>
-
-  <tr>
+    </tr>
+    <tr>
     <td><input type='checkbox' class='dcase'/></td>
     <td><span id='dsnum'>1.</span></td>
     <td id="f"><input class="docdata" type="file" name="path[0]" id="path" value="<?php echo e(Input::old('path[0]')); ?>"></td>
     <td><input class="docdata" type='text' id='doc_name' name='doc_name[0]' value="<?php echo e(Input::old('doc_name[0]')); ?>"/></td>
     <td><textarea class="docdata" style="width:150px" name="description[0]" id="description"><?php echo e(Input::old('description[0]')); ?></textarea></td>
     <td><div class="right-inner-addon">
-                        <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="fdate[0]" id="fdate" value="<?php echo e(Input::old('fdate[0]')); ?>">
-                    </div> </td>
+        <i class="glyphicon glyphicon-calendar"></i>
+        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="fdate[0]" id="fdate" value="">
+        </div>
+    </td>
     <td><div class="right-inner-addon">
-                        <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="edate[0]" id="edate" value="<?php echo e(Input::old('edate[0]')); ?>">
-                    </div></td>
+        <i class="glyphicon glyphicon-calendar"></i>
+        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="edate[0]" id="edate" value="">
+        </div>
+    </td>
   </tr>
-
-  <?php else: ?>
-
-  <?php $j = 1;?>
-  <?php foreach($docs as $doc): ?>
-  <?php 
-  $name = $doc->document_name;
-  $file_name = pathinfo($name, PATHINFO_FILENAME); 
-  ?>
-  <input class="docdata" type="hidden" name="curpath[<?php echo $j-1; ?>]" id="curpath" value="<?php echo $doc->document_path; ?>">
-  <tr>
-    <td><input type='checkbox' class='dcase'/></td>
-    <td><span id='dsnum'><?php echo $j; ?>.</span></td>
-    <td id="f"><input class="docdata" type="file" name="path[<?php echo $j-1; ?>]" id="path" value="<?php echo $doc->document_path; ?>"></td>
-    <td><input class="docdata" type='text' id='doc_name' name='doc_name[<?php echo $j-1; ?>]' value="<?php echo $file_name; ?>"/></td>
-    <td><textarea class="docdata" style="width:150px" name="description[<?php echo $j-1; ?>]" id="description"><?php echo $doc->description; ?></textarea></td>
-    <td><div class="right-inner-addon">
-                        <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="fdate[<?php echo $j-1; ?>]" id="fdate" value="<?php echo $doc->from_date; ?>">
-                    </div> </td>
-    <td><div class="right-inner-addon">
-                        <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="edate[<?php echo $j-1; ?>]" id="edate" value="<?php echo $doc->expiry_date; ?>">
-                    </div></td>
-  </tr>
-   <?php $j++; ?>
-  <?php endforeach; ?>
-
-  <?php endif; ?>
 </table>
 
 <button type="button" class='ddelete'>- Delete</button>
@@ -1947,13 +2049,7 @@ var j=2;
 $(".daddmore").on('click',function(){
   count=$('#docEmp tr').length;
     var data="<tr><td><input type='checkbox' class='dcase'/></td><td><span id='dsnum"+j+"'>"+count+".</span></td>";
-    data +="<td id='f'><input class='docdata' type='file' id='path"+j+"' name='path["+(j-1)+"]' value='<?php echo e(Input::old('path["+(j-1)+"]')); ?>'/></td><td><input class='docdata' type='text' id='doc_name"+j+"' name='doc_name["+(j-1)+"]' value='<?php echo e(Input::old('doc_name["+(j-1)+"]')); ?>'/></td><td><textarea class='docdata' name='description["+(j-1)+"]' id='description"+j+"'><?php echo e(Input::old('description["+(j-1)+"]')); ?></textarea></td><td><div class='right-inner-addon'><i class='glyphicon glyphicon-calendar'></i><input class='form-control expiry' readonly='readonly' type='text' name='fdate["+(j-1)+"]' id='fdate"+j+"' value='<?php echo e(Input::old('fdate["+(j-1)+"]')); ?>'></div></td><td><div class='right-inner-addon'><i class='glyphicon glyphicon-calendar'></i><input class='form-control expiry' readonly='readonly' type='text' name='edate["+(j-1)+"]' id='edate"+j+"' value='<?php echo e(Input::old('edate["+(j-1)+"]')); ?>'></div></td>";
-  
-  $('.expiry').datepicker({
-    format: 'yyyy-mm-dd',
-    startDate: '-60y',
-    autoclose: true
-  });
+    data +="<td id='f'><input class='docdata' type='file' id='path"+j+"' name='path["+(j-1)+"]' value='<?php echo e(Input::old('path["+(j-1)+"]')); ?>'/></td><td><input class='docdata' type='text' id='doc_name"+j+"' name='doc_name["+(j-1)+"]' value='<?php echo e(Input::old('doc_name["+(j-1)+"]')); ?>'/></td><td><textarea class='docdata' name='description["+(j-1)+"]' id='description"+j+"'><?php echo e(Input::old('description["+(j-1)+"]')); ?></textarea></td><td><div class='right-inner-addon'><i class='glyphicon glyphicon-calendar'></i><input class='form-control expiry' readonly='readonly' placeholder='' type='text' name='fdate["+(j-1)+"]' id='fdate"+j+"' value='<?php echo e(Input::old('fdate["+(j-1)+"]')); ?>'></div></td><td><div class='right-inner-addon'><i class='glyphicon glyphicon-calendar'></i><input class='form-control expiry' readonly='readonly' placeholder='' type='text' name='edate["+(j-1)+"]' id='edate"+j+"' value='<?php echo e(Input::old('edate["+(j-1)+"]')); ?>'></div></td>";
   $('#docEmp').append(data);
   j++;
 });
@@ -1977,17 +2073,16 @@ function dcheck(){
   }
 
 </script>
-                  
                       
-
                     
-   
-                
-            </div>
 
-        </div>
+</div>
+
+
+</div>
+
 </form>
-    
+
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -2001,7 +2096,5 @@ $("#irel").prop('checked', false);
 });
 </script>
 
-
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.main', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

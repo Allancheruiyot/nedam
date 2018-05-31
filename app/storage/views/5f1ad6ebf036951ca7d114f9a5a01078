@@ -1,0 +1,40 @@
+<?php $__env->startSection('content'); ?>
+
+<div class="row">
+
+	<div class="col-lg-5">
+
+		<table class="table table-condensed table-bordered">
+
+            <tr>
+                <td>username</td><td><?php echo $user->username; ?></td>
+            </tr>
+            <tr>
+                <td>email</td><td><?php echo $user->email; ?></td>
+            </tr>
+            <tr>
+                <td>password</td><td><a class="btn btn-info btn-xs" href="<?php echo URL::to('users/password/'.$user->id); ?>">change</a></td>
+
+            </tr>
+            <tr>
+                <td><a class="btn btn-info btn-xs" href="<?php echo URL::to('users/edit/'.$user->id); ?>">update</a></td>
+
+            </tr>
+
+        </table>
+		
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.system', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1335,7 +1335,7 @@ $(document).ready(function() {
 
                     <div class="form-group">
                         <label for="username">Personal File Number <span style="color:red">*</span></label>
-                        <input class="form-control" placeholder="" readonly="readonly" type="text" name="personal_file_number" id="personal_file_number" value="{{{ $employee->personal_file_number}}}" >
+                        <input class="form-control" placeholder=""  type="text" name="personal_file_number" id="personal_file_number" value="{{{ $employee->personal_file_number}}}" >
                     </div>
 
                      <div class="form-group">
@@ -1632,7 +1632,7 @@ $(document).ready(function() {
                         <label for="username">Start Date <span style="color:red">*</span></label>
                         <div class="right-inner-addon ">
                         <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="startdate" id="startdate" value="{{ $employee->start_date }}">
+                        <input class="form-control datepicker21" readonly="readonly" placeholder="" type="text" name="startdate" id="startdate" value="{{ $employee->start_date }}">
                         </div>
                     </div>
 
@@ -1640,7 +1640,7 @@ $(document).ready(function() {
                         <label for="username">End Date <span style="color:red">*</span></label>
                         <div class="right-inner-addon ">
                         <i class="glyphicon glyphicon-calendar"></i>
-                        <input class="form-control expiry" readonly="readonly" placeholder="" type="text" name="enddate" id="enddate" value="{{ $employee->end_date }}">
+                        <input class="form-control datepicker21" readonly="readonly" placeholder="" type="text" name="enddate" id="enddate" value="{{ $employee->end_date }}">
                         </div>
                      </div>
 
