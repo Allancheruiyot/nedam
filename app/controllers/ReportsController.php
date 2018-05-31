@@ -7906,7 +7906,6 @@ class ReportsController extends \BaseController {
         $total = DB::table('transact')
         ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
         ->where('employee.organization_id',Confide::user()->organization_id)
-        ->where('mode_of_payment' ,'=', 'Bank')
         ->where('financial_month_year' ,'=', Input::get('period'))
         ->sum('net');
 
@@ -7915,7 +7914,6 @@ class ReportsController extends \BaseController {
             ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
         }else{
@@ -7923,7 +7921,6 @@ class ReportsController extends \BaseController {
          $total = DB::table('transact')
         ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
         ->where('employee.organization_id',Confide::user()->organization_id)
-        ->where('mode_of_payment' ,'=', 'Bank')
         ->where('process_type' ,'=', Input::get('type'))
         ->where('financial_month_year' ,'=', Input::get('period'))
         ->sum('net');
@@ -7933,7 +7930,6 @@ class ReportsController extends \BaseController {
             ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8063,7 +8059,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
 
@@ -8073,7 +8068,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
           }else{
@@ -8082,7 +8076,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('process_type' ,'=', Input::get('type'))
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
@@ -8093,7 +8086,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8223,7 +8215,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
 
@@ -8233,7 +8224,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
 
@@ -8242,7 +8232,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('process_type' ,'=', Input::get('type'))
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
@@ -8253,7 +8242,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8384,7 +8372,6 @@ class ReportsController extends \BaseController {
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
         
@@ -8395,7 +8382,6 @@ class ReportsController extends \BaseController {
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get();
      }else{
@@ -8404,7 +8390,6 @@ class ReportsController extends \BaseController {
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('process_type' ,'=', Input::get('type'))
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
@@ -8416,7 +8401,6 @@ class ReportsController extends \BaseController {
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get();
@@ -8547,7 +8531,6 @@ class ReportsController extends \BaseController {
         if(Input::get('type') == 'All'){
            $total = DB::table('transact')
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('employee.organization_id',Confide::user()->organization_id)
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
@@ -8557,13 +8540,11 @@ class ReportsController extends \BaseController {
             ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
         }else{
            $total = DB::table('transact')
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('employee.organization_id',Confide::user()->organization_id)
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->where('process_type' ,'=', Input::get('type'))
@@ -8574,7 +8555,6 @@ class ReportsController extends \BaseController {
             ->join('banks', 'employee.bank_id', '=', 'banks.id')
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8626,7 +8606,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
 
@@ -8636,7 +8615,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('branch_id' ,'=', Input::get('branch'))
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
 
@@ -8645,7 +8623,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('process_type' ,'=', Input::get('type'))
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
@@ -8656,7 +8633,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('branch_id' ,'=', Input::get('branch'))
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8704,7 +8680,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
 
@@ -8714,7 +8689,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
 
@@ -8723,7 +8697,6 @@ class ReportsController extends \BaseController {
           ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('process_type' ,'=', Input::get('type'))
           ->where('financial_month_year' ,'=', Input::get('period'))
           ->sum('net');
@@ -8734,7 +8707,6 @@ class ReportsController extends \BaseController {
             ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8783,7 +8755,6 @@ class ReportsController extends \BaseController {
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('process_type' ,'=', Input::get('type'))
           ->where('financial_month_year' ,'=', Input::get('period'))
       ->sum('net');
@@ -8795,7 +8766,6 @@ class ReportsController extends \BaseController {
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('department_id' ,'=', Input::get('department'))
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8806,7 +8776,6 @@ class ReportsController extends \BaseController {
           ->where('branch_id' ,'=', Input::get('branch'))
           ->where('department_id' ,'=', Input::get('department'))
           ->where('employee.organization_id',Confide::user()->organization_id)
-          ->where('mode_of_payment' ,'=', 'Bank')
           ->where('financial_month_year' ,'=', Input::get('period'))
       ->sum('net');
 
@@ -8817,7 +8786,6 @@ class ReportsController extends \BaseController {
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('department_id' ,'=', Input::get('department'))
-            ->where('mode_of_payment' ,'=', 'Bank')
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
           }
@@ -11859,6 +11827,7 @@ class ReportsController extends \BaseController {
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
             ->where('employee.organization_id',Auth::user()->organization_id)
             ->where('financial_month_year' ,'=', Input::get('period'))
+            ->orderByRaw('CAST(personal_file_number as SIGNED INTEGER)', 'ASC')
             ->select('personal_file_number','first_name','middle_name','last_name','transact.basic_pay','taxable_income','paye','nssf_amount','nhif_amount','earning_amount','relief','other_deductions','total_deductions','net','employee.id','income_tax_applicable','income_tax_relief_applicable')
             ->get(); 
     }else{
