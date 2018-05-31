@@ -7911,8 +7911,6 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -7927,8 +7925,6 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
@@ -8064,8 +8060,6 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('financial_month_year' ,'=', Input::get('period'))
@@ -8082,8 +8076,6 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('process_type' ,'=', Input::get('type'))
@@ -8220,8 +8212,6 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('financial_month_year' ,'=', Input::get('period'))
@@ -8238,8 +8228,6 @@ class ReportsController extends \BaseController {
 
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('process_type' ,'=', Input::get('type'))
@@ -8377,8 +8365,6 @@ class ReportsController extends \BaseController {
         
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8396,8 +8382,6 @@ class ReportsController extends \BaseController {
         
         $data = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
@@ -8537,8 +8521,6 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('financial_month_year' ,'=', Input::get('period'))
             ->get(); 
@@ -8552,8 +8534,6 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('process_type' ,'=', Input::get('type'))
             ->where('financial_month_year' ,'=', Input::get('period'))
@@ -8611,8 +8591,6 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('financial_month_year' ,'=', Input::get('period'))
@@ -8629,8 +8607,6 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('process_type' ,'=', Input::get('type'))
@@ -8685,8 +8661,6 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('financial_month_year' ,'=', Input::get('period'))
@@ -8703,8 +8677,6 @@ class ReportsController extends \BaseController {
 
           $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('department_id' ,'=', Input::get('department'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('process_type' ,'=', Input::get('type'))
@@ -8761,8 +8733,6 @@ class ReportsController extends \BaseController {
 
       $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('department_id' ,'=', Input::get('department'))
@@ -8781,8 +8751,6 @@ class ReportsController extends \BaseController {
 
       $rems = DB::table('transact')
             ->join('employee', 'transact.employee_id', '=', 'employee.personal_file_number')
-            ->join('banks', 'employee.bank_id', '=', 'banks.id')
-            ->join('bank_branches', 'employee.bank_branch_id', '=', 'bank_branches.id')
             ->where('branch_id' ,'=', Input::get('branch'))
             ->where('employee.organization_id',Confide::user()->organization_id)
             ->where('department_id' ,'=', Input::get('department'))
